@@ -15,7 +15,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
 
 public class SwapLocation {
- //swaplocation [player] [player]
  
  public static ArgumentBuilder<CommandSource, ?> register() { 
   return Commands.literal("swaplocation").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
@@ -49,7 +48,6 @@ public class SwapLocation {
    if (targetedPlayerOne.getName() == targetedPlayerTwo.getName()) {
     source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getFormattedText() + "."));
   } else {
-//   targetedPlayerOne.sendMessage(ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getFormattedText() + " and " + targetedPlayerTwo.getName().getFormattedText() + "?"));
    source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getFormattedText() + " and " + targetedPlayerTwo.getName().getFormattedText() + "?"));
    }
    

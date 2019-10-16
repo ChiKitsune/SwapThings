@@ -20,7 +20,6 @@ import net.minecraft.util.text.TextFormatting;
 
 public class SwapArmor {
  public static Random rand= new Random();
-// public static List<String> armorList = Arrays.asList("HELM","CHEST","LEGS","BOOTS","OFFHAND","RANDOM","SET","ALL");
  public static List<String> realArmorList = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD");
   
  public static ArgumentBuilder<CommandSource, ?> register() { 
@@ -38,17 +37,11 @@ public class SwapArmor {
  private static int swapArmorLogic(CommandSource source, String armorType, ServerPlayerEntity targetedPlayerOne, ServerPlayerEntity targetedPlayerTwo) {
   if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) targetedPlayerTwo=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
   
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("armorType= "+ armorType + "-."));
-  
   Boolean isRandomArmorSlot="RANDOM".equals(armorType.toUpperCase());
   String targetedArmorSlotOne="";
   String targetedArmorSlotTwo="";
   
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("After init"));
-  
   if (isRandomArmorSlot) {
-//   targetedArmorSlotOne=realArmorList.get(rand.nextInt(realArmorList.size()));
-//   targetedArmorSlotTwo=realArmorList.get(rand.nextInt(realArmorList.size()));
    targetedArmorSlotOne=getRandomArmorSlotTarget(targetedPlayerOne,armorType,isRandomArmorSlot);
    targetedArmorSlotTwo=getRandomArmorSlotTarget(targetedPlayerTwo,armorType,isRandomArmorSlot);
    } else {
@@ -56,97 +49,39 @@ public class SwapArmor {
    targetedArmorSlotTwo=armorType;
    }
   
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("After slots = " + armorType));
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("targetedArmorSlotOne = " + targetedArmorSlotOne));
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("targetedArmorSlotTwo = " + targetedArmorSlotTwo));
-  
-  String targetedArmorNameOne="", targetedArmorNameTwo="";
-  
-  if ((!"ALL".equals(targetedArmorSlotOne.toUpperCase()) && !"SET".equals(targetedArmorSlotOne.toUpperCase())) && targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotOne.toLowerCase())) != ItemStack.EMPTY) {
-   targetedArmorNameOne=targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotOne.toLowerCase())).getDisplayName().getFormattedText();
-  }
-//  if (targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotTwo.toLowerCase())) != ItemStack.EMPTY) {
-  if ((!"ALL".equals(targetedArmorSlotTwo.toUpperCase()) && !"SET".equals(targetedArmorSlotTwo.toUpperCase())) && targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotTwo.toLowerCase())) != ItemStack.EMPTY) {
-   targetedArmorNameTwo=targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotTwo.toLowerCase())).getDisplayName().getFormattedText();
-  }
-  
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("After get stack"));
-  
-  String targetedArmorDescOne = "",targetedArmorDescTwo = "";
-  String targetedArmorSlotDescOne = "",targetedArmorSlotDescTwo = "";
+  ServerPlayerEntity targetedPlayerTemp;
   
   switch (armorType.toUpperCase()) {
    case "ALL":
-//    source.getServer().getPlayerList().sendMessage(new StringTextComponent("ALL case"));
+    targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
+    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "OFFHAND", "OFFHAND"));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, "OFFHAND");
+    
+    targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
+    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "MAINHAND", "MAINHAND"));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, "MAINHAND");
-    targetedArmorDescOne="equipment";
-    targetedArmorDescTwo="equipment";
    case "SET":
-//    source.getServer().getPlayerList().sendMessage(new StringTextComponent("SET case"));
-    ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, "HEAD");
-    ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, "CHEST");
-    ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, "LEGS");
-    ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, "FEET");
-    if ("SET".equals(armorType.toUpperCase())) {
-     targetedArmorDescOne="armor";
-     targetedArmorDescTwo="armor";
-    }
+    targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
+    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "HEAD", "HEAD"));
+    ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTemp, "HEAD");
+
+    targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
+    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "CHEST", "CHEST"));
+    ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTemp, "CHEST");
+    
+    targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
+    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "LEGS", "LEGS"));
+    ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTemp, "LEGS");
+    
+    targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
+    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "FEET", "FEET"));
+    ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTemp, "FEET");
     break;
    default:
-//    source.getServer().getPlayerList().sendMessage(new StringTextComponent("default case"));
-    targetedArmorDescOne=targetedArmorNameOne;
-    targetedArmorSlotDescOne=getArmorSlotDescription(targetedArmorSlotOne);
-    targetedArmorDescTwo=targetedArmorNameTwo;
-    targetedArmorSlotDescTwo=getArmorSlotDescription(targetedArmorSlotTwo);    
+    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTwo, targetedArmorSlotOne, targetedArmorSlotTwo));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, targetedArmorSlotOne, targetedArmorSlotTwo);
     break;
   }
-  
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("targetedArmorSlotOne = " + targetedArmorSlotOne));
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("targetedArmorDescOne = " + targetedArmorDescOne));
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("targetedArmorSlotDescOne = " + targetedArmorSlotDescOne));
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("targetedArmorSlotTwo = " + targetedArmorSlotTwo));
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("targetedArmorDescTwo = " + targetedArmorDescTwo));
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("targetedArmorSlotDescTwo = " + targetedArmorSlotDescTwo));
-  
-  StringTextComponent txtMsg=null,txtMsg2 = null;
-  
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("p1= "+targetedPlayerOne.getName().getUnformattedComponentText()));
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("p2= "+targetedPlayerTwo.getName().getUnformattedComponentText()));
-  
-  if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) {
-//   source.getServer().getPlayerList().sendMessage(new StringTextComponent("Same"));
-   txtMsg=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + " you may want to rethink trying to swap " + armorType.toLowerCase() + " with yourself.");
-  } else {
-//   source.getServer().getPlayerList().sendMessage(new StringTextComponent("diffName"));
-   if (!"ALL".equals(armorType.toUpperCase()) && !"SET".equals(armorType.toUpperCase())) {
-//    source.getServer().getPlayerList().sendMessage(new StringTextComponent("Not ALL and not SET"));
-   if (targetedArmorNameTwo == "") {
-//    source.getServer().getPlayerList().sendMessage(new StringTextComponent("EmptyItem1"));
-    txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getFormattedText() + TextFormatting.GOLD + " tried trading their nonexistent " + targetedArmorSlotDescTwo.toLowerCase() + " for ");
-   } else {
-//    source.getServer().getPlayerList().sendMessage(new StringTextComponent("NonEmptyItem1"));
-    txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getFormattedText() + TextFormatting.GOLD + " traded their " + targetedArmorDescTwo.toLowerCase() + " for ");
-   }
-   if (targetedArmorNameOne == "") {
-//    source.getServer().getPlayerList().sendMessage(new StringTextComponent("EmptyItem2"));
-    txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + "'s nonexistent " + targetedArmorSlotDescOne.toLowerCase() + ".");
-   } else {
-//    source.getServer().getPlayerList().sendMessage(new StringTextComponent("NonEmptyItem2"));
-    txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + "'s " + targetedArmorDescOne.toLowerCase() + ".");
-   }
-  } else {
-//   source.getServer().getPlayerList().sendMessage(new StringTextComponent("ALL or SET"));
-   txtMsg=new StringTextComponent(TextFormatting.RED + targetedPlayerTwo.getName().getFormattedText() + TextFormatting.GOLD + " traded all of their " + targetedArmorDescTwo + " for all of " + TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + "'s.");
-  }
-  }
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("Before append"));
-  if (txtMsg2!=null) txtMsg.appendSibling(txtMsg2);
-//   if (txtMsg2!=null) txtMsg.appendText(""+txtMsg2);
-//   source.getServer().getPlayerList().sendMessage(new StringTextComponent("After append"));
-  
-  source.getServer().getPlayerList().sendMessage(txtMsg);
   
   return 0;  
  }
@@ -185,7 +120,7 @@ public class SwapArmor {
  public static String getArmorSlotDescription(String targetedArmorSlot) {
   String armorSlotDesc="";
   
-  switch (targetedArmorSlot) {
+  switch (targetedArmorSlot.toUpperCase()) {
    case "HEAD": armorSlotDesc="HELM"; break;
    case "CHEST": armorSlotDesc="CHESTPLATE"; break;
    case "LEGS": armorSlotDesc="LEGGINGS"; break;
@@ -198,5 +133,38 @@ public class SwapArmor {
   }
   
   return armorSlotDesc;
+ }
+ 
+ public static StringTextComponent getMessageString(ServerPlayerEntity targetedPlayerOne, ServerPlayerEntity targetedPlayerTwo,String targetedArmorSlotOne, String targetedArmorSlotTwo) {
+  StringTextComponent txtMsg=null,txtMsg2=null;
+    ItemStack targetedArmorOne=targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotOne.toLowerCase()));
+  ItemStack targetedArmorTwo=targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotTwo.toLowerCase()));
+  String targetedArmorSlotDescOne=getArmorSlotDescription(targetedArmorSlotOne);
+  String targetedArmorSlotDescTwo=getArmorSlotDescription(targetedArmorSlotTwo);
+//  String targetedArmorSlotDescParam=getArmorSlotDescription(armorType);
+  
+  if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) {
+   
+   txtMsg=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + " you may want to rethink trying to swap " + targetedArmorSlotDescOne.toLowerCase() + " with yourself.");
+  } else {
+   if (targetedArmorTwo == ItemStack.EMPTY) {
+//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("EmptyItem1"));
+  txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getFormattedText() + TextFormatting.GOLD + " tried trading their nonexistent " + targetedArmorSlotDescTwo.toLowerCase() + " for ");
+ } else {
+//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("NonEmptyItem1"));
+  txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getFormattedText() + TextFormatting.GOLD + " traded their " + targetedArmorTwo.getDisplayName().getFormattedText().toLowerCase() + " for ");
+ }
+ if (targetedArmorOne == ItemStack.EMPTY) {
+//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("EmptyItem2"));
+  txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + "'s nonexistent " + targetedArmorSlotDescOne.toLowerCase() + ".");
+ } else {
+//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("NonEmptyItem2"));
+  txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + "'s " + targetedArmorOne.getDisplayName().getFormattedText().toLowerCase() + ".");
+ }
+  }
+  if (txtMsg2!=null) txtMsg.appendSibling(txtMsg2);
+  
+  
+  return txtMsg;
  }
 }

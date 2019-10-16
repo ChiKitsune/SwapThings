@@ -24,6 +24,8 @@ public class ArchCommand {
      .then(QuickHide.register())
      .then(SwapLocation.register())
      .then(SwapArmor.register())
+     .then(ShuffleHotbar.register())
+     .then(ShuffleInventory.register())
     );
  }
  
@@ -39,7 +41,7 @@ public class ArchCommand {
     ranNumPlayers=rand.nextInt(curPlayers.size());
     newSecondTarget=server.getPlayerList().getPlayerByUsername(curPlayers.get(ranNumPlayers));
     iCnt++;
-   } while (curTargetOne.getName()==newSecondTarget.getName() && iCnt<=(curPlayers.size()*20));
+   } while (curTargetOne.getName().getUnformattedComponentText()==newSecondTarget.getName().getUnformattedComponentText() && iCnt<=(curPlayers.size()*20));
   }
   
   return newSecondTarget;
@@ -51,9 +53,6 @@ public class ArchCommand {
  
  public static void swapArmorItems(ServerPlayerEntity curTargetOne, ServerPlayerEntity curTargetTwo, String  targetedArmorSlotOne, String targetedArmorSlotTwo) {
   ItemStack tempStackOne, tempStackTwo;
-  
-//  if (targetedArmorSlotOne.equals("BOOTS")) targetedArmorSlotOne = "FEET";
-//  if (targetedArmorSlotTwo.equals("BOOTS")) targetedArmorSlotTwo = "FEET";
   
   tempStackOne=curTargetOne.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotOne.toLowerCase()));
   tempStackTwo=curTargetTwo.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotTwo.toLowerCase()));

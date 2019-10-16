@@ -14,7 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 //version = '${mc_version}-${mod_version}'
-version = '1.14.4-1.0.0'
+version = '1.14.4-1.0.1'
 //group = '${package_group}' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 //archivesBaseName = '${mod_name}'
 group = 'chikitsune.swap_things' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
