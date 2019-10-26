@@ -9,6 +9,21 @@ Mod created for Darkphan to work with CCI for some Twitch Integration.
       - Note: Any commands with two players will attempt to get a different second playername than the first unless it isn't randomly choosen. However it will only attempt to get a different one 10 * currently only players number of times. If the player name is still the same will use as is.
       - Note: All commands can be used regardless of if there is only one player on or several. Although, most swap commands will not show a visible difference other than a message in chat. 
       
+#####  ```/swapthings inventoryslotclearer [playername] [amount] [courtesy of]```
+    Clears a specific inventory slot based on the decimal place of the amount or random if not given one.
+      - Note: Amount ignores the whole number amount and only looks for decimal places.
+                .00 - .08 is hotbar
+                .09 - .17 is top line in inventory
+                .18 - .26 is second line in inventory
+                .27 - .35 is third line in inventory
+                .36 is boots
+                .37 is leggings
+                .38 is chestplate
+                .39 is helmet
+                .40 is offhand
+                .41 and above is outside of the default player's inventory size
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      
 #####  ```/swapthings quickhide [playername] [<item> <message>]```
     Throws the four basic armor slots, offhand, and held item onto the ground. Then replaces all of those slots with the item given or if none given a random one in the below list and displays a message to all players on server.
       - Currently these are the choices it will choose from at random (will change into a config in future)
@@ -24,6 +39,10 @@ Mod created for Darkphan to work with CCI for some Twitch Integration.
     - SET will swap all of the four basic armor slots. 
     - RANDOM will choose a random single option (helm, chest, legs, boots, mainhand, or offhand) from the list.
       - Note: RANDOM is likely to choose different slots for the two players. It prefers non empty slots but it is possible to switch boots with a helm this way.
+      
+#####  ```/swapthings swaphands [playername] [courtesy of]```
+    Swaps the held and offhand items
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
 #####  ```/swapthings swaplocations [playername] [playername]```
     Swaps the location of the two players with each other.
@@ -35,4 +54,12 @@ Mod created for Darkphan to work with CCI for some Twitch Integration.
 
 #####  ```/swapthings shuffleinventory [playername] [courtesy of]```
     Goes through all of the hotbar, equipment, and inventory slots and randomly swaps it with another slot.
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+
+#####  ```/swapthings togglecrouch [playername] [courtesy of]```
+    Toggles if the player is crouching until command is run again, player presses their crouch key, or opens chat.
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      
+#####  ```/swapthings togglerun [playername] [courtesy of]```
+    Toggles if the player is running until command is run again, player presses their sprint key, or stops.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
