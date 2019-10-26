@@ -14,7 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 //version = '${mc_version}-${mod_version}'
-version = '1.14.4-1.0.1'
+version = '1.14.4-1.0.2'
 //group = '${package_group}' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 //archivesBaseName = '${mod_name}'
 group = 'chikitsune.swap_things' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -72,8 +72,8 @@ minecraft {
 }
 
 dependencies {
-    //minecraft 'net.minecraftforge:forge:1.14.4-28.0.45'
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    minecraft 'net.minecraftforge:forge:1.14.4-28.1.40'
+    //minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
@@ -96,9 +96,9 @@ jar {
         attributes([
             "Specification-Title": "Swapping Things",
             "Specification-Vendor": "ChiKitsune",
-            "Specification-Version": "${mc_version}-${mod_version}",
+            "Specification-Version": "1.14.4-1.0.2",
             "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
+            "Implementation-Version": "1.0.2",
             "Implementation-Vendor" :"ChiKitsune",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])

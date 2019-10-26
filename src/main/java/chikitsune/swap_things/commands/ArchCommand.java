@@ -26,6 +26,10 @@ public class ArchCommand {
      .then(SwapArmor.register())
      .then(ShuffleHotbar.register())
      .then(ShuffleInventory.register())
+     .then(ToggleRun.register())
+     .then(ToggleCrouch.register())
+     .then(SwapHands.register())
+     .then(InventorySlotClearer.register())
     );
  }
  
