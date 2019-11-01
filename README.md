@@ -9,6 +9,12 @@ Mod created for Darkphan to work with CCI for some Twitch Integration.
       - Note: Any commands with two players will attempt to get a different second playername than the first unless it isn't randomly choosen. However it will only attempt to get a different one 10 * currently only players number of times. If the player name is still the same will use as is.
       - Note: All commands can be used regardless of if there is only one player on or several. Although, most swap commands will not show a visible difference other than a message in chat. 
       
+#####  ```/swapthings heldenchanting [playername] [courtesy of] [enchantment] [enchantment_level]```
+    Adds/removes/updates held item with a given enchantment or random if none is given
+        - Note: If an enchantment is not given will choose a random valid enchantment and level
+        - Note: If an enchantment level is not given will choose a random valid one for the given enchantment (0 is possible which will remove the enchantment
+        - Note: When specifying the enchantment level can do higher than usual (i.e. minecraft:efficiency 10 will give Efficiency X)
+
 #####  ```/swapthings inventoryslotclearer [playername] [amount] [courtesy of]```
     Clears a specific inventory slot based on the decimal place of the amount or random if not given one.
       - Note: Amount ignores the whole number amount and only looks for decimal places.
@@ -23,6 +29,11 @@ Mod created for Darkphan to work with CCI for some Twitch Integration.
                 .40 is offhand
                 .41 and above is outside of the default player's inventory size
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      
+#####  ```/swapthings playernudger [playername] [courtesy of]```
+    Nudges the player in a random direction
+      - Note: Direction chances are based on the config chance values
+      - Note: Strength is also in the config and default to .7 which will push the player one block in that direction
       
 #####  ```/swapthings quickhide [playername] [<item> <message>]```
     Throws the four basic armor slots, offhand, and held item onto the ground. Then replaces all of those slots with the item given or if none given a random one in the below list and displays a message to all players on server.
