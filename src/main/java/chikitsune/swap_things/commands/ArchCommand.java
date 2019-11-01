@@ -30,6 +30,8 @@ public class ArchCommand {
      .then(ToggleCrouch.register())
      .then(SwapHands.register())
      .then(InventorySlotClearer.register())
+     .then(PlayerNudger.register())
+     .then(HeldEnchanting.register())
     );
  }
  

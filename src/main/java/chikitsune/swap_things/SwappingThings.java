@@ -7,20 +7,24 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
 
+import chikitsune.swap_things.config.Configs;
 import chikitsune.swap_things.proxies.ClientProxy;
 import chikitsune.swap_things.proxies.IProxy;
 import chikitsune.swap_things.proxies.ServerProxy;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(SwappingThings.MODID)
 @Mod.EventBusSubscriber(modid = SwappingThings.MODID, bus = Bus.MOD)
@@ -39,6 +43,8 @@ public class SwappingThings {
  public static List<List<String>> quiHidList;
  
  public SwappingThings() {
+  ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Configs.CLIENT_CONFIG);
+  ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configs.COMMON_CONFIG);
 //Register the setup method for modloading
  FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
  // Register the enqueueIMC method for modloading
@@ -50,6 +56,9 @@ public class SwappingThings {
 
  // Register ourselves for server and other game events we are interested in
  MinecraftForge.EVENT_BUS.register(this);
+ 
+ Configs.loadConfig(Configs.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-client.toml"));
+ Configs.loadConfig(Configs.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-common.toml"));
  }
  
  private void setup(final FMLCommonSetupEvent event) {
