@@ -32,6 +32,7 @@ public class ArchCommand {
      .then(InventorySlotClearer.register())
      .then(PlayerNudger.register())
      .then(HeldEnchanting.register())
+     .then(InventorySlotEnchanting.register())
     );
  }
  
