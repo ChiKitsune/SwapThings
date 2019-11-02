@@ -25,16 +25,16 @@ import net.minecraft.util.text.TextFormatting;
 
 public class PlayerNudger {
  public static Random rand= new Random();
- public static Integer dirNorth=Configs.PLAYERNUDGER_NORTH_CHANCE.get();
- public static Integer dirNorthEast=Configs.PLAYERNUDGER_NORTHEAST_CHANCE.get();
- public static Integer dirEast=Configs.PLAYERNUDGER_EAST_CHANCE.get();
- public static Integer dirSouthEast=Configs.PLAYERNUDGER_SOUTHEAST_CHANCE.get();
- public static Integer dirSouth=Configs.PLAYERNUDGER_SOUTH_CHANCE.get();
- public static Integer dirSouthWest=Configs.PLAYERNUDGER_SOUTHWEST_CHANCE.get();
- public static Integer dirWest=Configs.PLAYERNUDGER_WEST_CHANCE.get();
- public static Integer dirNorthWest=Configs.PLAYERNUDGER_NORTHWEST_CHANCE.get();
- public static Integer dirUp=Configs.PLAYERNUDGER_UP_CHANCE.get();
- public static Integer dirDown=Configs.PLAYERNUDGER_DOWN_CHANCE.get();
+// public static Integer dirNorth=Configs.PLAYERNUDGER_NORTH_CHANCE.get();
+// public static Integer dirNorthEast=Configs.PLAYERNUDGER_NORTHEAST_CHANCE.get();
+// public static Integer dirEast=Configs.PLAYERNUDGER_EAST_CHANCE.get();
+// public static Integer dirSouthEast=Configs.PLAYERNUDGER_SOUTHEAST_CHANCE.get();
+// public static Integer dirSouth=Configs.PLAYERNUDGER_SOUTH_CHANCE.get();
+// public static Integer dirSouthWest=Configs.PLAYERNUDGER_SOUTHWEST_CHANCE.get();
+// public static Integer dirWest=Configs.PLAYERNUDGER_WEST_CHANCE.get();
+// public static Integer dirNorthWest=Configs.PLAYERNUDGER_NORTHWEST_CHANCE.get();
+// public static Integer dirUp=Configs.PLAYERNUDGER_UP_CHANCE.get();
+// public static Integer dirDown=Configs.PLAYERNUDGER_DOWN_CHANCE.get();
  
  public static ArgumentBuilder<CommandSource, ?> register() { 
   return Commands.literal("playernudger").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
@@ -48,16 +48,90 @@ public class PlayerNudger {
  }
   
   private static int toggleRunLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
-   double tempX,tempY,tempZ,nudgeStrength=.7;
+   double tempX,tempY,tempZ,nudgeStrength=.7,tempXLook,tempZLook;
    Integer randTemp;
-   String directionStr;
+   String directionStr,lookDirStr;
+   Integer dirNorth,dirNorthEast,dirEast,dirSouthEast,dirSouth,dirSouthWest,dirWest,dirNorthWest,dirUp,dirDown;
    
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
     tempX=0;
     tempY=0;
     tempZ=0;
-    randTemp=rand.nextInt(dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp+dirDown);
+    dirNorth=Configs.PLAYERNUDGER_NORTH_CHANCE.get();
+    dirNorthEast=Configs.PLAYERNUDGER_NORTHEAST_CHANCE.get();
+    dirEast=Configs.PLAYERNUDGER_EAST_CHANCE.get();
+    dirSouthEast=Configs.PLAYERNUDGER_SOUTHEAST_CHANCE.get();
+    dirSouth=Configs.PLAYERNUDGER_SOUTH_CHANCE.get();
+    dirSouthWest=Configs.PLAYERNUDGER_SOUTHWEST_CHANCE.get();
+    dirWest=Configs.PLAYERNUDGER_WEST_CHANCE.get();
+    dirNorthWest=Configs.PLAYERNUDGER_NORTHWEST_CHANCE.get();
+    dirUp=Configs.PLAYERNUDGER_UP_CHANCE.get();
+    dirDown=Configs.PLAYERNUDGER_DOWN_CHANCE.get();
+    tempXLook=Math.round(targetedPlayer.getLookVec().getX()*4);
+    tempZLook=Math.round(targetedPlayer.getLookVec().getZ()*4);
+    lookDirStr="";
+//ZZZZZZZZZZZZZZ Axis
+//  0 - 1 = 0-.25 = W/E
+//  1 - 3 = .25-.75 = SW/SE
+//  3 - 4 = .75-1 = S
+//  -1- 0 = -.25-0 = W/E
+//  -3--1 = -.75--.25 = NW/NE
+//  -4--3 = -1--.75 = N
+//XXXXXXXXXXXXXXX Axis
+//0 - 1 = 0-.25 = N/S
+//1 - 3 = .25-.75 = NE/SE
+//3 - 4 = .75-1 = E
+//-1- 0 = -.25-0 = N/S
+//-3--1 = -.75--.25 = NW/SW
+//-4--3 = -1--.75 = W
+  if (tempZLook >=1) {
+   lookDirStr=lookDirStr + "SOUTH";
+  } else if (tempZLook <=-1) {
+   lookDirStr=lookDirStr + "NORTH";
+  }
+  if (tempXLook >=1) {
+   lookDirStr=lookDirStr + "EAST";
+  } else if (tempXLook <=-1) {
+   lookDirStr=lookDirStr + "WEST";
+  }
+  switch(lookDirStr) {
+   case "NORTH": 
+    dirNorth*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirSouth*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
+    dirWest*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirEast*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    break;
+   case "NORTHEAST":
+    dirNorthEast*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirSouthWest*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
+    dirNorthWest*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirSouthEast*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    break;
+   case "EAST":
+    dirEast*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirWest*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
+    dirNorth*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirSouth*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    break;
+   case "SOUTHEAST":
+    dirSouthEast*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirNorthWest*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
+    dirNorthEast*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirSouthWest*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    break;
+   case "SOUTH":
+    dirSouth*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirNorth*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
+    dirEast*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirWest*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    break;
+   case "SOUTHWEST":
+    dirSouthWest*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirNorthEast*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
+    dirSouthEast*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirNorthWest*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    break;
+   case "WEST":
+    dirWest*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirEast*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
+    dirSouth*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirNorth*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    break;
+   case "NORTHWEST":
+    dirNorthWest*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirSouthEast*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
+    dirSouthWest*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirNorthEast*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    break;
+    default:
+    break;
+  }
     
+    randTemp=rand.nextInt(dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp+dirDown);
     
     if (0 <= randTemp && randTemp <dirNorth) {
      tempX=0;tempZ=-Configs.PLAYERNUDGER_NORTH_STRENGTH.get(); directionStr="north";
@@ -87,7 +161,7 @@ public class PlayerNudger {
    targetedPlayer.setMotion(tempX, tempY, tempZ);
    targetedPlayer.velocityChanged=true;
    
-   source.getServer().getPlayerList().sendMessage(new StringTextComponent(targetedPlayer.getLookVec().toString()));
+//   source.getServer().getPlayerList().sendMessage(new StringTextComponent(lookDirStr));
    source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
    }
    

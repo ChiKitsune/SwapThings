@@ -7,7 +7,7 @@ loaderVersion="[28,)" #mandatory (28 is current forge version)
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
  modId="swap_things" #mandatory
- version="${file.jarVersion}" #mandatory
+ version="1.0.2" #mandatory
  displayName="Swap Things" #mandatory
  authors="ChiKitsune" #optional
  description='''

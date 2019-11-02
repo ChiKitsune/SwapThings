@@ -48,6 +48,12 @@ public class Configs {
  public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_UP_STRENGTH;
  public static ForgeConfigSpec.IntValue PLAYERNUDGER_DOWN_CHANCE;
  public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_DOWN_STRENGTH;
+ 
+ public static ForgeConfigSpec.IntValue PLAYERNUDGER_FORWARD_MULTIPLIER;
+ public static ForgeConfigSpec.IntValue PLAYERNUDGER_BACKWARD_MULTIPLIER;
+ public static ForgeConfigSpec.IntValue PLAYERNUDGER_LEFT_MULTIPLIER;
+ public static ForgeConfigSpec.IntValue PLAYERNUDGER_RIGHT_MULTIPLIER;
+ 
  public static ForgeConfigSpec.ConfigValue<List<List<String>>> QUICKHIDE_LIST;
  
  static {
@@ -87,6 +93,11 @@ public class Configs {
   PLAYERNUDGER_UP_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge Up").defineInRange("Up strength",.7,0,10);
   PLAYERNUDGER_DOWN_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge Down").defineInRange("Down chance",0,0,100);
   PLAYERNUDGER_DOWN_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge Down").defineInRange("Down strength",.7,0,10);
+  
+  PLAYERNUDGER_FORWARD_MULTIPLIER= COMMON_BUILDER.comment("Multiplier to increase the chance to nudge where the player is looking").defineInRange("Forward Multiplier",1,0,100);
+  PLAYERNUDGER_BACKWARD_MULTIPLIER= COMMON_BUILDER.comment("Multiplier to increase the chance to nudge opposite where the player is looking").defineInRange("Backward Multiplier",1,0,100);
+  PLAYERNUDGER_LEFT_MULTIPLIER= COMMON_BUILDER.comment("Multiplier to increase the chance to nudge the player to the right").defineInRange("Left Multiplier",1,0,100);
+  PLAYERNUDGER_RIGHT_MULTIPLIER= COMMON_BUILDER.comment("Multiplier to increase the chance to nudge the player to the left").defineInRange("Right Multiplier",1,0,100);
   
   COMMON_BUILDER.pop();
  }
