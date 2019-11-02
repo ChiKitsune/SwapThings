@@ -29,7 +29,25 @@ Mod created for Darkphan to work with CCI/TwitchSpawn for some Twitch Integratio
                 .40 is offhand
                 .41 and above is outside of the default player's inventory size
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
-      
+
+#####  ```/swapthings inventoryslotenchanting [playername] [amount] [courtesy of] [enchantment] [enchantment_level]```
+    Enchants a specific inventory slot based on the decimal place of the amount or random if not given one.
+      - Note: Amount ignores the whole number amount and only looks for decimal places.
+            .00 is held item
+            .01 - .09 is hotbar
+            .10 - .18 is top line in inventory
+            .19 - .27 is second line in inventory
+            .28 - .36 is third line in inventory
+            .37 is boots
+            .38 is leggings
+            .39 is chestplate
+            .40 is helmet
+            .41 is offhand
+            .42 and above is outside of the default player's inventory size
+      - Note: If an enchantment is not given will choose a random valid enchantment and level
+      - Note: If an enchantment level is not given will choose a random valid one for the given enchantment (0 is possible which will remove the enchantment
+      - Note: When specifying the enchantment level can do higher than usual (i.e. minecraft:efficiency 10 will give Efficiency X)
+
 #####  ```/swapthings playernudger [playername] [courtesy of]```
     Nudges the player in a random direction
       - Note: Direction chances are based on the config chance values
