@@ -1,7 +1,7 @@
-# 1.14.4 Minecraft Forge Mod Created for Darkphan
+# SwapThings a 1.14.4 Minecraft Forge Mod
 
-Mod created for Darkphan to work with CCI for some Twitch Integration.
- Mainly adds commands to swap inventory items or location with a random other player.
+Mod created for Darkphan to work with CCI/TwitchSpawn for some Twitch Integration.
+ Mainly adds commands for viewers to interact and make things more entertaining for the streamer.
 
 #### Server Commands:
       - Note: arguments in <> mean they are required while [] are optional.
@@ -34,6 +34,7 @@ Mod created for Darkphan to work with CCI for some Twitch Integration.
     Nudges the player in a random direction
       - Note: Direction chances are based on the config chance values
       - Note: Strength is also in the config and default to .7 which will push the player one block in that direction
+      - Note: Multiplier config values will times the normal direction chance by the multiplier based on what direction the player is facing. A 0 for either the Chance or Multiplier will never nudge that direction and a 1 is default.
       
 #####  ```/swapthings quickhide [playername] [<item> <message>]```
     Throws the four basic armor slots, offhand, and held item onto the ground. Then replaces all of those slots with the item given or if none given a random one in the below list and displays a message to all players on server.
