@@ -3,7 +3,7 @@
 Mod created for Darkphan to work with CCI/TwitchSpawn for some Twitch Integration.
  Mainly adds commands for viewers to interact and make things more entertaining for the streamer.
 
-#### Server Commands:
+#### Commands:
       - Note: arguments in <> mean they are required while [] are optional.
       - Note: All playername arguments are optional. First playername will attempt to use who did the command else will use @r.
       - Note: Any commands with two players will attempt to get a different second playername than the first unless it isn't randomly choosen. However it will only attempt to get a different one 10 * currently only players number of times. If the player name is still the same will use as is.
