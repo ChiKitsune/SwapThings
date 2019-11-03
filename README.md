@@ -17,7 +17,7 @@ Mod created for Darkphan to work with CCI/TwitchSpawn for some Twitch Integratio
 
 #####  ```/swapthings inventoryslotclearer [playername] [amount] [courtesy of]```
     Clears a specific inventory slot based on the decimal place of the amount or random if not given one.
-      - Note: Amount ignores the whole number amount and only looks for decimal places.
+      - Note: Amount ignores the whole number amount and only looks for decimal places. https://i.imgur.com/pJBKExE.jpg
                 .00 - .08 is hotbar
                 .09 - .17 is top line in inventory
                 .18 - .26 is second line in inventory
@@ -32,7 +32,7 @@ Mod created for Darkphan to work with CCI/TwitchSpawn for some Twitch Integratio
 
 #####  ```/swapthings inventoryslotenchanting [playername] [amount] [courtesy of] [enchantment] [enchantment_level]```
     Enchants a specific inventory slot based on the decimal place of the amount or random if not given one.
-      - Note: Amount ignores the whole number amount and only looks for decimal places.
+      - Note: Amount ignores the whole number amount and only looks for decimal places. https://i.imgur.com/5qokaCR.jpg
             .00 is held item
             .01 - .09 is hotbar
             .10 - .18 is top line in inventory
