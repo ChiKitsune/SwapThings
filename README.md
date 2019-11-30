@@ -74,6 +74,10 @@ Mod created for Darkphan to work with CCI/TwitchSpawn for some Twitch Integratio
     Swaps the held and offhand items
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
+#####  ```/swapthings swapidentity [playername] [playername]```
+    Swaps the location, inventory, and experience of the two players with each other and drops any helmets equiped, and equips the skull of the other player. 
+      - Note: Players will also be set to look in the direction the other person was looking
+
 #####  ```/swapthings swaplocations [playername] [playername]```
     Swaps the location of the two players with each other.
       - Note: Players will also be set to look in the direction the other person was looking
