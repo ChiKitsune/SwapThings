@@ -33,6 +33,7 @@ public class ArchCommand {
      .then(PlayerNudger.register())
      .then(HeldEnchanting.register())
      .then(InventorySlotEnchanting.register())
+     .then(SwapIdentity.register())
     );
  }
  

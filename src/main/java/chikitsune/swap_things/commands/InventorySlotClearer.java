@@ -53,21 +53,16 @@ public class InventorySlotClearer {
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
     tempStack=ItemStack.EMPTY;
     
-    if(slotNumParsed!=null && slotNumParsed >= 0 && slotNum !=null) {
-     modFloatResult=Math.round((slotNumParsed % 1)*100);
-//     if (slotNumParsed % 1 == 0 && slotNumParsed < targetedPlayer.inventory.getSizeInventory() && slotNumParsed >= 0) {
-//      selectedSlotNum=slotNumParsed.intValue();
-//      source.getServer().getPlayerList().sendMessage(new StringTextComponent("slot whole number" + slotNumParsed.toString() + " " + selectedSlotNum.toString()));
-//     } else {
-//      source.getServer().getPlayerList().sendMessage(new StringTextComponent("slot not whole number" + slotNumParsed.toString()));
-      if (slotNumParsed % 1 < targetedPlayer.inventory.getSizeInventory() && slotNumParsed % 1 >= 0) {
-       selectedSlotNum=modFloatResult.intValue();
-       
+    if(slotNumParsed!=null && (slotNumParsed == 0 || (slotNumParsed % 1 == 0) ) && slotNum !=null) {
+     selectedSlotNum=targetedPlayer.inventory.currentItem;
+    } else if(slotNumParsed!=null && slotNumParsed > 0 && slotNum !=null) {
+     modFloatResult=Math.round((slotNumParsed % 1)*100) -1;
+      if (slotNumParsed % 1 < targetedPlayer.inventory.getSizeInventory() && slotNumParsed % 1 > 0) {
+       selectedSlotNum=modFloatResult.intValue();       
       } else {
        selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
        
       }
-//     }
     } else {
      selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
      

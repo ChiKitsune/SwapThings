@@ -11,7 +11,10 @@ import chikitsune.swap_things.config.Configs;
 import chikitsune.swap_things.proxies.ClientProxy;
 import chikitsune.swap_things.proxies.IProxy;
 import chikitsune.swap_things.proxies.ServerProxy;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -101,11 +104,13 @@ public class SwappingThings {
  // Event bus for receiving Registry Events)
  @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
  public static class RegistryEvents {
+
 //  @SubscribeEvent
-//  public static void onBlocksRegistry(
-//    final RegistryEvent.Register<Block> blockRegistryEvent) {
-//   // register a new block here
-////   LOGGER.info("HELLO from Register Block");
-//  }
- }
+//  public static void registerPotions(final RegistryEvent.Register<Effect> event) {
+//  final Effect[] potions = {
+//    new FOVFlipEffect(EffectType.NEUTRAL, 2, 2, 2).setRegistryName(MODID, "FOVFlip"),
+//  };
+////  event.getRegistry().registerAll(potions);
+// }
+}
 }
