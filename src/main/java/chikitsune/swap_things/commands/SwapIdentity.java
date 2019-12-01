@@ -7,20 +7,18 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.ServerPlayNetHandler;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.DimensionManager;
 
 public class SwapIdentity {
  
  public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("swapdentity").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
+  return Commands.literal("swapidentity").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
    return swapLocationLogic(cmd_0arg.getSource(),cmd_0arg.getSource().asPlayer(),cmd_0arg.getSource().asPlayer());
   }).then(Commands.argument("targetedPlayerOne", EntityArgument.players()).executes((cmd_1arg) -> {
    return swapLocationLogic(cmd_1arg.getSource(),EntityArgument.getPlayer(cmd_1arg, "targetedPlayerOne"),cmd_1arg.getSource().asPlayer());
@@ -70,6 +68,12 @@ public class SwapIdentity {
    targetedPlayerOne.experience=playerTwoExp;
    targetedPlayerTwo.addExperienceLevel(playerOneExpLvl);
    targetedPlayerTwo.experience=playerOneExp;
+   
+   if (targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.HEAD) != ItemStack.EMPTY) targetedPlayerOne.dropItem(targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.HEAD), false, true);
+   if (targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.HEAD) != ItemStack.EMPTY) targetedPlayerTwo.dropItem(targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.HEAD), false, true);
+   
+   targetedPlayerOne.setItemStackToSlot(EquipmentSlotType.HEAD, playerTwoHead);
+   targetedPlayerTwo.setItemStackToSlot(EquipmentSlotType.HEAD, playerOneHead);
 
    targetedPlayerOne.teleport(playerTwodimWorld, MathHelper.floor(playerTwoVec.getX()), MathHelper.floor(playerTwoVec.getY()), MathHelper.floor(playerTwoVec.getZ()), playerTwoYaw, playerTwoPitch);
 
@@ -88,7 +92,6 @@ public class SwapIdentity {
    ItemStack customHead = new ItemStack(net.minecraft.item.Items.PLAYER_HEAD);
    customHead.setTag(new CompoundNBT());
    customHead.getTag().putString("SkullOwner", playerName);
-
    return customHead;         
   }
 }

@@ -1,7 +1,7 @@
 # SwapThings a 1.14.4 Minecraft Forge Mod
 
-Mod created for Darkphan to work with CCI/TwitchSpawn for some Twitch Integration.
- Mainly adds commands for viewers to interact and make things more entertaining for the streamer.
+Mod mainly created to work with CCI/TwitchSpawn for some Twitch Integration. 
+Adds commands for viewers to interact and make things more entertaining for the streamer.
 
 #### Commands:
       - Note: arguments in <> mean they are required while [] are optional.
@@ -97,3 +97,9 @@ Mod created for Darkphan to work with CCI/TwitchSpawn for some Twitch Integratio
 #####  ```/swapthings togglerun [playername] [courtesy of]```
     Toggles if the player is running until command is run again, player presses their sprint key, or stops.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+
+#### Effects:
+
+#####  ```/effect give [player] fovflip [duration]
+    Flips the Field of View (FOV) for the duration.
+        - Note: Currently still in the process of setting up icons and potion items

@@ -4,13 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.commands.arguments.RandomArmorSlotArgument;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.ComponentArgument;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -141,7 +139,6 @@ public class SwapArmor {
   ItemStack targetedArmorTwo=targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotTwo.toLowerCase()));
   String targetedArmorSlotDescOne=getArmorSlotDescription(targetedArmorSlotOne);
   String targetedArmorSlotDescTwo=getArmorSlotDescription(targetedArmorSlotTwo);
-//  String targetedArmorSlotDescParam=getArmorSlotDescription(armorType);
   
   if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) {
    

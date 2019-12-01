@@ -7,11 +7,13 @@ loaderVersion="[28,)" #mandatory (28 is current forge version)
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
  modId="swap_things" #mandatory
- version="1.0.2" #mandatory
+ version="${file.jarVersion}" #mandatory
  displayName="Swap Things" #mandatory
+ displayURL="https://github.com/ChiKitsune/SwapThings" #optional
  authors="ChiKitsune" #optional
  description='''
- Mod made to add commands that would complicate things with the streamer.
+ Mod mainly created to work with CCI/TwitchSpawn for some Twitch Integration.
+ Adds commands for viewers to interact and make things more entertaining for the streamer.
  '''
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.

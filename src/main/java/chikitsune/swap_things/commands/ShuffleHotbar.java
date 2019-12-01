@@ -10,9 +10,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.ItemArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -29,7 +27,7 @@ public class ShuffleHotbar {
      return shuffleHotbarLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"));
     })));
  }
-
+ 
  private static int shuffleHotbarLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers,String fromName) {
   ItemStack tempItem=ItemStack.EMPTY;
   Integer tempRandNum=0;

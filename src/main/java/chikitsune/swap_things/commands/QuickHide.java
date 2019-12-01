@@ -1,6 +1,5 @@
 package chikitsune.swap_things.commands;
 
-import java.rmi.registry.Registry;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
@@ -8,7 +7,6 @@ import java.util.Random;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import chikitsune.swap_things.SwappingThings;
@@ -17,19 +15,12 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.command.arguments.ItemArgument;
 import net.minecraft.command.arguments.ItemInput;
-import net.minecraft.command.arguments.ItemParser;
-import net.minecraft.command.arguments.ItemPredicateArgument;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.TextComponentMessageFormatHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class QuickHide {
  public static Random rand= new Random();
