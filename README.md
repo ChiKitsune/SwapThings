@@ -100,6 +100,6 @@ Adds commands for viewers to interact and make things more entertaining for the 
 
 #### Effects:
 
-#####  ```/effect give [player] fovflip [duration]
+#####  ```/effect give [player] fovflip [duration]```
     Flips the Field of View (FOV) for the duration.
         - Note: Currently still in the process of setting up icons and potion items
