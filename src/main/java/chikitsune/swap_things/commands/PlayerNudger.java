@@ -8,8 +8,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -146,13 +144,15 @@ public class PlayerNudger {
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp) {
      tempY=Configs.PLAYERNUDGER_UP_STRENGTH.get(); directionStr ="up";
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp+dirDown) {
-     tempY=-Configs.PLAYERNUDGER_DOWN_STRENGTH.get(); directionStr ="down";
+     tempY=-Configs.PLAYERNUDGER_DOWN_STRENGTH.get()-.4; directionStr ="down";
     } else {
      directionStr ="nowhere";
     }
 
-   KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSneak.getKey(),false);
-   targetedPlayer.setMotion(tempX, tempY, tempZ);
+//   KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSneak.getKey(),false);
+   
+   targetedPlayer.setMotion(tempX, tempY + .4, tempZ);
+   
    targetedPlayer.velocityChanged=true;
    
 //   source.getServer().getPlayerList().sendMessage(new StringTextComponent(lookDirStr));

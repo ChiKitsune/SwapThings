@@ -7,7 +7,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectType;
-import net.minecraft.util.text.StringTextComponent;
 
 public class FOVFlipEffect extends Effect {
  protected static Integer max_dur=0;
