@@ -54,6 +54,9 @@ public class SwapIdentity {
    playerOneInv.copyInventory(targetedPlayerOne.inventory);
    playerTwoInv.copyInventory(targetedPlayerTwo.inventory);
    
+   targetedPlayerOne.inventory.copyInventory(playerTwoInv);
+   targetedPlayerTwo.inventory.copyInventory(playerOneInv);
+   
    playerOneExp=targetedPlayerOne.experience;
    playerOneExpLvl=targetedPlayerOne.experienceLevel;
    Integer playerOneExpTot=targetedPlayerOne.experienceTotal;
