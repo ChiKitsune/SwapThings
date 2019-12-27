@@ -6,12 +6,12 @@ import java.util.Collections;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -28,10 +28,13 @@ public class SwapHands {
  }
   
   private static int swapHandsLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
+   ItemStack tempItem=ItemStack.EMPTY;
    
    Boolean sneakPressed=false;
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-    KeyBinding.onTick(Minecraft.getInstance().gameSettings.keyBindSwapHands.getKey());
+    tempItem=targetedPlayer.getHeldItem(Hand.MAIN_HAND).copy();
+    targetedPlayer.setHeldItem(Hand.MAIN_HAND,targetedPlayer.getHeldItem(Hand.OFF_HAND));
+    targetedPlayer.setHeldItem(Hand.OFF_HAND,tempItem);
        
     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " switch what was in their hands."));
    }

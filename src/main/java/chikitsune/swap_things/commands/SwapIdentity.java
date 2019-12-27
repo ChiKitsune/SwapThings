@@ -91,7 +91,7 @@ public class SwapIdentity {
    targetedPlayerTwo.setItemStackToSlot(EquipmentSlotType.HEAD, playerOneHead);
    
    Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayerOne);
-   if (targetedPlayerOne.getName() == targetedPlayerTwo.getName()) {
+   if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) {
 //    source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getFormattedText() + "."));
     ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Hurray " +targetedPlayerTwo.getName().getFormattedText()  + " you found yourself!"));
 //    targetedPlayerOne.sendMessage(ArchCommand.getRainbowizedStr("Hurray " +targetedPlayerTwo.getName().getFormattedText()  + " you found yourself!"));

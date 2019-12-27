@@ -50,7 +50,7 @@ public class SwapArmor {
   
   ServerPlayerEntity targetedPlayerTemp;
   Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayerOne);
-  if (targetedPlayerOne.getName() != targetedPlayerTwo.getName()) targetPlayers.add(targetedPlayerTwo);
+  if (targetedPlayerOne.getName() != targetedPlayerTwo.getName()) targetPlayers=Arrays.asList(targetedPlayerOne,targetedPlayerTwo);
   
   switch (armorType.toUpperCase()) {
    case "ALL":

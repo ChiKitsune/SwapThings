@@ -34,7 +34,7 @@ public class SwappingThings {
  // Above is double lambda
  // Below is cleaner version but is slightly different and keep as above?
  // public static IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
- private static final Logger LOGGER = LogManager.getLogger();
+ public static final Logger LOGGER = LogManager.getLogger();
  
  public static final String MODID = "swap_things";
  public static final String NAME = "Swapping Things";
@@ -43,7 +43,7 @@ public class SwappingThings {
  public static List<List<String>> quiHidList;
  
  public SwappingThings() {
-  ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Configs.CLIENT_CONFIG);
+//  ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Configs.CLIENT_CONFIG);
   ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configs.COMMON_CONFIG);
 //Register the setup method for modloading
  FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -57,7 +57,7 @@ public class SwappingThings {
  // Register ourselves for server and other game events we are interested in
  MinecraftForge.EVENT_BUS.register(this);
  
- Configs.loadConfig(Configs.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-client.toml"));
+// Configs.loadConfig(Configs.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-client.toml"));
  Configs.loadConfig(Configs.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-common.toml"));
  }
  

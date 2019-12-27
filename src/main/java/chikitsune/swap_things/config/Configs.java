@@ -3,6 +3,8 @@ package chikitsune.swap_things.config;
 import java.nio.file.Path;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.google.common.collect.Lists;
@@ -26,6 +28,7 @@ public class Configs {
  public static ForgeConfigSpec COMMON_CONFIG;
  public static ForgeConfigSpec CLIENT_CONFIG;
  
+ @Nonnull
  public static ForgeConfigSpec.BooleanValue COMMAND_MSG_ALL_SERVER;
  
  public static ForgeConfigSpec.IntValue PLAYERNUDGER_NORTH_CHANCE;
@@ -73,7 +76,7 @@ public class Configs {
   COMMON_BUILDER.pop();
   
   COMMON_CONFIG = COMMON_BUILDER.build();
-  CLIENT_CONFIG = CLIENT_BUILDER.build();
+//  CLIENT_CONFIG = CLIENT_BUILDER.build();
  }
 
  private static void setupPlayerNudgerConfigs() {
