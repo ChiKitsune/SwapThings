@@ -33,7 +33,7 @@ public class SwapHands {
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
     KeyBinding.onTick(Minecraft.getInstance().gameSettings.keyBindSwapHands.getKey());
        
-   source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " switch what was in their hands."));
+    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " switch what was in their hands."));
    }
    return 0;
   }

@@ -2,7 +2,6 @@ package chikitsune.swap_things.effects;
 
 import java.awt.Color;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effect;
@@ -24,9 +23,9 @@ public class FOVFlipEffect extends Effect {
   if (entityLivingBaseIn instanceof ServerPlayerEntity && !entityLivingBaseIn.isSpectator()) {
    
    if (max_dur>1) {
-   Minecraft.getInstance().getRenderManager().options.fov*=-1;
+//   Minecraft.getInstance().getRenderManager().options.fov*=-1;
    } else {
-    Minecraft.getInstance().getRenderManager().options.fov=Math.abs(Minecraft.getInstance().getRenderManager().options.fov);
+//    Minecraft.getInstance().getRenderManager().options.fov=Math.abs(Minecraft.getInstance().getRenderManager().options.fov);
    }
   }
  }

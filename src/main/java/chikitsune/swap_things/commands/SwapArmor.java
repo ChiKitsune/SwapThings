@@ -1,6 +1,7 @@
 package chikitsune.swap_things.commands;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -48,35 +49,37 @@ public class SwapArmor {
    }
   
   ServerPlayerEntity targetedPlayerTemp;
+  Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayerOne);
+  if (targetedPlayerOne.getName() != targetedPlayerTwo.getName()) targetPlayers.add(targetedPlayerTwo);
   
   switch (armorType.toUpperCase()) {
    case "ALL":
     targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
-    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "OFFHAND", "OFFHAND"));
+    ArchCommand.playerMsger(source, targetPlayers, getMessageString(targetedPlayerOne, targetedPlayerTemp, "OFFHAND", "OFFHAND"));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, "OFFHAND");
     
     targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
-    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "MAINHAND", "MAINHAND"));
+    ArchCommand.playerMsger(source, targetPlayers, getMessageString(targetedPlayerOne, targetedPlayerTemp, "MAINHAND", "MAINHAND"));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, "MAINHAND");
    case "SET":
     targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
-    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "HEAD", "HEAD"));
+    ArchCommand.playerMsger(source, targetPlayers, getMessageString(targetedPlayerOne, targetedPlayerTemp, "HEAD", "HEAD"));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTemp, "HEAD");
 
     targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
-    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "CHEST", "CHEST"));
+    ArchCommand.playerMsger(source, targetPlayers, getMessageString(targetedPlayerOne, targetedPlayerTemp, "CHEST", "CHEST"));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTemp, "CHEST");
     
     targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
-    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "LEGS", "LEGS"));
+    ArchCommand.playerMsger(source, targetPlayers, getMessageString(targetedPlayerOne, targetedPlayerTemp, "LEGS", "LEGS"));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTemp, "LEGS");
     
     targetedPlayerTemp=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
-    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTemp, "FEET", "FEET"));
+    ArchCommand.playerMsger(source, targetPlayers, getMessageString(targetedPlayerOne, targetedPlayerTemp, "FEET", "FEET"));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTemp, "FEET");
     break;
    default:
-    source.getServer().getPlayerList().sendMessage(getMessageString(targetedPlayerOne, targetedPlayerTwo, targetedArmorSlotOne, targetedArmorSlotTwo));
+    ArchCommand.playerMsger(source, targetPlayers, getMessageString(targetedPlayerOne, targetedPlayerTwo, targetedArmorSlotOne, targetedArmorSlotTwo));
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, targetedArmorSlotOne, targetedArmorSlotTwo);
     break;
   }

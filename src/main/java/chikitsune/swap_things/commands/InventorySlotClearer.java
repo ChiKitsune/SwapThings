@@ -66,9 +66,9 @@ public class InventorySlotClearer {
     targetedPlayer.inventory.setInventorySlotContents(selectedSlotNum, ItemStack.EMPTY.copy());
    
     if (tempStack.isEmpty()) {
-     source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.GOLD + "Oh! " + fromName + " tried to clear an inventory slot from " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " but it was already empty."));
+     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + fromName + " tried to clear an inventory slot from " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " but it was already empty."));
     } else {
-     source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.GOLD + "Oh! " + fromName + " just took "  + tempStack.getCount() + " of " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + "'s " + tempStack.getDisplayName().getFormattedText()));
+     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + fromName + " just took "  + tempStack.getCount() + " of " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + "'s " + tempStack.getDisplayName().getFormattedText()));
     }
    }
    

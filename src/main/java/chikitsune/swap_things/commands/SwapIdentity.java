@@ -1,5 +1,8 @@
 package chikitsune.swap_things.commands;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import net.minecraft.command.CommandSource;
@@ -48,7 +51,7 @@ public class SwapIdentity {
    Integer playerTwoCurSlot=targetedPlayerTwo.inventory.currentItem;
    ItemStack playerOneHead=GetCustomHead(targetedPlayerOne.getName().getUnformattedComponentText(), targetedPlayerOne.getName().getUnformattedComponentText());
    ItemStack playerTwoHead=GetCustomHead(targetedPlayerTwo.getName().getUnformattedComponentText(), targetedPlayerTwo.getName().getUnformattedComponentText());
-   Float playerOneExp,playerTwoExp;
+   Float playerOneExp,playerTwoExp, playerOneHealth, playerTwoHealth;
    Integer playerOneExpLvl, playerTwoExpLvl;
    
    playerOneInv.copyInventory(targetedPlayerOne.inventory);
@@ -72,20 +75,34 @@ public class SwapIdentity {
    targetedPlayerTwo.addExperienceLevel(playerOneExpLvl);
    targetedPlayerTwo.experience=playerOneExp;
    
+   playerOneHealth=targetedPlayerOne.getHealth();
+   playerTwoHealth=targetedPlayerTwo.getHealth();
+   
+   targetedPlayerOne.setHealth(playerTwoHealth);
+   targetedPlayerTwo.setHealth(playerOneHealth);
+
+   targetedPlayerOne.teleport(playerTwodimWorld, MathHelper.floor(playerTwoVec.getX()), MathHelper.floor(playerTwoVec.getY()), MathHelper.floor(playerTwoVec.getZ()), playerTwoYaw, playerTwoPitch);
+   targetedPlayerTwo.teleport(playerOnedimWorld, MathHelper.floor(playerOneVec.getX()), MathHelper.floor(playerOneVec.getY()), MathHelper.floor(playerOneVec.getZ()), playerOneYaw, playerOnePitch);
+   
    if (targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.HEAD) != ItemStack.EMPTY) targetedPlayerOne.dropItem(targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.HEAD), false, true);
-   if (targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.HEAD) != ItemStack.EMPTY) targetedPlayerTwo.dropItem(targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.HEAD), false, true);
+   if (targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.HEAD) != ItemStack.EMPTY && targetedPlayerOne.getName() != targetedPlayerTwo.getName()) targetedPlayerTwo.dropItem(targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.HEAD), false, true);
    
    targetedPlayerOne.setItemStackToSlot(EquipmentSlotType.HEAD, playerTwoHead);
    targetedPlayerTwo.setItemStackToSlot(EquipmentSlotType.HEAD, playerOneHead);
-
-   targetedPlayerOne.teleport(playerTwodimWorld, MathHelper.floor(playerTwoVec.getX()), MathHelper.floor(playerTwoVec.getY()), MathHelper.floor(playerTwoVec.getZ()), playerTwoYaw, playerTwoPitch);
-
-   targetedPlayerTwo.teleport(playerOnedimWorld, MathHelper.floor(playerOneVec.getX()), MathHelper.floor(playerOneVec.getY()), MathHelper.floor(playerOneVec.getZ()), playerOneYaw, playerOnePitch);
    
+   Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayerOne);
    if (targetedPlayerOne.getName() == targetedPlayerTwo.getName()) {
-    source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getFormattedText() + "."));
+//    source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getFormattedText() + "."));
+    ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Hurray " +targetedPlayerTwo.getName().getFormattedText()  + " you found yourself!"));
+//    targetedPlayerOne.sendMessage(ArchCommand.getRainbowizedStr("Hurray " +targetedPlayerTwo.getName().getFormattedText()  + " you found yourself!"));
   } else {
-   source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getFormattedText() + " and " + targetedPlayerTwo.getName().getFormattedText() + "?"));
+//   source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getFormattedText() + " and " + targetedPlayerTwo.getName().getFormattedText() + "?"));
+   ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("That was quite a trip " +targetedPlayerTwo.getName().getFormattedText()  + " ... wait a second you are " + targetedPlayerOne.getName().getFormattedText() + ". You didn't go anywhere so better luck next time."));
+   targetedPlayerOne.sendMessage(ArchCommand.getRainbowizedStr("That was quite a trip " +targetedPlayerTwo.getName().getFormattedText()  + " ... wait a second you are " + targetedPlayerOne.getName().getFormattedText() + ". You didn't go anywhere so better luck next time."));
+   targetPlayers=Arrays.asList(targetedPlayerTwo);
+//   
+   ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("That was quite a trip " +targetedPlayerOne.getName().getFormattedText()  + " ... wait a second you are " + targetedPlayerTwo.getName().getFormattedText() + ". You didn't go anywhere so better luck next time."));
+//   targetedPlayerTwo.sendMessage(ArchCommand.getRainbowizedStr("That was quite a trip " +targetedPlayerOne.getName().getFormattedText()  + " ... wait a second you are " + targetedPlayerTwo.getName().getFormattedText() + ". You didn't go anywhere so better luck next time."));
    }
    
    return 0;

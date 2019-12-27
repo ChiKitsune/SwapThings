@@ -32,7 +32,7 @@ public class ToggleCrouch {
 //   KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSneak.getKey(),!sneakPressed);
    targetedPlayer.setSneaking(!targetedPlayer.isSneaking());
    
-   source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " decide if they should be sneaking or not."));
+   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " decide if they should be sneaking or not."));
    }
    return 0;
   }

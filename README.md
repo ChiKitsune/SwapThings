@@ -15,6 +15,10 @@ Adds commands for viewers to interact and make things more entertaining for the 
         - Note: If an enchantment level is not given will choose a random valid one for the given enchantment (0 is possible which will remove the enchantment
         - Note: When specifying the enchantment level can do higher than usual (i.e. minecraft:efficiency 10 will give Efficiency X)
 
+#####  ```/swapthings inventorybomb [playername] [courtesy of]```
+    Drops and replaces all inventory items with the item specified in the config
+      - Note: Default is minecraft:dead_bush or if config value is invalid
+
 #####  ```/swapthings inventoryslotclearer [playername] [amount] [courtesy of]```
     Clears a specific inventory slot based on the decimal place of the amount or random if not given one.
       - Note: Amount ignores the whole number amount and only looks for decimal places. https://i.imgur.com/pJBKExE.jpg
@@ -100,6 +104,6 @@ Adds commands for viewers to interact and make things more entertaining for the 
 
 #### Effects:
 
-#####  ```/effect give [player] fovflip [duration]```
+#####  ```(Currently disabled) /effect give [player] fovflip [duration]```
     Flips the Field of View (FOV) for the duration.
         - Note: Currently still in the process of setting up icons and potion items

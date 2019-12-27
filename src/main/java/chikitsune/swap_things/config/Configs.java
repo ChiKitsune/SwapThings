@@ -26,6 +26,8 @@ public class Configs {
  public static ForgeConfigSpec COMMON_CONFIG;
  public static ForgeConfigSpec CLIENT_CONFIG;
  
+ public static ForgeConfigSpec.BooleanValue COMMAND_MSG_ALL_SERVER;
+ 
  public static ForgeConfigSpec.IntValue PLAYERNUDGER_NORTH_CHANCE;
  public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_NORTH_STRENGTH;
  public static ForgeConfigSpec.IntValue PLAYERNUDGER_NORTHEAST_CHANCE;
@@ -54,13 +56,19 @@ public class Configs {
  
  public static ForgeConfigSpec.ConfigValue<List<List<String>>> QUICKHIDE_LIST;
  
+ public static ForgeConfigSpec.ConfigValue<String> INVENTORY_BOMB_ITEM;
+ 
  static {
   COMMON_BUILDER.comment("General settings").push(CATEGORY_GENERAL);
   COMMON_BUILDER.pop();
   COMMON_BUILDER.comment("Command settings").push(CATEGORY_COMMANDS);
   
+  COMMAND_MSG_ALL_SERVER= COMMON_BUILDER.comment("Command messages show to all players on server.").define("msgAllPlayers", false);
+  
   setupPlayerNudgerConfigs();
 //  setupQuickHideConfigs();
+  
+  INVENTORY_BOMB_ITEM= COMMON_BUILDER.comment("Item that will replace all inventory slots with after items are dropped").define("inventoryBombItem", "minecraft:dead_bush");
   
   COMMON_BUILDER.pop();
   

@@ -11,6 +11,7 @@ import chikitsune.swap_things.config.Configs;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -44,6 +45,7 @@ public class PlayerNudger {
    Integer randTemp;
    String directionStr,lookDirStr;
    Integer dirNorth,dirNorthEast,dirEast,dirSouthEast,dirSouth,dirSouthWest,dirWest,dirNorthWest,dirUp,dirDown;
+   float playYaw, playPitch;
    
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
     tempX=0;
@@ -124,39 +126,51 @@ public class PlayerNudger {
   }
     
     randTemp=rand.nextInt(dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp+dirDown);
+    playYaw=targetedPlayer.getPitchYaw().x;
+    playPitch=targetedPlayer.getPitchYaw().y;
     
     if (0 <= randTemp && randTemp <dirNorth) {
-     tempX=0;tempZ=-Configs.PLAYERNUDGER_NORTH_STRENGTH.get(); directionStr="north";
+     tempX=0;tempZ=-Configs.PLAYERNUDGER_NORTH_STRENGTH.get(); directionStr="north"; playYaw=-180;
     } else if (dirNorth <= randTemp && randTemp <dirNorth+dirNorthEast) {
-     tempX=Configs.PLAYERNUDGER_NORTHEAST_STRENGTH.get();tempZ=-Configs.PLAYERNUDGER_NORTHEAST_STRENGTH.get(); directionStr="northeast";
+     tempX=Configs.PLAYERNUDGER_NORTHEAST_STRENGTH.get();tempZ=-Configs.PLAYERNUDGER_NORTHEAST_STRENGTH.get(); directionStr="northeast"; playYaw=-135;
     } else if (dirNorth+dirNorthEast <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast) {
-     tempX=Configs.PLAYERNUDGER_EAST_STRENGTH.get();tempZ=0; directionStr="east";
+     tempX=Configs.PLAYERNUDGER_EAST_STRENGTH.get();tempZ=0; directionStr="east"; playYaw=-90;
     } else if (dirNorth+dirNorthEast+dirEast <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast) {
-     tempX=Configs.PLAYERNUDGER_SOUTHEAST_STRENGTH.get();tempZ=Configs.PLAYERNUDGER_SOUTHEAST_STRENGTH.get(); directionStr="southeast";
+     tempX=Configs.PLAYERNUDGER_SOUTHEAST_STRENGTH.get();tempZ=Configs.PLAYERNUDGER_SOUTHEAST_STRENGTH.get(); directionStr="southeast"; playYaw=-45;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth) {
-     tempX=0;tempZ=Configs.PLAYERNUDGER_SOUTH_STRENGTH.get(); directionStr="south";
+     tempX=0;tempZ=Configs.PLAYERNUDGER_SOUTH_STRENGTH.get(); directionStr="south"; playYaw=0;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest) {
-     tempX=-Configs.PLAYERNUDGER_SOUTHWEST_STRENGTH.get();tempZ=Configs.PLAYERNUDGER_SOUTHWEST_STRENGTH.get(); directionStr="southwest";
+     tempX=-Configs.PLAYERNUDGER_SOUTHWEST_STRENGTH.get();tempZ=Configs.PLAYERNUDGER_SOUTHWEST_STRENGTH.get(); directionStr="southwest"; playYaw=45;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest) {
-     tempX=-Configs.PLAYERNUDGER_WEST_STRENGTH.get();tempZ=0; directionStr="west";
+     tempX=-Configs.PLAYERNUDGER_WEST_STRENGTH.get();tempZ=0; directionStr="west"; playYaw=90;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest) {
-     tempX=-Configs.PLAYERNUDGER_NORTHWEST_STRENGTH.get();tempZ=-Configs.PLAYERNUDGER_NORTHWEST_STRENGTH.get(); directionStr="northwest";
+     tempX=-Configs.PLAYERNUDGER_NORTHWEST_STRENGTH.get();tempZ=-Configs.PLAYERNUDGER_NORTHWEST_STRENGTH.get(); directionStr="northwest"; playYaw=135;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp) {
-     tempY=Configs.PLAYERNUDGER_UP_STRENGTH.get(); directionStr ="up";
+     tempY=Configs.PLAYERNUDGER_UP_STRENGTH.get(); directionStr ="up"; playPitch=-90;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp+dirDown) {
-     tempY=-Configs.PLAYERNUDGER_DOWN_STRENGTH.get()-.4; directionStr ="down";
+     tempY=-Configs.PLAYERNUDGER_DOWN_STRENGTH.get()-.4; directionStr ="down"; playPitch=90;
     } else {
      directionStr ="nowhere";
     }
 
 //   KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSneak.getKey(),false);
    
-   targetedPlayer.setMotion(tempX, tempY + .4, tempZ);
-   
-   targetedPlayer.velocityChanged=true;
+    if (targetedPlayer.getRidingEntity() !=null) {
+     Entity ridingUpon=targetedPlayer.getLowestRidingEntity();
+     ridingUpon.setMotion(tempX, tempY + .4, tempZ);
+     ridingUpon.setLocationAndAngles(ridingUpon.getPositionVec().getX(), ridingUpon.getPositionVec().getY(), ridingUpon.getPositionVec().getZ(), playYaw, playPitch);
+     ridingUpon.velocityChanged=true;
+    } else {
+     targetedPlayer.stopRiding();
+     if (targetedPlayer.isSleeping()) targetedPlayer.wakeUpPlayer(true, false, false);
+     targetedPlayer.setMotion(tempX, tempY + .4, tempZ);
+     targetedPlayer.setLocationAndAngles(targetedPlayer.getPositionVec().getX(), targetedPlayer.getPositionVec().getY(), targetedPlayer.getPositionVec().getZ(), playYaw, playPitch);
+     targetedPlayer.velocityChanged=true;
+    }
    
 //   source.getServer().getPlayerList().sendMessage(new StringTextComponent(lookDirStr));
-   source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
+    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
+//   source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
    }
    
    return 0;

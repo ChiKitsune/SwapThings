@@ -33,7 +33,7 @@ public class ToggleRun {
    
    targetedPlayer.setSprinting(!targetedPlayer.isSprinting());
    
-   source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " decide if they should be running or not."));
+   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " decide if they should be running or not."));
    }
    return 0;
   }

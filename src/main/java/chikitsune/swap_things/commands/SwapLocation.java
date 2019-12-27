@@ -1,5 +1,8 @@
 package chikitsune.swap_things.commands;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import net.minecraft.command.CommandSource;
@@ -42,10 +45,14 @@ public class SwapLocation {
 
    targetedPlayerTwo.teleport(playerOnedimWorld, MathHelper.floor(playerOneVec.getX()), MathHelper.floor(playerOneVec.getY()), MathHelper.floor(playerOneVec.getZ()), playerOneYaw, playerOnePitch);
    
+   Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayerOne);
    if (targetedPlayerOne.getName() == targetedPlayerTwo.getName()) {
-    source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getFormattedText() + "."));
+    ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getFormattedText() + ".")); 
+//    source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getFormattedText() + "."));
   } else {
-   source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getFormattedText() + " and " + targetedPlayerTwo.getName().getFormattedText() + "?"));
+   targetPlayers.add(targetedPlayerTwo);
+   ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getFormattedText() + " and " + targetedPlayerTwo.getName().getFormattedText() + "?"));
+//   source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getFormattedText() + " and " + targetedPlayerTwo.getName().getFormattedText() + "?"));
    }
    return 0;
   }

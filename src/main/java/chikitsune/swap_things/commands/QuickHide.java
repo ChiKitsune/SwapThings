@@ -1,5 +1,6 @@
 package chikitsune.swap_things.commands;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
@@ -87,7 +88,7 @@ public class QuickHide {
   targetedPlayer.setItemStackToSlot(EquipmentSlotType.OFFHAND, rndStack.copy());
   targetedPlayer.setItemStackToSlot(EquipmentSlotType.MAINHAND, rndStack.copy());
   
-  source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " " + curMsg));
+  ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " " + curMsg));
   }
   
   return 0;
@@ -126,8 +127,8 @@ public class QuickHide {
   targetedPlayer.setItemStackToSlot(EquipmentSlotType.LEGS, rndStack.copy());
   targetedPlayer.setItemStackToSlot(EquipmentSlotType.OFFHAND, rndStack.copy());
   targetedPlayer.setItemStackToSlot(EquipmentSlotType.MAINHAND, rndStack.copy());
-  
-  source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " " + curMsg));
+  Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayer);
+  ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " " + curMsg));
   
   return 0;
  }

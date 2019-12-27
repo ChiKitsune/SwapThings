@@ -116,26 +116,26 @@ public class InventorySlotEnchanting {
    if (itemEnchants.get(tempEnch)==null) {
     if (tempEnchLevel>0) {
      tempStack.addEnchantment(tempEnch, tempEnchLevel);
-     source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s " + TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " has gained a new power: " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(tempEnchLevel).getFormattedText() + TextFormatting.GOLD + ". Blame " + fromName));
+     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s " + TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " has gained a new power: " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(tempEnchLevel).getFormattedText() + TextFormatting.GOLD + ". Blame " + fromName));
     } else {
-     source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was convinced by " + fromName + " that they didn't need " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(1).getFormattedText() + TextFormatting.GOLD + " on their " +  TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " anymore but then remembered they didn't have it anyways."));
+     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was convinced by " + fromName + " that they didn't need " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(1).getFormattedText() + TextFormatting.GOLD + " on their " +  TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " anymore but then remembered they didn't have it anyways."));
     }
    } else {
     if (tempEnchLevel==0) {
      //remove enchantment
      EnchantmentHelper.setEnchantments(itemEnchantsNew,tempStack);
-     source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was convinced by " + fromName + " that they didn't need " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(itemEnchants.get(tempEnch)).getFormattedText() + TextFormatting.GOLD + " on their " +  TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " anymore."));
+     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was convinced by " + fromName + " that they didn't need " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(itemEnchants.get(tempEnch)).getFormattedText() + TextFormatting.GOLD + " on their " +  TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " anymore."));
     } else if (tempEnchLevel==itemEnchants.get(tempEnch)) {
      //same level so nothing is done
-     source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " wasn't convinced by " + fromName + " to get rid of " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(itemEnchants.get(tempEnch)).getFormattedText() + TextFormatting.GOLD + " on their " +  TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + "."));
+     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " wasn't convinced by " + fromName + " to get rid of " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(itemEnchants.get(tempEnch)).getFormattedText() + TextFormatting.GOLD + " on their " +  TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + "."));
      
     } else {
      itemEnchantsNew.put(tempEnch, tempEnchLevel);
      EnchantmentHelper.setEnchantments(itemEnchantsNew,tempStack);
      if (tempEnchLevel>itemEnchants.get(tempEnch)) {
-      source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s " + TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " has increased to " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(tempEnchLevel).getFormattedText() + TextFormatting.GOLD + ". Jeez thanks " + fromName));
+      ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s " + TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " has increased to " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(tempEnchLevel).getFormattedText() + TextFormatting.GOLD + ". Jeez thanks " + fromName));
       } else {
-       source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s " + TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " has decreased to " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(tempEnchLevel).getFormattedText() + TextFormatting.GOLD + ". Woot! Thanks " + fromName + "!")); 
+       ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s " + TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " has decreased to " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(tempEnchLevel).getFormattedText() + TextFormatting.GOLD + ". Woot! Thanks " + fromName + "!")); 
       }
     }
    }

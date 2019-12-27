@@ -1,11 +1,13 @@
 package chikitsune.swap_things.commands;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
 import com.mojang.brigadier.CommandDispatcher;
 
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -34,6 +36,7 @@ public class ArchCommand {
      .then(HeldEnchanting.register())
      .then(InventorySlotEnchanting.register())
      .then(SwapIdentity.register())
+     .then(InventoryBomb.register())
     );
  }
  
@@ -90,5 +93,15 @@ public class ArchCommand {
   newStrMsg.appendSibling(new StringTextComponent(TextFormatting.LIGHT_PURPLE + strMsg.substring(iCnt)));
   
   return newStrMsg;
+ }
+ 
+ public static void playerMsger(CommandSource source,Collection<ServerPlayerEntity> targetPlayers,StringTextComponent msg) {
+  if (Configs.COMMAND_MSG_ALL_SERVER.get()==true) {
+   source.getServer().getPlayerList().sendMessage(msg);
+  } else {
+   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+    targetedPlayer.sendMessage(msg);
+   }
+  }
  }
 }
