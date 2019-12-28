@@ -26,13 +26,8 @@ public class ToggleRun {
  }
   
   private static int toggleRunLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
-//   Boolean sneakPressed=false;
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-//   sneakPressed=Minecraft.getInstance().gameSettings.keyBindSprint.isKeyDown();
-//   KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSprint.getKey(),!sneakPressed);
-   
    targetedPlayer.setSprinting(!targetedPlayer.isSprinting());
-   
    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " decide if they should be running or not."));
    }
    return 0;

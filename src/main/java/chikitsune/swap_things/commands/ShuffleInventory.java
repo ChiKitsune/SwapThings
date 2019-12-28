@@ -46,7 +46,6 @@ public class ShuffleInventory {
     targetedPlayer.inventory.setInventorySlotContents(tempRandNum,tempItem);
    }
    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " re-sort their inventory."));
-   
   }
   return 0;
  }

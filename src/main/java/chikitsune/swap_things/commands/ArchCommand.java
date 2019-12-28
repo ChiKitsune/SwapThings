@@ -97,12 +97,9 @@ public class ArchCommand {
  }
  
  public static void playerMsger(CommandSource source,Collection<ServerPlayerEntity> targetPlayers,StringTextComponent msg) {
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("COMMAND_MSG_ALL_SERVER= "+Configs.COMMAND_MSG_ALL_SERVER.get()));
   if (Configs.COMMAND_MSG_ALL_SERVER.get().booleanValue()) {
-//   source.getServer().getPlayerList().sendMessage(new StringTextComponent("was true "));
    source.getServer().getPlayerList().sendMessage(msg);
   } else {
-//   source.getServer().getPlayerList().sendMessage(new StringTextComponent("was false "));
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
     targetedPlayer.sendMessage(msg);
    }

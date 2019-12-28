@@ -29,7 +29,6 @@ public class SwapHands {
   
   private static int swapHandsLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
    ItemStack tempItem=ItemStack.EMPTY;
-   
    Boolean sneakPressed=false;
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
     tempItem=targetedPlayer.getHeldItem(Hand.MAIN_HAND).copy();

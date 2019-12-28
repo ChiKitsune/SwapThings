@@ -69,7 +69,6 @@ public class SwapIdentity {
    
    targetedPlayerOne.addExperienceLevel(-(playerOneExpLvl+1));
    targetedPlayerTwo.addExperienceLevel(-(playerTwoExpLvl+1));
-   
    targetedPlayerOne.addExperienceLevel(playerTwoExpLvl);
    targetedPlayerOne.experience=playerTwoExp;
    targetedPlayerTwo.addExperienceLevel(playerOneExpLvl);
@@ -92,19 +91,13 @@ public class SwapIdentity {
    
    Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayerOne);
    if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) {
-//    source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getFormattedText() + "."));
     ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Hurray " +targetedPlayerTwo.getName().getFormattedText()  + " you found yourself!"));
-//    targetedPlayerOne.sendMessage(ArchCommand.getRainbowizedStr("Hurray " +targetedPlayerTwo.getName().getFormattedText()  + " you found yourself!"));
   } else {
-//   source.getServer().getPlayerList().sendMessage(ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getFormattedText() + " and " + targetedPlayerTwo.getName().getFormattedText() + "?"));
    ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("That was quite a trip " +targetedPlayerTwo.getName().getFormattedText()  + " ... wait a second you are " + targetedPlayerOne.getName().getFormattedText() + ". You didn't go anywhere so better luck next time."));
    targetedPlayerOne.sendMessage(ArchCommand.getRainbowizedStr("That was quite a trip " +targetedPlayerTwo.getName().getFormattedText()  + " ... wait a second you are " + targetedPlayerOne.getName().getFormattedText() + ". You didn't go anywhere so better luck next time."));
    targetPlayers=Arrays.asList(targetedPlayerTwo);
-//   
    ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("That was quite a trip " +targetedPlayerOne.getName().getFormattedText()  + " ... wait a second you are " + targetedPlayerTwo.getName().getFormattedText() + ". You didn't go anywhere so better luck next time."));
-//   targetedPlayerTwo.sendMessage(ArchCommand.getRainbowizedStr("That was quite a trip " +targetedPlayerOne.getName().getFormattedText()  + " ... wait a second you are " + targetedPlayerTwo.getName().getFormattedText() + ". You didn't go anywhere so better luck next time."));
    }
-   
    return 0;
   }
   

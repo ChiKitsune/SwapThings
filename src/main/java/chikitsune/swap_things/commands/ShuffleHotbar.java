@@ -44,11 +44,9 @@ public class ShuffleHotbar {
     tempItem=targetedPlayer.inventory.getStackInSlot(i).copy();
     targetedPlayer.inventory.setInventorySlotContents(i, targetedPlayer.inventory.getStackInSlot(tempRandNum).copy());
     targetedPlayer.inventory.setInventorySlotContents(tempRandNum,tempItem);
-    //source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " " + i + " -> " + tempRandNum));
    }
    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " re-sort their hotbar."));   
   }
-  
   return 0;
  }
 }

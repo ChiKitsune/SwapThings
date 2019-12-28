@@ -83,7 +83,6 @@ public class SwapArmor {
     ArchCommand.swapArmorItems(targetedPlayerOne, targetedPlayerTwo, targetedArmorSlotOne, targetedArmorSlotTwo);
     break;
   }
-  
   return 0;  
  }
  
@@ -132,7 +131,6 @@ public class SwapArmor {
    case "SET": armorSlotDesc="ARMOR"; break;
    default: break;
   }
-  
   return armorSlotDesc;
  }
  
@@ -148,23 +146,17 @@ public class SwapArmor {
    txtMsg=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + " you may want to rethink trying to swap " + targetedArmorSlotDescOne.toLowerCase() + " with yourself.");
   } else {
    if (targetedArmorTwo == ItemStack.EMPTY) {
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("EmptyItem1"));
   txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getFormattedText() + TextFormatting.GOLD + " tried trading their nonexistent " + targetedArmorSlotDescTwo.toLowerCase() + " for ");
  } else {
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("NonEmptyItem1"));
   txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getFormattedText() + TextFormatting.GOLD + " traded their " + targetedArmorTwo.getDisplayName().getFormattedText().toLowerCase() + " for ");
  }
  if (targetedArmorOne == ItemStack.EMPTY) {
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("EmptyItem2"));
   txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + "'s nonexistent " + targetedArmorSlotDescOne.toLowerCase() + ".");
  } else {
-//  source.getServer().getPlayerList().sendMessage(new StringTextComponent("NonEmptyItem2"));
   txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + "'s " + targetedArmorOne.getDisplayName().getFormattedText().toLowerCase() + ".");
  }
   }
   if (txtMsg2!=null) txtMsg.appendSibling(txtMsg2);
-  
-  
   return txtMsg;
  }
 }

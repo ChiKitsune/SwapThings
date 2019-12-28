@@ -1,6 +1,5 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
@@ -37,20 +36,6 @@ public class QuickHide {
       return quickhideLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),ItemArgument.getItem(cmd_3arg, "item"),StringArgumentType.getString(cmd_3arg, "message"));
       })
      )));
-  
-  
-  
-  
-//  return Commands.literal("quickhide").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
-//   return quickhideLogic(cmd_0arg.getSource(),cmd_0arg.getSource().asPlayer(),null,null);
-//   }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
-//     return quickhideLogic(cmd_1arg.getSource(),EntityArgument.getPlayer(cmd_1arg, "targetedPlayer"),null,null);
-//    }).then(Commands.argument("item", ItemArgument.item()).executes((cmd_2arg) -> {
-//      return quickhideLogic(cmd_2arg.getSource(),EntityArgument.getPlayer(cmd_2arg, "targetedPlayer"),ItemArgument.getItem(cmd_2arg, "item"),null);
-//     }).then(Commands.argument("message", StringArgumentType.string()).executes((cmd_3arg) -> {
-//      return quickhideLogic(cmd_3arg.getSource(),EntityArgument.getPlayer(cmd_3arg, "targetedPlayer"),ItemArgument.getItem(cmd_3arg, "item"),StringArgumentType.getString(cmd_3arg, "message"));
-//      })
-//     )));
  }
   
  private static int quickhideLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, ItemInput itemInput, String message) {
@@ -90,46 +75,6 @@ public class QuickHide {
   
   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " " + curMsg));
   }
-  
-  return 0;
- }
- 
- private static int quickhideLogic(CommandSource source,ServerPlayerEntity targetedPlayer, ItemInput itemInput, String message) {
-  ItemStack rndStack = ItemStack.EMPTY;
-  String curMsg="quick use these to hide!";
-  ItemArgument iaStack=new ItemArgument();
-
-  try {
-   if (itemInput==null && message == null) {
-    Integer newRanNum=rand.nextInt(SwappingThings.quiHidList.size());
-    rndStack=iaStack.parse(new StringReader(SwappingThings.quiHidList.get(newRanNum).get(0))).createStack(1, false);
-    curMsg=SwappingThings.quiHidList.get(newRanNum).get(1);
-   } else {
-    rndStack=itemInput.createStack(1, false);
-    curMsg=message;
-   }
-   if (curMsg == null) curMsg="quick use these to hide!";   
-  } catch (CommandSyntaxException e) {
-   e.printStackTrace();
-   rndStack=new ItemStack(Items.DEAD_BUSH);
-  }
-  
-  if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.HEAD) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.HEAD), false, true);
-  if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.CHEST) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.CHEST), false, true);
-  if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.FEET) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.FEET), false, true);
-  if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.LEGS) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.LEGS), false, true);
-  if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.OFFHAND) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.OFFHAND), false, true);
-  if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.MAINHAND) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.MAINHAND), false, true);
-    
-  targetedPlayer.setItemStackToSlot(EquipmentSlotType.HEAD, rndStack.copy());
-  targetedPlayer.setItemStackToSlot(EquipmentSlotType.CHEST, rndStack.copy());
-  targetedPlayer.setItemStackToSlot(EquipmentSlotType.FEET, rndStack.copy());
-  targetedPlayer.setItemStackToSlot(EquipmentSlotType.LEGS, rndStack.copy());
-  targetedPlayer.setItemStackToSlot(EquipmentSlotType.OFFHAND, rndStack.copy());
-  targetedPlayer.setItemStackToSlot(EquipmentSlotType.MAINHAND, rndStack.copy());
-  Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayer);
-  ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " " + curMsg));
-  
   return 0;
  }
 }

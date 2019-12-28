@@ -80,7 +80,6 @@ public class HeldEnchanting {
     if (tempEnchLevel>0) {
      tempStack.addEnchantment(tempEnch, tempEnchLevel);
      ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s " + TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " has gained a new power: " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(tempEnchLevel).getFormattedText() + TextFormatting.GOLD + ". Blame " + fromName));
-//     source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s " + TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " has gained a new power: " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(tempEnchLevel).getFormattedText() + TextFormatting.GOLD + ". Blame " + fromName));
     } else {
      ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was convinced by " + fromName + " that they didn't need " + TextFormatting.DARK_GREEN + tempEnch.getDisplayName(1).getFormattedText() + TextFormatting.GOLD + " on their " +  TextFormatting.AQUA + tempStack.getDisplayName().getFormattedText() +  TextFormatting.GOLD + " anymore but then remembered they didn't have it anyways."));
     }

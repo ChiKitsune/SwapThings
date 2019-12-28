@@ -55,11 +55,9 @@ public class InventorySlotClearer {
        selectedSlotNum=modFloatResult.intValue();       
       } else {
        selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
-       
       }
     } else {
      selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
-     
     }
     
     tempStack=targetedPlayer.inventory.getStackInSlot(selectedSlotNum).copy();
@@ -71,7 +69,6 @@ public class InventorySlotClearer {
      ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + fromName + " just took "  + tempStack.getCount() + " of " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + "'s " + tempStack.getDisplayName().getFormattedText()));
     }
    }
-   
    return 0;
   }
 

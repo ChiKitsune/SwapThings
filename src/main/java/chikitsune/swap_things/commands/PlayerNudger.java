@@ -18,16 +18,6 @@ import net.minecraft.util.text.TextFormatting;
 
 public class PlayerNudger {
  public static Random rand= new Random();
-// public static Integer dirNorth=Configs.PLAYERNUDGER_NORTH_CHANCE.get();
-// public static Integer dirNorthEast=Configs.PLAYERNUDGER_NORTHEAST_CHANCE.get();
-// public static Integer dirEast=Configs.PLAYERNUDGER_EAST_CHANCE.get();
-// public static Integer dirSouthEast=Configs.PLAYERNUDGER_SOUTHEAST_CHANCE.get();
-// public static Integer dirSouth=Configs.PLAYERNUDGER_SOUTH_CHANCE.get();
-// public static Integer dirSouthWest=Configs.PLAYERNUDGER_SOUTHWEST_CHANCE.get();
-// public static Integer dirWest=Configs.PLAYERNUDGER_WEST_CHANCE.get();
-// public static Integer dirNorthWest=Configs.PLAYERNUDGER_NORTHWEST_CHANCE.get();
-// public static Integer dirUp=Configs.PLAYERNUDGER_UP_CHANCE.get();
-// public static Integer dirDown=Configs.PLAYERNUDGER_DOWN_CHANCE.get();
  
  public static ArgumentBuilder<CommandSource, ?> register() { 
   return Commands.literal("playernudger").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
@@ -152,8 +142,6 @@ public class PlayerNudger {
     } else {
      directionStr ="nowhere";
     }
-
-//   KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSneak.getKey(),false);
    
     if (targetedPlayer.getRidingEntity() !=null) {
      Entity ridingUpon=targetedPlayer.getLowestRidingEntity();
@@ -167,13 +155,8 @@ public class PlayerNudger {
      targetedPlayer.setLocationAndAngles(targetedPlayer.getPositionVec().getX(), targetedPlayer.getPositionVec().getY(), targetedPlayer.getPositionVec().getZ(), playYaw, playPitch);
      targetedPlayer.velocityChanged=true;
     }
-   
-//   source.getServer().getPlayerList().sendMessage(new StringTextComponent(lookDirStr));
     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
-//   source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
    }
-   
    return 0;
   }
-
 }
