@@ -21,16 +21,16 @@ public class PlayerNudger {
  
  public static ArgumentBuilder<CommandSource, ?> register() { 
   return Commands.literal("playernudger").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
-   return toggleRunLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),"someone");
+   return playerNudgerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),"someone");
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
-     return toggleRunLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone");
+     return playerNudgerLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone");
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
-      return toggleRunLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"));
+      return playerNudgerLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"));
       })
      ));
  }
   
-  private static int toggleRunLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
+  private static int playerNudgerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
    double tempX,tempY,tempZ,nudgeStrength=.7,tempXLook,tempZLook;
    Integer randTemp;
    String directionStr,lookDirStr;

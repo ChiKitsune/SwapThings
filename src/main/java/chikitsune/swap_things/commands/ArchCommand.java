@@ -38,6 +38,9 @@ public class ArchCommand {
      .then(InventorySlotEnchanting.register())
      .then(SwapIdentity.register())
      .then(InventoryBomb.register())
+     .then(SummonMount.register())
+     .then(ShuffleInventoryNames.register())
+     .then(InventorySlotRenamer.register())
     );
  }
  

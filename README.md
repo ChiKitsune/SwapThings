@@ -52,6 +52,23 @@ Adds commands for viewers to interact and make things more entertaining for the 
       - Note: If an enchantment level is not given will choose a random valid one for the given enchantment (0 is possible which will remove the enchantment
       - Note: When specifying the enchantment level can do higher than usual (i.e. minecraft:efficiency 10 will give Efficiency X)
 
+#####  ```/swapthings inventoryslotrenamer [playername] [courtesy of] [amount]```
+    Renames an inventory item to have the prefix of "[courtesy of]'s "
+      - Note: Amount ignores the whole number amount and only looks for decimal places. https://i.imgur.com/5qokaCR.jpg
+            .00 is held item
+            .01 - .09 is hotbar
+            .10 - .18 is top line in inventory
+            .19 - .27 is second line in inventory
+            .28 - .36 is third line in inventory
+            .37 is boots
+            .38 is leggings
+            .39 is chestplate
+            .40 is helmet
+            .41 is offhand
+            .42 and above is outside of the default player's inventory size
+      - Note: If an amount is not given it will try to find a non empty inventory slot and use that
+      - Note: If a courtesy of name is not given it will default to "Someone"
+
 #####  ```/swapthings playernudger [playername] [courtesy of]```
     Nudges the player in a random direction
       - Note: Direction chances are based on the config chance values
@@ -67,6 +84,23 @@ Adds commands for viewers to interact and make things more entertaining for the 
          - minecraft:painting, quick blend into the wall!
       - Note: If want do your own item and message playername is required
       
+#####  ```/swapthings shufflehotbar [playername] [courtesy of]```
+    Goes through all of the hotbar slots and randomly swaps it with another hotbar slot.
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+
+#####  ```/swapthings shuffleinventory [playername] [courtesy of]```
+    Goes through all of the hotbar, equipment, and inventory slots and randomly swaps it with another slot.
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+
+#####  ```/swapthings shuffleinventorynames [playername] [courtesy of]```
+    Goes through all of the hotbar, equipment, and inventory slots and randomly swaps the item names with another slot.
+      - Note: Courtesy of is an optional text string. If nothing is given will just shuffle item names around.
+      - Note: If Courtesy of is given it will prefix all shuffled item names with what is given plus 's
+
+#####  ```/swapthings summonmount [playername] [courtesy of]```
+    Summons a random Entity and makes the player ride it.
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+
 #####  ```/swapthings swaparmor <head|chest|legs|feet|mainhand|offhand|all|set|random> [playername] [playername]```
     Based on the option given will swap armor with another player. 
     - ALL will swap all six of the options before it (four basic armor, mainhand, and offhand) at once. 
@@ -85,14 +119,6 @@ Adds commands for viewers to interact and make things more entertaining for the 
 #####  ```/swapthings swaplocations [playername] [playername]```
     Swaps the location of the two players with each other.
       - Note: Players will also be set to look in the direction the other person was looking
-
-#####  ```/swapthings shufflehotbar [playername] [courtesy of]```
-    Goes through all of the hotbar slots and randomly swaps it with another hotbar slot.
-      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
-
-#####  ```/swapthings shuffleinventory [playername] [courtesy of]```
-    Goes through all of the hotbar, equipment, and inventory slots and randomly swaps it with another slot.
-      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
 #####  ```/swapthings togglecrouch [playername] [courtesy of]```
     Toggles if the player is crouching until command is run again, player presses their crouch key, or opens chat.

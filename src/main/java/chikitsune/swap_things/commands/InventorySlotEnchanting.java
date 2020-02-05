@@ -70,14 +70,14 @@ public class InventorySlotEnchanting {
       do {
       selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
       iCnt++;
-      } while (!targetedPlayer.inventory.getStackInSlot(selectedSlotNum).isEmpty() && iCnt<50);
+      } while (targetedPlayer.inventory.getStackInSlot(selectedSlotNum).isEmpty() && iCnt<50);
      }
    } else {
     iCnt=0;
     do {
     selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
     iCnt++;
-    } while (!targetedPlayer.inventory.getStackInSlot(selectedSlotNum).isEmpty() && iCnt<50);
+    } while (targetedPlayer.inventory.getStackInSlot(selectedSlotNum).isEmpty() && iCnt<50);
    }
    
    tempStack=targetedPlayer.inventory.getStackInSlot(selectedSlotNum);
