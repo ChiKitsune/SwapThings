@@ -55,7 +55,7 @@ public class ShuffleInventoryNames {
      }
     if (tempFirstNonEmpty!=null) targetedPlayer.inventory.getStackInSlot(tempFirstNonEmpty).setDisplayName(prevItemName);
    
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
+   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
    }
    return 0;
   }

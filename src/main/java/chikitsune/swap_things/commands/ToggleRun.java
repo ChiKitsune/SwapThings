@@ -6,6 +6,8 @@ import java.util.Collections;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -26,9 +28,12 @@ public class ToggleRun {
  }
   
   private static int toggleRunLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
+   Boolean sprintPressed=false;
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-   targetedPlayer.setSprinting(!targetedPlayer.isSprinting());
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " decide if they should be running or not."));
+    sprintPressed=Minecraft.getInstance().gameSettings.keyBindSprint.isKeyDown();
+    KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSprint.getKey(),!sprintPressed);
+//   targetedPlayer.setSprinting(!targetedPlayer.isSprinting());
+   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " let " + fromName + " decide if they should be running or not."));
    }
    return 0;
   }

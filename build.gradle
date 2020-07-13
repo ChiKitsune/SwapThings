@@ -15,14 +15,10 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
-
-plugins {
-    id 'org.ajoberstar.grgit' version '1.7.2'
-}
-
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 final commitId
 
@@ -87,6 +83,7 @@ minecraft {
     }
 }
 
+
 repositories {
     mavenCentral()
     maven { url = "http://dvs1.progwml6.com/files/maven/" }
@@ -104,10 +101,6 @@ configurations {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-
-    compileOnly fg.deobf("mezz.jei:jei-1.14.4:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:${jei_version}")
-    embed "org.apache.httpcomponents:fluent-hc:${httpclient_version}"
 }
 
 tasks.withType(JavaCompile) {

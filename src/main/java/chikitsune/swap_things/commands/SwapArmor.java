@@ -143,20 +143,20 @@ public class SwapArmor {
   
   if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) {
    
-   txtMsg=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + " you may want to rethink trying to swap " + targetedArmorSlotDescOne.toLowerCase() + " with yourself.");
+   txtMsg=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getString() + TextFormatting.GOLD + " you may want to rethink trying to swap " + targetedArmorSlotDescOne.toLowerCase() + " with yourself.");
   } else {
    if (targetedArmorTwo == ItemStack.EMPTY) {
-  txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getFormattedText() + TextFormatting.GOLD + " tried trading their nonexistent " + targetedArmorSlotDescTwo.toLowerCase() + " for ");
+  txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getString() + TextFormatting.GOLD + " tried trading their nonexistent " + targetedArmorSlotDescTwo.toLowerCase() + " for ");
  } else {
-  txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getFormattedText() + TextFormatting.GOLD + " traded their " + targetedArmorTwo.getDisplayName().getFormattedText().toLowerCase() + " for ");
+  txtMsg=new StringTextComponent(TextFormatting.GOLD + "Wow " + TextFormatting.RED + targetedPlayerTwo.getName().getString() + TextFormatting.GOLD + " traded their " + targetedArmorTwo.getDisplayName().getString().toLowerCase() + " for ");
  }
  if (targetedArmorOne == ItemStack.EMPTY) {
-  txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + "'s nonexistent " + targetedArmorSlotDescOne.toLowerCase() + ".");
+  txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getString() + TextFormatting.GOLD + "'s nonexistent " + targetedArmorSlotDescOne.toLowerCase() + ".");
  } else {
-  txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getFormattedText() + TextFormatting.GOLD + "'s " + targetedArmorOne.getDisplayName().getFormattedText().toLowerCase() + ".");
+  txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getString() + TextFormatting.GOLD + "'s " + targetedArmorOne.getDisplayName().getString().toLowerCase() + ".");
  }
   }
-  if (txtMsg2!=null) txtMsg.appendSibling(txtMsg2);
+  if (txtMsg2!=null) txtMsg.func_230529_a_(txtMsg2);
   return txtMsg;
  }
 }

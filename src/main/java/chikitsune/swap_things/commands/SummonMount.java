@@ -9,12 +9,14 @@ import java.util.stream.Collectors;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
+import chikitsune.swap_things.SwappingThings;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.StringTextComponent;
@@ -42,16 +44,19 @@ public class SummonMount {
    ServerWorld serverworld = source.getWorld();
    List<EntityType<?>> lstSummEnt = ForgeRegistries.ENTITIES.getValues().stream().filter(EntityType::isSummonable).collect(Collectors.toList());   
    
-   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-     tempEnt=lstSummEnt.get(rand.nextInt(lstSummEnt.size()));
-     newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.getPosition(),SpawnReason.COMMAND,true,true);
-//     if (newMount instanceof TameableEntity) {
-//      ((TameableEntity) newMount).setTamed(true);
-//      ((TameableEntity) newMount).setTamedBy(targetedPlayer);
-//     }
+   for(ServerPlayerEntity targetedPlayer : targetPlayers) {    
+     do {
+      tempEnt=lstSummEnt.get(rand.nextInt(lstSummEnt.size()));
+     } while (SwappingThings.sumMountList.contains(tempEnt.getRegistryName().toString()));
+//     newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.getPosition(),SpawnReason.COMMAND,true,true);
+     newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.func_233580_cy_(),SpawnReason.COMMAND,true,true);
+     if (newMount instanceof TameableEntity) {
+      ((TameableEntity) newMount).setTamed(true);
+      ((TameableEntity) newMount).setTamedBy(targetedPlayer);
+     }
     targetedPlayer.getLowestRidingEntity().startRiding(newMount, true);
     
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Nice ride! " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " got a new " + TextFormatting.AQUA + tempEnt.getName().getFormattedText() + TextFormatting.GOLD + " mount by " + fromName + "."));
+    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Nice ride! " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " got a new " + TextFormatting.AQUA + tempEnt.getName().getString() + TextFormatting.GOLD + " mount by " + fromName + "."));
    }
    return 0;
   }

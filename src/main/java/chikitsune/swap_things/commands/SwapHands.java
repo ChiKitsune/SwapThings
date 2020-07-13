@@ -35,7 +35,7 @@ public class SwapHands {
     targetedPlayer.setHeldItem(Hand.MAIN_HAND,targetedPlayer.getHeldItem(Hand.OFF_HAND));
     targetedPlayer.setHeldItem(Hand.OFF_HAND,tempItem);
        
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " switch what was in their hands."));
+    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " let " + fromName + " switch what was in their hands."));
    }
    return 0;
   }

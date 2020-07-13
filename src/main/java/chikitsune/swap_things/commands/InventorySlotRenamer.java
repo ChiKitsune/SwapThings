@@ -80,10 +80,10 @@ public class InventorySlotRenamer {
     prevItemName=targetedPlayer.inventory.getStackInSlot(selectedSlotNum).getDisplayName().getUnformattedComponentText();
    targetedPlayer.inventory.getStackInSlot(selectedSlotNum).setDisplayName(new StringTextComponent(strPref + tempStack.getDisplayName().getUnformattedComponentText()));
    
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s " + TextFormatting.GOLD + prevItemName + " should be theirs."));
+   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + TextFormatting.RED + targetedPlayer.getName().getString() + "'s " + TextFormatting.GOLD + prevItemName + " should be theirs."));
    }
    else {
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh. " + strMsgFromName + " couldn't find an item they wanted in " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + "'s inventory that they liked and gave up."));
+    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh. " + strMsgFromName + " couldn't find an item they wanted in " + TextFormatting.RED + targetedPlayer.getName().getString() + "'s inventory that they liked and gave up."));
    }
   }
   

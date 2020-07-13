@@ -10,8 +10,8 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
 public class SwapLocation {
@@ -29,13 +29,13 @@ public class SwapLocation {
   private static int swapLocationLogic(CommandSource source, ServerPlayerEntity targetedPlayerOne, ServerPlayerEntity targetedPlayerTwo) {
    if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) targetedPlayerTwo=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
    
-   Boolean isSameDim=(targetedPlayerOne.dimension == targetedPlayerTwo.dimension);
-   DimensionType playerOneDim=targetedPlayerOne.dimension;
-   DimensionType playerTwoDim=targetedPlayerTwo.dimension;
-   Vec3d playerOneVec=targetedPlayerOne.getPositionVec();
+   Boolean isSameDim=(targetedPlayerOne.getEntityWorld().func_230315_m_() == targetedPlayerTwo.getEntityWorld().func_230315_m_());
+   DimensionType playerOneDim=targetedPlayerOne.getEntityWorld().func_230315_m_();
+   DimensionType playerTwoDim=targetedPlayerTwo.getEntityWorld().func_230315_m_();
+   Vector3d playerOneVec=targetedPlayerOne.getPositionVec();
    Float playerOneYaw=targetedPlayerOne.rotationYaw;
    Float playerOnePitch=targetedPlayerOne.rotationPitch;
-   Vec3d playerTwoVec=targetedPlayerTwo.getPositionVec();
+   Vector3d playerTwoVec=targetedPlayerTwo.getPositionVec();
    Float playerTwoYaw=targetedPlayerTwo.rotationYaw;
    Float playerTwoPitch=targetedPlayerTwo.rotationPitch;
    ServerWorld playerOnedimWorld=targetedPlayerOne.getServerWorld();
@@ -46,10 +46,10 @@ public class SwapLocation {
    
    Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayerOne);
     if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) {
-    ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getFormattedText() + ".")); 
+    ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Well I guess if you really want to swap locations with yourself you can go right ahead " + targetedPlayerOne.getName().getString() + ".")); 
   } else {
    targetPlayers=Arrays.asList(targetedPlayerOne,targetedPlayerTwo);
-   ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getFormattedText() + " and " + targetedPlayerTwo.getName().getFormattedText() + "?"));
+   ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Wow what a trip. A fresh perspective is nice once a while wouldn't you agree " + targetedPlayerOne.getName().getString() + " and " + targetedPlayerTwo.getName().getString() + "?"));
    }
    return 0;
   }

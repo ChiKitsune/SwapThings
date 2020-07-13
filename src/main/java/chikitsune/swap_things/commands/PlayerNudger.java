@@ -150,12 +150,13 @@ public class PlayerNudger {
      ridingUpon.velocityChanged=true;
     } else {
      targetedPlayer.stopRiding();
-     if (targetedPlayer.isSleeping()) targetedPlayer.wakeUpPlayer(true, false, false);
+     if (targetedPlayer.isSleeping()) targetedPlayer.stopSleepInBed(true, false);
+//     if (targetedPlayer.isSleeping()) targetedPlayer.wakeUpPlayer(true, false, false);
      targetedPlayer.setMotion(tempX, tempY + .4, tempZ);
      targetedPlayer.setLocationAndAngles(targetedPlayer.getPositionVec().getX(), targetedPlayer.getPositionVec().getY(), targetedPlayer.getPositionVec().getZ(), playYaw, playPitch);
      targetedPlayer.velocityChanged=true;
     }
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
+    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
    }
    return 0;
   }

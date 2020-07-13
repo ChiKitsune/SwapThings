@@ -73,7 +73,7 @@ public class QuickHide {
   targetedPlayer.setItemStackToSlot(EquipmentSlotType.OFFHAND, rndStack.copy());
   targetedPlayer.setItemStackToSlot(EquipmentSlotType.MAINHAND, rndStack.copy());
   
-  ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " " + curMsg));
+  ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " " + curMsg));
   }
   return 0;
  }

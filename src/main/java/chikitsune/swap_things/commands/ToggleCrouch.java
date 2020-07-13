@@ -6,6 +6,8 @@ import java.util.Collections;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -26,13 +28,13 @@ public class ToggleCrouch {
  }
   
   private static int toggleCrouchLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
-//   Boolean sneakPressed=false;
+   Boolean sneakPressed=false;
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-//   sneakPressed=Minecraft.getInstance().gameSettings.keyBindSneak.isKeyDown();
-//   KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSneak.getKey(),!sneakPressed);
-   targetedPlayer.setSneaking(!targetedPlayer.isSneaking());
+   sneakPressed=Minecraft.getInstance().gameSettings.keyBindSneak.isKeyDown();
+   KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSneak.getKey(),!sneakPressed);
+//   targetedPlayer.setSneaking(!targetedPlayer.isCrouching());
    
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getFormattedText() + TextFormatting.GOLD + " let " + fromName + " decide if they should be sneaking or not."));
+   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " let " + fromName + " decide if they should be sneaking or not."));
    }
    return 0;
   }

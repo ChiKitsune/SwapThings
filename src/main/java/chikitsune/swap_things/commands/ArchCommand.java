@@ -14,7 +14,9 @@ import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SChatPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -23,24 +25,25 @@ public class ArchCommand {
  
  public static void register(final CommandDispatcher<CommandSource> dispatcher) {
   dispatcher.register(
-    Commands.literal("swapthings")
-     .then(QuickHide.register())
-     .then(SwapLocation.register())
-     .then(SwapArmor.register())
-     .then(ShuffleHotbar.register())
-     .then(ShuffleInventory.register())
-     .then(ToggleRun.register())
-     .then(ToggleCrouch.register())
-     .then(SwapHands.register())
-     .then(InventorySlotClearer.register())
-     .then(PlayerNudger.register())
-     .then(HeldEnchanting.register())
-     .then(InventorySlotEnchanting.register())
-     .then(SwapIdentity.register())
-     .then(InventoryBomb.register())
-     .then(SummonMount.register())
-     .then(ShuffleInventoryNames.register())
-     .then(InventorySlotRenamer.register())
+    Commands.literal("swapthings")    
+    .then(HeldEnchanting.register())
+    .then(InventoryBomb.register())
+    .then(InventoryEqualizer.register())
+    .then(InventorySlotClearer.register())
+    .then(InventorySlotEnchanting.register())
+    .then(InventorySlotRenamer.register())
+    .then(PlayerNudger.register())
+    .then(QuickHide.register())
+    .then(ShuffleHotbar.register())
+    .then(ShuffleInventory.register())
+    .then(ShuffleInventoryNames.register())
+    .then(SummonMount.register())
+    .then(SwapArmor.register())
+    .then(SwapHands.register())
+    .then(SwapIdentity.register())
+    .then(SwapLocation.register())
+    .then(ToggleCrouch.register())
+    .then(ToggleRun.register())
     );
  }
  
@@ -82,29 +85,31 @@ public class ArchCommand {
   Integer iCnt=0;
   strMsg=TextFormatting.getTextWithoutFormattingCodes(strMsg);
   
-  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.RED + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.func_230529_a_(new StringTextComponent(TextFormatting.RED + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.GOLD + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.func_230529_a_(new StringTextComponent(TextFormatting.GOLD + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.YELLOW + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.func_230529_a_(new StringTextComponent(TextFormatting.YELLOW + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.GREEN + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.func_230529_a_(new StringTextComponent(TextFormatting.GREEN + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.BLUE + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.func_230529_a_(new StringTextComponent(TextFormatting.BLUE + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.DARK_PURPLE + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.func_230529_a_(new StringTextComponent(TextFormatting.DARK_PURPLE + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.LIGHT_PURPLE + strMsg.substring(iCnt)));
+  newStrMsg.func_230529_a_(new StringTextComponent(TextFormatting.LIGHT_PURPLE + strMsg.substring(iCnt)));
   
   return newStrMsg;
  }
  
  public static void playerMsger(CommandSource source,Collection<ServerPlayerEntity> targetPlayers,StringTextComponent msg) {
   if (Configs.COMMAND_MSG_ALL_SERVER.get().booleanValue()) {
-   source.getServer().getPlayerList().sendMessage(msg);
+//   source.getServer().getPlayerList().func_232641_a_(msg);
+   source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(msg,ChatType.SYSTEM,targetPlayers.stream().findFirst().get().getUniqueID()));
+   
   } else {
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-    targetedPlayer.sendMessage(msg);
+    targetedPlayer.sendMessage(msg,targetedPlayer.getUniqueID());
    }
   } 
   SwappingThings.LOGGER.info(msg.getUnformattedComponentText());

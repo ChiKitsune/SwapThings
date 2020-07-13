@@ -9,18 +9,23 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.google.common.collect.Lists;
 
+import chikitsune.swap_things.SwappingThings;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 
-@Mod.EventBusSubscriber
+//@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = SwappingThings.MODID, bus = Bus.MOD)
 public class Configs {
  
  public static final String CATEGORY_GENERAL = "general";
  public static final String CATEGORY_COMMANDS = "commands";
  public static final String SUBCATEGORY_CMD_PLAYERNUDGER = "playernudger command";
  public static final String SUBCATEGORY_CMD_QUICKHIDE = "quickhide command";
+ public static final String SUBCATEGORY_CMD_SUMMONMOUNT = "summonmount command";
 
  private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
  private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
@@ -61,6 +66,8 @@ public class Configs {
  
  public static ForgeConfigSpec.ConfigValue<String> INVENTORY_BOMB_ITEM;
  
+ public static ConfigValue<List<? extends String>> SUMMONMOUNT_EXCLUDE_LIST;
+ 
  static {
   COMMON_BUILDER.comment("General settings").push(CATEGORY_GENERAL);
   COMMON_BUILDER.pop();
@@ -70,6 +77,7 @@ public class Configs {
   
   setupPlayerNudgerConfigs();
 //  setupQuickHideConfigs();
+//  setupSummonMountConfigs();
   
   INVENTORY_BOMB_ITEM= COMMON_BUILDER.comment("Item that will replace all inventory slots with after items are dropped").define("inventoryBombItem", "minecraft:dead_bush");
   
@@ -120,8 +128,22 @@ public class Configs {
   quiHidList.add(Lists.newArrayList("minecraft:feather","quick act like a chicken!"));
   quiHidList.add(Lists.newArrayList("minecraft:painting","quick blend into the wall!"));
   
-//  QUICKHIDE_LIST=COMMON_BUILDER.comment("List of random options that can be choosen when using quickhide command")
+//  QUICKHIDE_LIST=COMMON_BUILDER.comment("List of random options that can be chosen when using quickhide command")
 //    .defineList("Quick Hide Options", quiHidList, null);
+  
+  COMMON_BUILDER.pop();
+ }
+ 
+ private static void setupSummonMountConfigs() {
+  COMMON_BUILDER.comment("SummonMount Command settings").push(SUBCATEGORY_CMD_SUMMONMOUNT);
+  
+  List<String> sumMountList=Lists.newArrayList();
+  sumMountList.add("minecraft:wither");
+  
+  SUMMONMOUNT_EXCLUDE_LIST=COMMON_BUILDER
+    .comment("List of entities for SummonMount command to EXCLUDE from possible entities")
+    .defineList("SummonMount", sumMountList, null)
+    ;
   
   COMMON_BUILDER.pop();
  }
@@ -144,6 +166,6 @@ public class Configs {
  }
 
  @SubscribeEvent
- public static void onReload(final ModConfig.ConfigReloading configEvent) {
+ public static void onReload(final ModConfig.Reloading configEvent) {
  }
 }
