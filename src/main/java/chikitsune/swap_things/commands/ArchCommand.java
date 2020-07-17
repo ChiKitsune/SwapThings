@@ -33,7 +33,9 @@ public class ArchCommand {
     .then(InventorySlotEnchanting.register())
     .then(InventorySlotRenamer.register())
     .then(PlayerNudger.register())
+//    .then(PlayerRotate.register())
     .then(QuickHide.register())
+    .then(RandomTeleport.register())
     .then(ShuffleHotbar.register())
     .then(ShuffleInventory.register())
     .then(ShuffleInventoryNames.register())
@@ -41,6 +43,7 @@ public class ArchCommand {
     .then(SwapArmor.register())
     .then(SwapHands.register())
     .then(SwapIdentity.register())
+    .then(SwapInventoryNames.register())
     .then(SwapLocation.register())
     .then(ToggleCrouch.register())
     .then(ToggleRun.register())
@@ -103,7 +106,7 @@ public class ArchCommand {
  }
  
  public static void playerMsger(CommandSource source,Collection<ServerPlayerEntity> targetPlayers,StringTextComponent msg) {
-  if (Configs.COMMAND_MSG_ALL_SERVER.get().booleanValue()) {
+  if (Configs.cmdMsgAllServer) {
 //   source.getServer().getPlayerList().func_232641_a_(msg);
    source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(msg,ChatType.SYSTEM,targetPlayers.stream().findFirst().get().getUniqueID()));
    

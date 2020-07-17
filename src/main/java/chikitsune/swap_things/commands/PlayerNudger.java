@@ -41,16 +41,16 @@ public class PlayerNudger {
     tempX=0;
     tempY=0;
     tempZ=0;
-    dirNorth=Configs.PLAYERNUDGER_NORTH_CHANCE.get();
-    dirNorthEast=Configs.PLAYERNUDGER_NORTHEAST_CHANCE.get();
-    dirEast=Configs.PLAYERNUDGER_EAST_CHANCE.get();
-    dirSouthEast=Configs.PLAYERNUDGER_SOUTHEAST_CHANCE.get();
-    dirSouth=Configs.PLAYERNUDGER_SOUTH_CHANCE.get();
-    dirSouthWest=Configs.PLAYERNUDGER_SOUTHWEST_CHANCE.get();
-    dirWest=Configs.PLAYERNUDGER_WEST_CHANCE.get();
-    dirNorthWest=Configs.PLAYERNUDGER_NORTHWEST_CHANCE.get();
-    dirUp=Configs.PLAYERNUDGER_UP_CHANCE.get();
-    dirDown=Configs.PLAYERNUDGER_DOWN_CHANCE.get();
+    dirNorth=Configs.playerNudgerNorthChance;
+    dirNorthEast=Configs.playerNudgerNorthEastChance;
+    dirEast=Configs.playerNudgerEastChance;
+    dirSouthEast=Configs.playerNudgerSouthEastChance;
+    dirSouth=Configs.playerNudgerSouthChance;
+    dirSouthWest=Configs.playerNudgerSouthWestChance;
+    dirWest=Configs.playerNudgerWestChance;
+    dirNorthWest=Configs.playerNudgerNorthWestChance;
+    dirUp=Configs.playerNudgerUpChance;
+    dirDown=Configs.playerNudgerDownChance;
     tempXLook=Math.round(targetedPlayer.getLookVec().getX()*4);
     tempZLook=Math.round(targetedPlayer.getLookVec().getZ()*4);
     lookDirStr="";
@@ -80,36 +80,36 @@ public class PlayerNudger {
   }
   switch(lookDirStr) {
    case "NORTH": 
-    dirNorth*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirSouth*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
-    dirWest*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirEast*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    dirNorth*=Configs.playerNudgerForwardMultiplier; dirSouth*=Configs.playerNudgerBackwardMultiplier;
+    dirWest*=Configs.playerNudgerLeftMultiplier; dirEast*=Configs.playerNudgerRightMultiplier;
     break;
    case "NORTHEAST":
-    dirNorthEast*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirSouthWest*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
-    dirNorthWest*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirSouthEast*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    dirNorthEast*=Configs.playerNudgerForwardMultiplier; dirSouthWest*=Configs.playerNudgerBackwardMultiplier;
+    dirNorthWest*=Configs.playerNudgerLeftMultiplier; dirSouthEast*=Configs.playerNudgerRightMultiplier;
     break;
    case "EAST":
-    dirEast*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirWest*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
-    dirNorth*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirSouth*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    dirEast*=Configs.playerNudgerForwardMultiplier; dirWest*=Configs.playerNudgerBackwardMultiplier;
+    dirNorth*=Configs.playerNudgerLeftMultiplier; dirSouth*=Configs.playerNudgerRightMultiplier;
     break;
    case "SOUTHEAST":
-    dirSouthEast*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirNorthWest*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
-    dirNorthEast*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirSouthWest*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    dirSouthEast*=Configs.playerNudgerForwardMultiplier; dirNorthWest*=Configs.playerNudgerBackwardMultiplier;
+    dirNorthEast*=Configs.playerNudgerLeftMultiplier; dirSouthWest*=Configs.playerNudgerRightMultiplier;
     break;
    case "SOUTH":
-    dirSouth*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirNorth*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
-    dirEast*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirWest*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    dirSouth*=Configs.playerNudgerForwardMultiplier; dirNorth*=Configs.playerNudgerBackwardMultiplier;
+    dirEast*=Configs.playerNudgerLeftMultiplier; dirWest*=Configs.playerNudgerRightMultiplier;
     break;
    case "SOUTHWEST":
-    dirSouthWest*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirNorthEast*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
-    dirSouthEast*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirNorthWest*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    dirSouthWest*=Configs.playerNudgerForwardMultiplier; dirNorthEast*=Configs.playerNudgerBackwardMultiplier;
+    dirSouthEast*=Configs.playerNudgerLeftMultiplier; dirNorthWest*=Configs.playerNudgerRightMultiplier;
     break;
    case "WEST":
-    dirWest*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirEast*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
-    dirSouth*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirNorth*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    dirWest*=Configs.playerNudgerForwardMultiplier; dirEast*=Configs.playerNudgerBackwardMultiplier;
+    dirSouth*=Configs.playerNudgerLeftMultiplier; dirNorth*=Configs.playerNudgerRightMultiplier;
     break;
    case "NORTHWEST":
-    dirNorthWest*=Configs.PLAYERNUDGER_FORWARD_MULTIPLIER.get(); dirSouthEast*=Configs.PLAYERNUDGER_BACKWARD_MULTIPLIER.get();
-    dirSouthWest*=Configs.PLAYERNUDGER_LEFT_MULTIPLIER.get(); dirNorthEast*=Configs.PLAYERNUDGER_RIGHT_MULTIPLIER.get();
+    dirNorthWest*=Configs.playerNudgerForwardMultiplier; dirSouthEast*=Configs.playerNudgerBackwardMultiplier;
+    dirSouthWest*=Configs.playerNudgerLeftMultiplier; dirNorthEast*=Configs.playerNudgerRightMultiplier;
     break;
     default:
     break;
@@ -120,25 +120,25 @@ public class PlayerNudger {
     playPitch=targetedPlayer.getPitchYaw().y;
     
     if (0 <= randTemp && randTemp <dirNorth) {
-     tempX=0;tempZ=-Configs.PLAYERNUDGER_NORTH_STRENGTH.get(); directionStr="north"; playYaw=-180;
+     tempX=0;tempZ=-Configs.playerNudgerNorthStrength; directionStr="north"; playYaw=-180;
     } else if (dirNorth <= randTemp && randTemp <dirNorth+dirNorthEast) {
-     tempX=Configs.PLAYERNUDGER_NORTHEAST_STRENGTH.get();tempZ=-Configs.PLAYERNUDGER_NORTHEAST_STRENGTH.get(); directionStr="northeast"; playYaw=-135;
+     tempX=Configs.playerNudgerNorthEastStrength; tempZ=-Configs.playerNudgerNorthEastStrength; directionStr="northeast"; playYaw=-135;
     } else if (dirNorth+dirNorthEast <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast) {
-     tempX=Configs.PLAYERNUDGER_EAST_STRENGTH.get();tempZ=0; directionStr="east"; playYaw=-90;
+     tempX=Configs.playerNudgerEastStrength; tempZ=0; directionStr="east"; playYaw=-90;
     } else if (dirNorth+dirNorthEast+dirEast <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast) {
-     tempX=Configs.PLAYERNUDGER_SOUTHEAST_STRENGTH.get();tempZ=Configs.PLAYERNUDGER_SOUTHEAST_STRENGTH.get(); directionStr="southeast"; playYaw=-45;
+     tempX=Configs.playerNudgerSouthEastStrength;tempZ=Configs.playerNudgerSouthEastStrength; directionStr="southeast"; playYaw=-45;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth) {
-     tempX=0;tempZ=Configs.PLAYERNUDGER_SOUTH_STRENGTH.get(); directionStr="south"; playYaw=0;
+     tempX=0;tempZ=Configs.playerNudgerSouthStrength; directionStr="south"; playYaw=0;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest) {
-     tempX=-Configs.PLAYERNUDGER_SOUTHWEST_STRENGTH.get();tempZ=Configs.PLAYERNUDGER_SOUTHWEST_STRENGTH.get(); directionStr="southwest"; playYaw=45;
+     tempX=-Configs.playerNudgerSouthWestStrength; tempZ=Configs.playerNudgerSouthWestStrength; directionStr="southwest"; playYaw=45;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest) {
-     tempX=-Configs.PLAYERNUDGER_WEST_STRENGTH.get();tempZ=0; directionStr="west"; playYaw=90;
+     tempX=-Configs.playerNudgerWestStrength; tempZ=0; directionStr="west"; playYaw=90;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest) {
-     tempX=-Configs.PLAYERNUDGER_NORTHWEST_STRENGTH.get();tempZ=-Configs.PLAYERNUDGER_NORTHWEST_STRENGTH.get(); directionStr="northwest"; playYaw=135;
+     tempX=-Configs.playerNudgerNorthWestStrength; tempZ=-Configs.playerNudgerNorthWestStrength; directionStr="northwest"; playYaw=135;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp) {
-     tempY=Configs.PLAYERNUDGER_UP_STRENGTH.get(); directionStr ="up"; playPitch=-90;
+     tempY=Configs.playerNudgerUpStrength; directionStr ="up"; playPitch=-90;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp+dirDown) {
-     tempY=-Configs.PLAYERNUDGER_DOWN_STRENGTH.get()-.4; directionStr ="down"; playPitch=90;
+     tempY=-Configs.playerNudgerDownStrength-.4; directionStr ="down"; playPitch=90;
     } else {
      directionStr ="nowhere";
     }

@@ -43,7 +43,7 @@ public class InventoryBomb {
   ItemStack defItemStack=ItemStack.EMPTY;
   ItemStack tempItemStack=ItemStack.EMPTY;
 
-  defItemStack=new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(Configs.INVENTORY_BOMB_ITEM.get())));
+  defItemStack=new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(Configs.inventoryBombItem)));
   if (defItemStack.isEmpty()) defItemStack=new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:dead_bush")));
   defItemStack.setCount(defItemStack.getMaxStackSize());
   

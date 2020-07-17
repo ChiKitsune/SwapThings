@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
-import chikitsune.swap_things.SwappingThings;
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -47,7 +47,8 @@ public class SummonMount {
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {    
      do {
       tempEnt=lstSummEnt.get(rand.nextInt(lstSummEnt.size()));
-     } while (SwappingThings.sumMountList.contains(tempEnt.getRegistryName().toString()));
+//     } while (SwappingThings.sumMountList.contains(tempEnt.getRegistryName().toString()));
+     } while (Configs.summonMountExcludeList.contains(tempEnt.getRegistryName().toString()));
 //     newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.getPosition(),SpawnReason.COMMAND,true,true);
      newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.func_233580_cy_(),SpawnReason.COMMAND,true,true);
      if (newMount instanceof TameableEntity) {

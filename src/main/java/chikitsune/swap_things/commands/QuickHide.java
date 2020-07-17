@@ -9,7 +9,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import chikitsune.swap_things.SwappingThings;
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -45,9 +45,9 @@ public class QuickHide {
 
   try {
    if (itemInput==null && message == null) {
-    Integer newRanNum=rand.nextInt(SwappingThings.quiHidList.size());
-    rndStack=iaStack.parse(new StringReader(SwappingThings.quiHidList.get(newRanNum).get(0))).createStack(1, false);
-    curMsg=SwappingThings.quiHidList.get(newRanNum).get(1);
+    Integer newRanNum=rand.nextInt(Configs.quickHideList.size());
+    rndStack=iaStack.parse(new StringReader(Configs.quickHideList.get(newRanNum).split(",")[0])).createStack(1, false);
+    curMsg=Configs.quickHideList.get(newRanNum).split(",")[1];
    } else {
     rndStack=itemInput.createStack(1, false);
     curMsg=message;

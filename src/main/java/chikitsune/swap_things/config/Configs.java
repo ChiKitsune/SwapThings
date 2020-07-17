@@ -3,7 +3,7 @@ package chikitsune.swap_things.config;
 import java.nio.file.Path;
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
@@ -11,7 +11,10 @@ import com.google.common.collect.Lists;
 
 import chikitsune.swap_things.SwappingThings;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -20,133 +23,51 @@ import net.minecraftforge.fml.config.ModConfig;
 //@Mod.EventBusSubscriber
 @Mod.EventBusSubscriber(modid = SwappingThings.MODID, bus = Bus.MOD)
 public class Configs {
- 
- public static final String CATEGORY_GENERAL = "general";
- public static final String CATEGORY_COMMANDS = "commands";
- public static final String SUBCATEGORY_CMD_PLAYERNUDGER = "playernudger command";
- public static final String SUBCATEGORY_CMD_QUICKHIDE = "quickhide command";
- public static final String SUBCATEGORY_CMD_SUMMONMOUNT = "summonmount command";
 
- private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
- private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
-
- public static ForgeConfigSpec COMMON_CONFIG;
- public static ForgeConfigSpec CLIENT_CONFIG;
- 
- @Nonnull
- public static ForgeConfigSpec.BooleanValue COMMAND_MSG_ALL_SERVER;
- 
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_NORTH_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_NORTH_STRENGTH;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_NORTHEAST_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_NORTHEAST_STRENGTH;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_EAST_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_EAST_STRENGTH;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_SOUTHEAST_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_SOUTHEAST_STRENGTH;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_SOUTH_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_SOUTH_STRENGTH;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_SOUTHWEST_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_SOUTHWEST_STRENGTH;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_WEST_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_WEST_STRENGTH;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_NORTHWEST_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_NORTHWEST_STRENGTH;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_UP_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_UP_STRENGTH;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_DOWN_CHANCE;
- public static ForgeConfigSpec.DoubleValue PLAYERNUDGER_DOWN_STRENGTH;
- 
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_FORWARD_MULTIPLIER;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_BACKWARD_MULTIPLIER;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_LEFT_MULTIPLIER;
- public static ForgeConfigSpec.IntValue PLAYERNUDGER_RIGHT_MULTIPLIER;
- 
- public static ForgeConfigSpec.ConfigValue<List<List<String>>> QUICKHIDE_LIST;
- 
- public static ForgeConfigSpec.ConfigValue<String> INVENTORY_BOMB_ITEM;
- 
- public static ConfigValue<List<? extends String>> SUMMONMOUNT_EXCLUDE_LIST;
- 
+ public static final SwapThingsConfig STCONFIG;
+ public static final ForgeConfigSpec STCONFIG_SPEC;
  static {
-  COMMON_BUILDER.comment("General settings").push(CATEGORY_GENERAL);
-  COMMON_BUILDER.pop();
-  COMMON_BUILDER.comment("Command settings").push(CATEGORY_COMMANDS);
-  
-  COMMAND_MSG_ALL_SERVER= COMMON_BUILDER.comment("Command messages show to all players on server.").define("msgAllPlayers", false);
-  
-  setupPlayerNudgerConfigs();
-//  setupQuickHideConfigs();
-//  setupSummonMountConfigs();
-  
-  INVENTORY_BOMB_ITEM= COMMON_BUILDER.comment("Item that will replace all inventory slots with after items are dropped").define("inventoryBombItem", "minecraft:dead_bush");
-  
-  COMMON_BUILDER.pop();
-  
-  COMMON_CONFIG = COMMON_BUILDER.build();
-//  CLIENT_CONFIG = CLIENT_BUILDER.build();
- }
-
- private static void setupPlayerNudgerConfigs() {
-  COMMON_BUILDER.comment("PlayerNudger Command settings").push(SUBCATEGORY_CMD_PLAYERNUDGER);
-  
-  PLAYERNUDGER_NORTH_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge North").defineInRange("North chance",4,0,100);
-  PLAYERNUDGER_NORTH_STRENGTH= COMMON_BUILDER.comment("Strength of playernudger command nudging North").defineInRange("North strength",.7,0,10);
-  PLAYERNUDGER_NORTHEAST_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge Northeast").defineInRange("Northeast chance",2,0,100);
-  PLAYERNUDGER_NORTHEAST_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command nudging Northeast").defineInRange("Northeast strength",.7,0,10);
-  PLAYERNUDGER_EAST_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge East").defineInRange("East chance",4,0,100);
-  PLAYERNUDGER_EAST_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge East").defineInRange("East strength",.7,0,10);
-  PLAYERNUDGER_SOUTHEAST_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge Southeast").defineInRange("Southeast chance",2,0,100);
-  PLAYERNUDGER_SOUTHEAST_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge Southeast").defineInRange("Southeast strength",.7,0,10);
-  PLAYERNUDGER_SOUTH_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge South").defineInRange("South chance",4,0,100);
-  PLAYERNUDGER_SOUTH_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge South").defineInRange("South strength",.7,0,10);
-  PLAYERNUDGER_SOUTHWEST_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge Southwest").defineInRange("Southwest chance",2,0,100);
-  PLAYERNUDGER_SOUTHWEST_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge Southwest").defineInRange("Southwest strength",.7,0,10);
-  PLAYERNUDGER_WEST_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge West").defineInRange("West chance",4,0,100);
-  PLAYERNUDGER_WEST_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge West").defineInRange("West strength",.7,0,10);
-  PLAYERNUDGER_NORTHWEST_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge Northwest").defineInRange("Northwest chance",2,0,100);
-  PLAYERNUDGER_NORTHWEST_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge Northwest").defineInRange("Northwest strength",.7,0,10);
-  PLAYERNUDGER_UP_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge Up").defineInRange("Up chance",1,0,100);
-  PLAYERNUDGER_UP_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge Up").defineInRange("Up strength",.7,0,10);
-  PLAYERNUDGER_DOWN_CHANCE= COMMON_BUILDER.comment("Chance for playernudger command to nudge Down").defineInRange("Down chance",0,0,100);
-  PLAYERNUDGER_DOWN_STRENGTH= COMMON_BUILDER.comment("Strength for playernudger command to nudge Down").defineInRange("Down strength",.7,0,10);
-  
-  PLAYERNUDGER_FORWARD_MULTIPLIER= COMMON_BUILDER.comment("Multiplier to increase the chance to nudge where the player is looking").defineInRange("Forward Multiplier",1,0,100);
-  PLAYERNUDGER_BACKWARD_MULTIPLIER= COMMON_BUILDER.comment("Multiplier to increase the chance to nudge opposite where the player is looking").defineInRange("Backward Multiplier",1,0,100);
-  PLAYERNUDGER_LEFT_MULTIPLIER= COMMON_BUILDER.comment("Multiplier to increase the chance to nudge the player to the right").defineInRange("Left Multiplier",1,0,100);
-  PLAYERNUDGER_RIGHT_MULTIPLIER= COMMON_BUILDER.comment("Multiplier to increase the chance to nudge the player to the left").defineInRange("Right Multiplier",1,0,100);
-  
-  COMMON_BUILDER.pop();
+  final Pair<SwapThingsConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(SwapThingsConfig::new);
+  STCONFIG_SPEC= specPair.getRight();
+  STCONFIG= specPair.getLeft();
  }
  
- private static void setupQuickHideConfigs() {
-  COMMON_BUILDER.comment("QuickHide Command settings").push(SUBCATEGORY_CMD_QUICKHIDE);
-  
-  List<List<String>> quiHidList=Lists.newArrayList();
-  quiHidList.add(Lists.newArrayList("minecraft:deadbush","quick hide in these bushes!"));
-  quiHidList.add(Lists.newArrayList("minecraft:wheat","quick hide in the wheat field!"));
-  quiHidList.add(Lists.newArrayList("minecraft:feather","quick act like a chicken!"));
-  quiHidList.add(Lists.newArrayList("minecraft:painting","quick blend into the wall!"));
-  
-//  QUICKHIDE_LIST=COMMON_BUILDER.comment("List of random options that can be chosen when using quickhide command")
-//    .defineList("Quick Hide Options", quiHidList, null);
-  
-  COMMON_BUILDER.pop();
- }
+ public static boolean cmdMsgAllServer;
+ public static String inventoryBombItem;
  
- private static void setupSummonMountConfigs() {
-  COMMON_BUILDER.comment("SummonMount Command settings").push(SUBCATEGORY_CMD_SUMMONMOUNT);
-  
-  List<String> sumMountList=Lists.newArrayList();
-  sumMountList.add("minecraft:wither");
-  
-  SUMMONMOUNT_EXCLUDE_LIST=COMMON_BUILDER
-    .comment("List of entities for SummonMount command to EXCLUDE from possible entities")
-    .defineList("SummonMount", sumMountList, null)
-    ;
-  
-  COMMON_BUILDER.pop();
- }
+ public static int playerNudgerNorthChance;
+ public static Double playerNudgerNorthStrength;
+ public static int playerNudgerNorthEastChance;
+ public static Double playerNudgerNorthEastStrength;
+ public static int playerNudgerEastChance;
+ public static Double playerNudgerEastStrength;
+ public static int playerNudgerSouthEastChance;
+ public static Double playerNudgerSouthEastStrength;
+ public static int playerNudgerSouthChance;
+ public static Double playerNudgerSouthStrength;
+ public static int playerNudgerSouthWestChance;
+ public static Double playerNudgerSouthWestStrength;
+ public static int playerNudgerWestChance;
+ public static Double playerNudgerWestStrength;
+ public static int playerNudgerNorthWestChance;
+ public static Double playerNudgerNorthWestStrength;
+ public static int playerNudgerUpChance;
+ public static Double playerNudgerUpStrength;
+ public static int playerNudgerDownChance;
+ public static Double playerNudgerDownStrength;  
+ public static int playerNudgerForwardMultiplier;
+ public static int playerNudgerBackwardMultiplier;
+ public static int playerNudgerLeftMultiplier;
+ public static int playerNudgerRightMultiplier;
+ public static int randomTeleportXMax;
+ public static int randomTeleportYMax;
+ public static int randomTeleportZMax;
+ public static int randomTeleportXMin;
+ public static int randomTeleportYMin;
+ public static int randomTeleportZMin;
+ public static List<String> quickHideList=Lists.newArrayList("minecraft:deadbush,quick hide in these bushes!","minecraft:wheat,quick hide in the wheat field!"
+   ,"minecraft:feather,quick act like a chicken!","minecraft:painting,quick blend into the wall!");
+ public static List<String> summonMountExcludeList=Lists.newArrayList("minecraft:wither","minecraft:ender_dragon");
  
  public static void loadConfig(ForgeConfigSpec spec, Path path) {
 
@@ -168,4 +89,185 @@ public class Configs {
  @SubscribeEvent
  public static void onReload(final ModConfig.Reloading configEvent) {
  }
+ 
+ @SubscribeEvent
+ public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
+  if (configEvent.getConfig().getSpec() == STCONFIG_SPEC) bakeConfig();
+ }
+ 
+ public static void bakeConfig() {
+  cmdMsgAllServer=STCONFIG.cmdMsgAllServer.get();
+  inventoryBombItem=STCONFIG.inventoryBombItem.get();
+  
+  playerNudgerNorthChance=STCONFIG.playerNudgerNorthChance.get();
+  playerNudgerNorthStrength=STCONFIG.playerNudgerNorthStrength.get();
+  playerNudgerNorthEastChance=STCONFIG.playerNudgerNorthEastChance.get();
+  playerNudgerNorthEastStrength=STCONFIG.playerNudgerNorthEastStrength.get();
+  playerNudgerEastChance=STCONFIG.playerNudgerEastChance.get();
+  playerNudgerEastStrength=STCONFIG.playerNudgerEastStrength.get();
+  playerNudgerSouthEastChance=STCONFIG.playerNudgerSouthEastChance.get();
+  playerNudgerSouthEastStrength=STCONFIG.playerNudgerSouthEastStrength.get();
+  playerNudgerSouthChance=STCONFIG.playerNudgerSouthChance.get();
+  playerNudgerSouthStrength=STCONFIG.playerNudgerSouthStrength.get();
+  playerNudgerSouthWestChance=STCONFIG.playerNudgerSouthWestChance.get();
+  playerNudgerSouthWestStrength=STCONFIG.playerNudgerSouthWestStrength.get();
+  playerNudgerWestChance=STCONFIG.playerNudgerWestChance.get();
+  playerNudgerWestStrength=STCONFIG.playerNudgerWestStrength.get();
+  playerNudgerNorthWestChance=STCONFIG.playerNudgerNorthWestChance.get();
+  playerNudgerNorthWestStrength=STCONFIG.playerNudgerNorthWestStrength.get();
+  playerNudgerUpChance=STCONFIG.playerNudgerUpChance.get();
+  playerNudgerUpStrength=STCONFIG.playerNudgerUpStrength.get();
+  playerNudgerDownChance=STCONFIG.playerNudgerDownChance.get();
+  playerNudgerDownStrength=STCONFIG.playerNudgerDownStrength.get();
+  playerNudgerForwardMultiplier=STCONFIG.playerNudgerForwardMultiplier.get();
+  playerNudgerBackwardMultiplier=STCONFIG.playerNudgerBackwardMultiplier.get();
+  playerNudgerLeftMultiplier=STCONFIG.playerNudgerLeftMultiplier.get();
+  playerNudgerRightMultiplier=STCONFIG.playerNudgerRightMultiplier.get();
+  
+  randomTeleportXMax=STCONFIG.randomTeleportXMax.get();
+  randomTeleportYMax=STCONFIG.randomTeleportYMax.get();
+  randomTeleportZMax=STCONFIG.randomTeleportZMax.get();
+  randomTeleportXMin=STCONFIG.randomTeleportXMin.get();
+  randomTeleportYMin=STCONFIG.randomTeleportYMin.get();
+  randomTeleportZMin=STCONFIG.randomTeleportZMin.get();
+  
+//  quickHideList=(List<String>) STCONFIG.quickHideList.get();
+//  summonMountExcludeList=(List<String>) STCONFIG.summonMountExcludeList.get();
+ }
+ 
+ public static class SwapThingsConfig {
+  public final BooleanValue cmdMsgAllServer;
+  public final ConfigValue<String> inventoryBombItem;
+  
+  public final IntValue playerNudgerNorthChance;
+  public final DoubleValue playerNudgerNorthStrength;
+  public final IntValue playerNudgerNorthEastChance;
+  public final DoubleValue playerNudgerNorthEastStrength;
+  public final IntValue playerNudgerEastChance;
+  public final DoubleValue playerNudgerEastStrength;
+  public final IntValue playerNudgerSouthEastChance;
+  public final DoubleValue playerNudgerSouthEastStrength;
+  public final IntValue playerNudgerSouthChance;
+  public final DoubleValue playerNudgerSouthStrength;
+  public final IntValue playerNudgerSouthWestChance;
+  public final DoubleValue playerNudgerSouthWestStrength;
+  public final IntValue playerNudgerWestChance;
+  public final DoubleValue playerNudgerWestStrength;
+  public final IntValue playerNudgerNorthWestChance;
+  public final DoubleValue playerNudgerNorthWestStrength;
+  public final IntValue playerNudgerUpChance;
+  public final DoubleValue playerNudgerUpStrength;
+  public final IntValue playerNudgerDownChance;
+  public final DoubleValue playerNudgerDownStrength;
+  public final IntValue playerNudgerForwardMultiplier;
+  public final IntValue playerNudgerBackwardMultiplier;
+  public final IntValue playerNudgerLeftMultiplier;
+  public final IntValue playerNudgerRightMultiplier;
+  public final IntValue randomTeleportXMax;
+  public final IntValue randomTeleportYMax;
+  public final IntValue randomTeleportZMax;
+  public final IntValue randomTeleportXMin;
+  public final IntValue randomTeleportYMin;
+  public final IntValue randomTeleportZMin;
+  
+//  public final ConfigValue<List<? extends String>> quickHideList;
+//  public final ConfigValue<List<? extends String>> summonMountExcludeList;
+  
+  
+  
+  public SwapThingsConfig(ForgeConfigSpec.Builder builder) {
+   builder.comment("Command Settings").push("commands");
+   builder.push("general");
+   cmdMsgAllServer=builder.comment("Command messages show to all players on server.").define("msgAllPlayers", false);
+   builder.pop();
+   
+//   InventoryBomb config start
+   builder.comment("InventoryBomb Command Settings").push("InventoryBomb");
+   inventoryBombItem=builder.comment("Item that will replace all inventory slots with after items are dropped").define("inventoryBombItem", "minecraft:dead_bush");
+   builder.pop();
+//   InventoryBomb config end
+   
+//   PlayerNudger config end
+   builder.comment("PlayerNudger Command Settings").push("PlayerNudger");
+   builder.push("North");
+   playerNudgerNorthChance=builder.comment("Chance for playernudger command to nudge North").defineInRange("North_Chance",4,0,100);
+   playerNudgerNorthStrength=builder.comment("Strength of playernudger command nudging North").defineInRange("North_Strength",.7,0,10);
+   builder.pop().push("NorthEast");
+   playerNudgerNorthEastChance=builder.comment("Chance for playernudger command to nudge Northeast").defineInRange("Northeast_Chance",2,0,100);
+   playerNudgerNorthEastStrength=builder.comment("Strength for playernudger command nudging Northeast").defineInRange("Northeast_Strength",.7,0,10);
+   builder.pop().push("East");
+   playerNudgerEastChance=builder.comment("Chance for playernudger command to nudge East").defineInRange("East_Chance",4,0,100);
+   playerNudgerEastStrength=builder.comment("Strength for playernudger command to nudge East").defineInRange("East_Strength",.7,0,10);
+   builder.pop().push("SouthEast");
+   playerNudgerSouthEastChance=builder.comment("Chance for playernudger command to nudge Southeast").defineInRange("Southeast_Chance",2,0,100);
+   playerNudgerSouthEastStrength=builder.comment("Strength for playernudger command to nudge Southeast").defineInRange("Southeast_Strength",.7,0,10);
+   builder.pop().push("South");
+   playerNudgerSouthChance=builder.comment("Chance for playernudger command to nudge South").defineInRange("South_Chance",4,0,100);
+   playerNudgerSouthStrength=builder.comment("Strength for playernudger command to nudge South").defineInRange("South_Strength",.7,0,10);
+   builder.pop().push("SouthWest");
+   playerNudgerSouthWestChance=builder.comment("Chance for playernudger command to nudge Southwest").defineInRange("Southwest_Chance",2,0,100);
+   playerNudgerSouthWestStrength=builder.comment("Strength for playernudger command to nudge Southwest").defineInRange("Southwest_Strength",.7,0,10);
+   builder.pop().push("West");
+   playerNudgerWestChance=builder.comment("Chance for playernudger command to nudge West").defineInRange("West_Chance",4,0,100);
+   playerNudgerWestStrength=builder.comment("Strength for playernudger command to nudge West").defineInRange("West_Strength",.7,0,10);
+   builder.pop().push("NorthWest");
+   playerNudgerNorthWestChance=builder.comment("Chance for playernudger command to nudge Northwest").defineInRange("Northwest_Chance",2,0,100);
+   playerNudgerNorthWestStrength=builder.comment("Strength for playernudger command to nudge Northwest").defineInRange("Northwest_Strength",.7,0,10);
+   builder.pop().push("Up");
+   playerNudgerUpChance=builder.comment("Chance for playernudger command to nudge Up").defineInRange("Up_Chance",1,0,100);
+   playerNudgerUpStrength=builder.comment("Strength for playernudger command to nudge Up").defineInRange("Up_Strength",.7,0,10);
+   builder.pop().push("Down");
+   playerNudgerDownChance=builder.comment("Chance for playernudger command to nudge Down").defineInRange("Down_Chance",0,0,100);
+   playerNudgerDownStrength=builder.comment("Strength for playernudger command to nudge Down").defineInRange("Down_Strength",.7,0,10);
+   builder.pop().push("PlayerFacingDirections");
+   playerNudgerForwardMultiplier=builder.comment("Multiplier to increase the chance to nudge where the player is looking").defineInRange("Forward_Multiplier",1,0,100);
+   playerNudgerBackwardMultiplier=builder.comment("Multiplier to increase the chance to nudge opposite where the player is looking").defineInRange("Backward_Multiplier",1,0,100);
+   playerNudgerLeftMultiplier=builder.comment("Multiplier to increase the chance to nudge the player to the right").defineInRange("Left_Multiplier",1,0,100);
+   playerNudgerRightMultiplier=builder.comment("Multiplier to increase the chance to nudge the player to the left").defineInRange("Right_Multiplier",1,0,100);
+   builder.pop(2);
+//   PlayerNudger config end
+   
+//   RandomTeleport config start
+   builder.comment("RandomTeleport Command Settings").push("RandomTeleport");
+   builder.push("X Axis");
+   randomTeleportXMax=builder.comment("Max Block +/- range on the X Axis that could teleport along").defineInRange("randomTeleportXMax", 500, 1, 100000);
+   randomTeleportXMin=builder.comment("Min Block +/- range on the X Axis that could teleport along").defineInRange("randomTeleportXMin", 100, 1, 100000);
+   builder.pop().push("Y Axis");
+   randomTeleportYMax=builder.comment("Max Block +/- range on the Y Axis that could teleport along").defineInRange("randomTeleportYMax", 10, 0, 255);
+   randomTeleportYMin=builder.comment("Min Block +/- range on the Y Axis that could teleport along").defineInRange("randomTeleportYMin", 0, 0, 255);
+   builder.pop().push("Z Axis");
+   randomTeleportZMax=builder.comment("Max Block +/- range on the Z Axis that could teleport along").defineInRange("randomTeleportZMax", 500, 1, 100000);
+   randomTeleportZMin=builder.comment("Min Block +/- range on the Z Axis that could teleport along").defineInRange("randomTeleportZMin", 100, 1, 100000);
+   builder.pop(2);
+//   RandomTeleport config end
+   
+////   QuickHide config start
+//   builder.comment("QuickHide Command settings").push("QuickHide");
+//   
+//   List<String> quiHidList=Lists.newArrayList();
+//   quiHidList.add("minecraft:deadbush,quick hide in these bushes!");
+//   quiHidList.add("minecraft:wheat,quick hide in the wheat field!");
+//   quiHidList.add("minecraft:feather,quick act like a chicken!");
+//   quiHidList.add("minecraft:painting,quick blend into the wall!");
+//   
+//   quickHideList=builder.comment("List of random options that can be chosen when using quickhide command").defineList("Quick Hide Options", quiHidList, null);
+//   builder.pop();
+////   QuickHide config end
+   
+////   SummonMount config start
+//   builder.comment("SummonMount Command settings").push("SummonMount");
+//   
+//   List<String> sumMountList=Lists.newArrayList();
+//   sumMountList.add("minecraft:wither");
+//   sumMountList.add("minecraft:ender_dragon");
+//     
+//   summonMountExcludeList=builder.comment("List of entities for SummonMount command to EXCLUDE from possible entities").defineList("SummonMount", sumMountList, null);
+//   builder.pop();
+////   SummonMount config end
+   
+   builder.pop();
+  }  
+ }
+ 
+ 
 }

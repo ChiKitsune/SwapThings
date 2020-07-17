@@ -24,7 +24,6 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(SwappingThings.MODID)
 @Mod.EventBusSubscriber(modid = SwappingThings.MODID, bus = Bus.MOD)
@@ -36,12 +35,12 @@ public class SwappingThings {
  public static final String MODID = "swap_things";
  public static final String NAME = "Swapping Things";
  
- public static List<List<String>> quiHidList;
- public static List<String> sumMountList;
+// public static List<List<String>> quiHidList;
+// public static List<String> sumMountList;
  
  public SwappingThings() {
 //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Configs.CLIENT_CONFIG);
-ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configs.COMMON_CONFIG);
+ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configs.STCONFIG_SPEC);
 //Register the setup method for modloading
 FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 // Register the enqueueIMC method for modloading
@@ -55,7 +54,7 @@ FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff)
 MinecraftForge.EVENT_BUS.register(this);
 
 //Configs.loadConfig(Configs.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-client.toml"));
-Configs.loadConfig(Configs.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-common.toml"));
+//Configs.loadConfig(Configs.STCONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-common.toml"));
 }
 
 private void setup(final FMLCommonSetupEvent event) {
@@ -86,15 +85,15 @@ private void processIMC(final InterModProcessEvent event) {
 public void onServerStarting(FMLServerStartingEvent event) {
 // do something when the server starts
 //LOGGER.info("HELLO from server starting");
-SwappingThings.quiHidList=Lists.newArrayList();
-SwappingThings.quiHidList.add(Lists.newArrayList("minecraft:deadbush","quick hide in these bushes!"));
-SwappingThings.quiHidList.add(Lists.newArrayList("minecraft:wheat","quick hide in the wheat field!"));
-SwappingThings.quiHidList.add(Lists.newArrayList("minecraft:feather","quick act like a chicken!"));
-SwappingThings.quiHidList.add(Lists.newArrayList("minecraft:painting","quick blend into the wall!"));
-
-SwappingThings.sumMountList=Lists.newArrayList();
-SwappingThings.sumMountList.add("minecraft:wither");
-SwappingThings.sumMountList.add("minecraft:ender_dragon");
+//SwappingThings.quiHidList=Lists.newArrayList();
+//SwappingThings.quiHidList.add(Lists.newArrayList("minecraft:deadbush","quick hide in these bushes!"));
+//SwappingThings.quiHidList.add(Lists.newArrayList("minecraft:wheat","quick hide in the wheat field!"));
+//SwappingThings.quiHidList.add(Lists.newArrayList("minecraft:feather","quick act like a chicken!"));
+//SwappingThings.quiHidList.add(Lists.newArrayList("minecraft:painting","quick blend into the wall!"));
+//
+//SwappingThings.sumMountList=Lists.newArrayList();
+//SwappingThings.sumMountList.add("minecraft:wither");
+//SwappingThings.sumMountList.add("minecraft:ender_dragon");
 
 //SwappingThings.sumMountList=(List<String>) Configs.SUMMONMOUNT_EXCLUDE_LIST.get();
 }
