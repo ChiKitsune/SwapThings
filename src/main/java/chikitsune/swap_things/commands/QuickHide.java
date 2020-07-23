@@ -26,7 +26,7 @@ public class QuickHide {
  public static Random rand= new Random();
  
  public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("quickhide").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
+  return Commands.literal("quickhide").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
    return quickhideLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),null,null);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return quickhideLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null,null);

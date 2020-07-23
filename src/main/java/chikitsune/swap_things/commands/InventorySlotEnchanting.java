@@ -10,6 +10,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EnchantmentArgument;
@@ -26,7 +27,7 @@ public class InventorySlotEnchanting {
  public static Random rand= new Random();
  
  public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("inventoryslotenchanting").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
+  return Commands.literal("inventoryslotenchanting").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
    return inventorySlotEnchantingLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),null,"someone",null,null);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return inventorySlotEnchantingLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null,"someone",null,null);

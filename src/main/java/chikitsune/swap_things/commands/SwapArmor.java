@@ -8,6 +8,7 @@ import java.util.Random;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.commands.arguments.RandomArmorSlotArgument;
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -22,7 +23,7 @@ public class SwapArmor {
  public static List<String> realArmorList = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD");
   
  public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("swaparmor").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
+  return Commands.literal("swaparmor").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
    return swapArmorLogic(cmd_0arg.getSource(),"RANDOM",cmd_0arg.getSource().asPlayer(),cmd_0arg.getSource().asPlayer());
   }).then(Commands.argument("armorType", RandomArmorSlotArgument.allArmorSlots()).executes((cmd_1arg) -> {
    return swapArmorLogic(cmd_1arg.getSource(),RandomArmorSlotArgument.getRandomArmorSlot(cmd_1arg, "armorType"),cmd_1arg.getSource().asPlayer(),cmd_1arg.getSource().asPlayer());

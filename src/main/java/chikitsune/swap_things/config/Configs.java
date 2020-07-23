@@ -34,6 +34,7 @@ public class Configs {
  
  public static boolean cmdMsgAllServer;
  public static String inventoryBombItem;
+ public static int cmdSTPermissionsLevel;
  
  public static int playerNudgerNorthChance;
  public static Double playerNudgerNorthStrength;
@@ -98,6 +99,7 @@ public class Configs {
  public static void bakeConfig() {
   cmdMsgAllServer=STCONFIG.cmdMsgAllServer.get();
   inventoryBombItem=STCONFIG.inventoryBombItem.get();
+  cmdSTPermissionsLevel=STCONFIG.cmdSTPermissionsLevel.get();
   
   playerNudgerNorthChance=STCONFIG.playerNudgerNorthChance.get();
   playerNudgerNorthStrength=STCONFIG.playerNudgerNorthStrength.get();
@@ -138,6 +140,7 @@ public class Configs {
  public static class SwapThingsConfig {
   public final BooleanValue cmdMsgAllServer;
   public final ConfigValue<String> inventoryBombItem;
+  public final IntValue cmdSTPermissionsLevel;
   
   public final IntValue playerNudgerNorthChance;
   public final DoubleValue playerNudgerNorthStrength;
@@ -179,6 +182,7 @@ public class Configs {
    builder.comment("Command Settings").push("commands");
    builder.push("general");
    cmdMsgAllServer=builder.comment("Command messages show to all players on server.").define("msgAllPlayers", false);
+   cmdSTPermissionsLevel=builder.comment("Sets all command to be this permission level.").defineInRange("cmdPermissionsLevel", 2, 0, 4);
    builder.pop();
    
 //   InventoryBomb config start

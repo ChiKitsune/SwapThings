@@ -25,7 +25,9 @@ public class ArchCommand {
  
  public static void register(final CommandDispatcher<CommandSource> dispatcher) {
   dispatcher.register(
-    Commands.literal("swapthings")    
+    Commands.literal("swapthings")
+    .then(DisconnectPlayer.register())
+    .then(DisplayDeathBoard.register())
     .then(HeldEnchanting.register())
     .then(InventoryBomb.register())
     .then(InventoryEqualizer.register())

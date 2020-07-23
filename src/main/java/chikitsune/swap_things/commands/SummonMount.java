@@ -28,7 +28,7 @@ public class SummonMount {
  public static Random rand= new Random();
 
  public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("summonmount").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
+  return Commands.literal("summonmount").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
    return summonMountLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),"someone");
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return summonMountLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone");

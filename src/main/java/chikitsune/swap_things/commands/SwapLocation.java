@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -17,7 +18,7 @@ import net.minecraft.world.server.ServerWorld;
 public class SwapLocation {
  
  public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("swaplocation").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(0); }).executes((cmd_0arg) -> {
+  return Commands.literal("swaplocation").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
    return swapLocationLogic(cmd_0arg.getSource(),cmd_0arg.getSource().asPlayer(),cmd_0arg.getSource().asPlayer());
   }).then(Commands.argument("targetedPlayerOne", EntityArgument.players()).executes((cmd_1arg) -> {
    return swapLocationLogic(cmd_1arg.getSource(),EntityArgument.getPlayer(cmd_1arg, "targetedPlayerOne"),cmd_1arg.getSource().asPlayer());
