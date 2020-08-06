@@ -78,8 +78,10 @@ public class InventorySlotRenamer {
    
    tempStack=targetedPlayer.inventory.getStackInSlot(selectedSlotNum);
    if (!tempStack.isEmpty()) {
-    prevItemName=targetedPlayer.inventory.getStackInSlot(selectedSlotNum).getDisplayName().getUnformattedComponentText();
-   targetedPlayer.inventory.getStackInSlot(selectedSlotNum).setDisplayName(new StringTextComponent(strPref + tempStack.getDisplayName().getUnformattedComponentText()));
+    prevItemName=targetedPlayer.inventory.getStackInSlot(selectedSlotNum).getDisplayName().getString();
+    targetedPlayer.inventory.getStackInSlot(selectedSlotNum).setDisplayName(new StringTextComponent(strPref + tempStack.getDisplayName().getString()));
+//    prevItemName=targetedPlayer.inventory.getStackInSlot(selectedSlotNum).getDisplayName().getUnformattedComponentText();
+//    targetedPlayer.inventory.getStackInSlot(selectedSlotNum).setDisplayName(new StringTextComponent(strPref + tempStack.getDisplayName().getUnformattedComponentText()));
    
    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + TextFormatting.RED + targetedPlayer.getName().getString() + "'s " + TextFormatting.GOLD + prevItemName + " should be theirs."));
    }

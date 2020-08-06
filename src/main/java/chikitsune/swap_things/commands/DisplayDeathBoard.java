@@ -1,7 +1,6 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -25,15 +24,13 @@ public class DisplayDeathBoard {
   
   
   private static int displayDeathBoardLogic(CommandSource source) {
-   List<ServerPlayerEntity> plyList=source.getWorld().getPlayers();
-   plyList.sort(Comparator.comparing(pl ->pl.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS))));
-   
-   Collections.reverse(plyList);
-   
+   List<ServerPlayerEntity> plyList=new ArrayList<ServerPlayerEntity>(source.getServer().getPlayerList().getPlayers());
+   //List<ServerPlayerEntity> plyList=source.getWorld().getPlayers();
+//   plyList.forEach((s)->System.out.println(s));
+//   plyList.sort(Comparator.comparing(pl ->pl.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS))));
+   plyList.sort((ServerPlayerEntity spe1, ServerPlayerEntity spe2) -> spe2.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS))-spe1.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS)));
    String placeStrPre = null,placeStrPost = null;
-   
    source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(new StringTextComponent(TextFormatting.GOLD + "** DEATH LEADERBOARD **"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUniqueID()));
-   System.out.println("iS="+plyList.size());
    for(int i = 0; i < plyList.size(); i++) {
     int c=i+1;
     if (plyList.get(i).getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS))==0) continue; 
@@ -52,7 +49,6 @@ public class DisplayDeathBoard {
      case 5: placeStrPost=" tried to rely on their ancient ancestors only to end up outdated advice."; break;
      default: placeStrPost=" some other people who showed a small bit of their spirit."; break;
     }
-    System.out.println("i="+i+" "+c);
     source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(new StringTextComponent(
       TextFormatting.GOLD + placeStrPre + 
       TextFormatting.DARK_RED + plyList.get(i).getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS)) +
@@ -60,9 +56,7 @@ public class DisplayDeathBoard {
       TextFormatting.RED + plyList.get(i).getName().getUnformattedComponentText() +
       TextFormatting.WHITE + placeStrPost
       ),ChatType.SYSTEM,plyList.stream().findFirst().get().getUniqueID()));
-    System.out.println("endish "+i);
    }
-   System.out.println("final");
    source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(new StringTextComponent(TextFormatting.GOLD + "*********************************"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUniqueID()));
    return 0;
   }

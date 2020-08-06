@@ -49,7 +49,8 @@ public class ShuffleInventoryNames {
      tempItem=targetedPlayer.inventory.getStackInSlot(i);
      if (!tempItem.isEmpty()) {
       if (tempFirstNonEmpty==null) tempFirstNonEmpty=i;       
-       tempItemName=new StringTextComponent(strPref + tempItem.getDisplayName().getUnformattedComponentText());
+       //tempItemName=new StringTextComponent(strPref + tempItem.getDisplayName().getUnformattedComponentText());
+      tempItemName=new StringTextComponent(strPref + tempItem.getDisplayName().getString());
        tempItem.setDisplayName(prevItemName);
        prevItemName=tempItemName;
       }

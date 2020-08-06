@@ -35,6 +35,7 @@ public class Configs {
  public static boolean cmdMsgAllServer;
  public static String inventoryBombItem;
  public static int cmdSTPermissionsLevel;
+ public static String disconnectMsg;
  
  public static int playerNudgerNorthChance;
  public static Double playerNudgerNorthStrength;
@@ -100,6 +101,7 @@ public class Configs {
   cmdMsgAllServer=STCONFIG.cmdMsgAllServer.get();
   inventoryBombItem=STCONFIG.inventoryBombItem.get();
   cmdSTPermissionsLevel=STCONFIG.cmdSTPermissionsLevel.get();
+  disconnectMsg=STCONFIG.disconnectMsg.get();
   
   playerNudgerNorthChance=STCONFIG.playerNudgerNorthChance.get();
   playerNudgerNorthStrength=STCONFIG.playerNudgerNorthStrength.get();
@@ -141,6 +143,7 @@ public class Configs {
   public final BooleanValue cmdMsgAllServer;
   public final ConfigValue<String> inventoryBombItem;
   public final IntValue cmdSTPermissionsLevel;
+  public final ConfigValue<String> disconnectMsg;
   
   public final IntValue playerNudgerNorthChance;
   public final DoubleValue playerNudgerNorthStrength;
@@ -190,6 +193,12 @@ public class Configs {
    inventoryBombItem=builder.comment("Item that will replace all inventory slots with after items are dropped").define("inventoryBombItem", "minecraft:dead_bush");
    builder.pop();
 //   InventoryBomb config end
+   
+// InventoryBomb config start
+ builder.comment("DisconnectPlayer Command Settings").push("DisconnectPlayer");
+ disconnectMsg=builder.comment("Message to show when disconnected").define("disconnectMsg", " and had a Dark PANIC moment and some how left the server.");
+ builder.pop();
+// InventoryBomb config end
    
 //   PlayerNudger config end
    builder.comment("PlayerNudger Command Settings").push("PlayerNudger");

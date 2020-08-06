@@ -27,10 +27,11 @@ public class DisconnectPlayer {
  }
   
   private static int disconnectPlayerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
+   String disMsg=Configs.disconnectMsg;
    
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getUnformattedComponentText() + TextFormatting.GOLD + " was surprised by " + fromName + " and had a Dark PANIC moment and some how left the server."));;
-    targetedPlayer.connection.disconnect(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getUnformattedComponentText() + TextFormatting.GOLD + " was surprised by " + fromName + " and had a Dark PANIC moment and some how left the server."));
+    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getUnformattedComponentText() + TextFormatting.GOLD + " was surprised by " + fromName + disMsg));;
+    targetedPlayer.connection.disconnect(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getUnformattedComponentText() + TextFormatting.GOLD + " was surprised by " + fromName + disMsg));
    }
    return 0;
   }
