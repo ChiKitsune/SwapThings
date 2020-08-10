@@ -11,7 +11,6 @@ import chikitsune.swap_things.config.Configs;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
@@ -34,8 +33,7 @@ public class InventorySlotRenamer {
  
  private static int inventorySlotRenamerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName, String slotNum) {
   ItemStack tempStack=ItemStack.EMPTY;
-  Enchantment tempEnch;
-  Integer iCnt=0,tempEnchLevel=0;
+  Integer iCnt=0;
   Integer selectedSlotNum=null;
   Float slotNumParsed=null;
   Integer modFloatResult=null;

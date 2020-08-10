@@ -41,7 +41,7 @@ public static Random rand= new Random();
    String strPref="",strMsgFromName="Someone";
    List<ItemStack> tempInventory=null,tempBUInventory;
    ServerPlayerEntity targetedPlayerTwo;
-   boolean isSamePerson=true;   
+   boolean isSamePerson=true;
    
 //   tempInventory=ForgeRegistries.ITEMS.getValues().stream().map(ItemStack::new).collect(Collectors.toList());
 //   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent("1"+tempInventory.get(1).getDisplayName().getString()));
@@ -53,7 +53,7 @@ public static Random rand= new Random();
    
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
     targetedPlayerTwo=ArchCommand.getNewRandomSecondTarget(targetedPlayer, targetedPlayer, source.getServer());
-    isSamePerson=(targetedPlayer.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()); 
+    isSamePerson=(targetedPlayer.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText());
     prevItemName=null;
     
     if (!isSamePerson) {
@@ -78,8 +78,6 @@ public static Random rand= new Random();
       tempInventory.remove(tempRandNum);
      }
     }
-    
-    
     
     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
    }   

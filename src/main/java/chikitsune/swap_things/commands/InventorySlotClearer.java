@@ -33,7 +33,6 @@ public class InventorySlotClearer {
  }
   
   private static int inventorySlotClearerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String slotNum, String fromName) {
-   Boolean sneakPressed=false;
    Integer selectedSlotNum=null;
    Float slotNumParsed=null;
    Integer modFloatResult=null;
