@@ -41,9 +41,9 @@ public static Random rand= new Random();
    boolean attTele=false,tempChk=false;
    
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {    
-    plyX=targetedPlayer.func_233580_cy_().getX();
-    plyY=targetedPlayer.func_233580_cy_().getY();
-    plyZ=targetedPlayer.func_233580_cy_().getZ();
+    plyX=targetedPlayer.getPosition().getX();
+    plyY=targetedPlayer.getPosition().getY();
+    plyZ=targetedPlayer.getPosition().getZ();
     
     do {
      do { teleX=rand.nextInt((rngXMax*2)+1) - rngXMax; } while (!(Math.abs(teleX)>=rngXMin && Math.abs(teleX)<=rngXMax));

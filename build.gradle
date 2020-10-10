@@ -1,10 +1,3 @@
-import groovy.transform.Field
-
-import java.util.jar.Attributes
-import java.util.jar.JarFile
-import java.util.jar.Manifest
-import java.util.zip.ZipInputStream
-
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -20,23 +13,25 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-final commitId
-
-if (hasProperty("grgit")) { // If there's a valid Git repository, get the latest commit ID
-    commitId = "${grgit.head().abbreviatedId}"
-} else { // Else fall back to NOGIT
-    commitId = "NOGIT"
-}
-
-version = "${mc_version}-${mod_version}"
-//version = "${mc_version}-${mod_version}-${commitId}"
-group = "${package_group}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "${mod_name}"
+version = "${project.mc_version}-${project.mod_version}"
+group = "${project.package_group}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "${project.mod_name}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: project.mappings_channel, version: project.mappings_version
+    // The mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   Snapshot are built nightly.
+    // stable_#            Stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // Simply re-run your setup task after changing the mappings to update your workspace.
+    //mappings channel: 'snapshot', version: '20200514-1.16'
+    //mappings channel: project.mappings_channel, version: project.mcp_version
+    mappings channel: 'snapshot', version: "${mcp_version}"
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -51,7 +46,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                swap_things {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -67,7 +62,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                swap_things {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -75,119 +70,63 @@ minecraft {
     }
 }
 
-
-repositories {
-    mavenCentral()
-    maven { url = "http://dvs1.progwml6.com/files/maven/" }
-    maven { url = "https://tehnut.info/maven/" }
-    maven { url = 'https://jitpack.io/' }
-}
-
-configurations {
-    embed {
-        transitive = false
-    }
-
-    compile.extendsFrom embed
-}
-
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    //minecraft 'net.minecraftforge:forge:1.16.3-34.0.2'
+    minecraft "net.minecraftforge:forge:${project.mc_version}-${project.forge_version}"
+
+    // You may put jars on which you depend on in ./libs or you may define them like so..
+    // compile "some.group:artifact:version:classifier"
+    // compile "some.group:artifact:version"
+
+    // Real examples
+    // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
+    // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+
+    // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
+    // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // These dependencies get remapped to your current MCP mappings
+    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // For more info...
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-    options.compilerArgs.addAll(['-Xlint:unchecked', '-Xlint:deprecation'])
-}
-
-tasks.withType(Javadoc) {
-    options.encoding = 'UTF-8'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    from javadoc.destinationDir
-    classifier = 'javadoc'
-}
-
-artifacts {
-    archives javadocJar
-}
-
+// Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([
                 "Specification-Title"     : "Swapping Things",
                 "Specification-Vendor"    : "ChiKitsune",
-                "Specification-Version"   : "${mc_version}-${mod_version}",
+                "Specification-Version"   : "${project.mc_version}-${project.mod_version}",
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
+                "Implementation-Version"  : "${project.version}",
                 "Implementation-Vendor"   : "ChiKitsune",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
-// makeLibraryMetas task adapted from covers1624's ContainedDepsPlugin:
-// https://github.com/covers1624/GradleStuff
-// TODO: Contained dependencies are disabled in 1.14, re-evaluate when they're re-enabled
-@Field def MAVEN_ARTIFACT = new Attributes.Name("Maven-Artifact")
+// Example configuration to allow publishing using the maven-publish task
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar') 
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+//publish.dependsOn('reobfJar')
 
-task makeLibraryMetas {
-    outputs.upToDateWhen { false }
-
-    def temp = getTemporaryDir()
-    if (temp.exists()) {
-        delete temp.listFiles()
-    }
-
-    def configuration = configurations.embed
-
-    configuration.getResolvedConfiguration().getResolvedArtifacts().forEach { dep ->
-        def file = dep.getFile()
-        def mavenArtifact = dep.getId().getComponentIdentifier().toString()
-        if (!hasMavenArtifactAttribute(file)) {
-            def manifest = new Manifest()
-            def attributes = manifest.getMainAttributes()
-            attributes.put Attributes.Name.MANIFEST_VERSION, "1.0"
-            attributes.put MAVEN_ARTIFACT, mavenArtifact
-
-            new File(temp, file.getName() + ".meta").withOutputStream { os ->
-                manifest.write(os)
-            }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
         }
     }
-
-    def str = configuration.collect { file -> file.getName() }.join(" ")
-    def tasks = project.tasks.withType(Jar.class)
-    tasks.each { task -> task.from temp, { CopySpec spec -> spec.rename '(.+.jar.meta)', 'META-INF/libraries/$1' } }
-    tasks.each { task -> task.from configuration, { CopySpec spec -> spec.rename '(.+.jar)', 'META-INF/libraries/$1' } }
-    tasks.each { task -> task.getManifest().getAttributes().putAt 'ContainedDeps', str }
-}
-
-tasks.withType(Jar.class).each { task ->
-    task.dependsOn(makeLibraryMetas)
-}
-
-boolean hasMavenArtifactAttribute(File file) {
-    def zi = new ZipInputStream((InputStream) new FileInputStream(file))
-
-    def ze = zi.getNextEntry()
-    while (ze != null) {
-        if (ze.getName().equalsIgnoreCase(JarFile.MANIFEST_NAME)) {
-            def manifest = new Manifest((InputStream) zi)
-            if (manifest.getMainAttributes().containsKey(MAVEN_ARTIFACT)) {
-                zi.closeQuietly()
-                return true
-            }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
         }
-        ze = zi.getNextEntry()
     }
-
-    try {
-        zi.close()
-    }
-    catch (ignored) {
-    }
-
-    return false
 }

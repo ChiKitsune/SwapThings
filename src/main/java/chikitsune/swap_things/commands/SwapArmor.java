@@ -157,7 +157,7 @@ public class SwapArmor {
   txtMsg2=new StringTextComponent(TextFormatting.RED + targetedPlayerOne.getName().getString() + TextFormatting.GOLD + "'s " + targetedArmorOne.getDisplayName().getString().toLowerCase() + ".");
  }
   }
-  if (txtMsg2!=null) txtMsg.func_230529_a_(txtMsg2);
+  if (txtMsg2!=null) txtMsg.append(txtMsg2);
   return txtMsg;
  }
 }

@@ -41,14 +41,27 @@ public class DisplayDeathBoard {
      default: placeStrPre=c + "th: "; break;
     }
     
-    switch (c) {
-     case 1: placeStrPost=" has found what they are best at and will defend their spot to the death!"; break;
-     case 2: placeStrPost=" has found a new rival they never knew they had. Lets cheer them on."; break;
-     case 3: placeStrPost=" is grateful they made it this far but wish they had done better at this point."; break;
-     case 4: placeStrPost=" is lost in the confusion about their feelings on their rank."; break;
-     case 5: placeStrPost=" tried to rely on their ancient ancestors only to end up outdated advice."; break;
-     default: placeStrPost=" some other people who showed a small bit of their spirit."; break;
+    if (Configs.displayDeathBoardPlacesTextList.size()>0) {
+    int c_post=c-1;
+    if (c_post>Configs.displayDeathBoardPlacesTextList.size()) c_post=Configs.displayDeathBoardPlacesTextList.size()-1;
+    
+    if (Configs.displayDeathBoardPlacesTextList.get(c_post) != null) {
+    placeStrPost=Configs.displayDeathBoardPlacesTextList.get(c_post);
+    } else {
+     placeStrPost="";
     }
+    } else {
+     placeStrPost="";
+    }
+    
+//    switch (c) {
+//     case 1: placeStrPost=Configs.displayDeathBoardPlacesTextList.get(0); break;
+//     case 2: placeStrPost=" has found a new rival they never knew they had. Lets cheer them on."; break;
+//     case 3: placeStrPost=" is grateful they made it this far but wish they had done better at this point."; break;
+//     case 4: placeStrPost=" is lost in the confusion about their feelings on their rank."; break;
+//     case 5: placeStrPost=" tried to rely on their ancient ancestors only to end up outdated advice."; break;
+//     default: placeStrPost=" some other people who showed a small bit of their spirit."; break;
+//    }
     source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(new StringTextComponent(
       TextFormatting.GOLD + placeStrPre + 
       TextFormatting.DARK_RED + plyList.get(i).getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS)) +

@@ -1,6 +1,7 @@
 package chikitsune.swap_things.config;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -67,9 +68,10 @@ public class Configs {
  public static int randomTeleportXMin;
  public static int randomTeleportYMin;
  public static int randomTeleportZMin;
- public static List<String> quickHideList=Lists.newArrayList("minecraft:deadbush,quick hide in these bushes!","minecraft:wheat,quick hide in the wheat field!"
-   ,"minecraft:feather,quick act like a chicken!","minecraft:painting,quick blend into the wall!");
- public static List<String> summonMountExcludeList=Lists.newArrayList("minecraft:wither","minecraft:ender_dragon");
+ public static List<String> quickHideList;
+ public static List<String> summonMountExcludeList;
+ public static boolean summonMountCustomName;
+ public static List<String> displayDeathBoardPlacesTextList;
  
  public static void loadConfig(ForgeConfigSpec spec, Path path) {
 
@@ -135,8 +137,27 @@ public class Configs {
   randomTeleportYMin=STCONFIG.randomTeleportYMin.get();
   randomTeleportZMin=STCONFIG.randomTeleportZMin.get();
   
-//  quickHideList=(List<String>) STCONFIG.quickHideList.get();
-//  summonMountExcludeList=(List<String>) STCONFIG.summonMountExcludeList.get();
+  quickHideList= new ArrayList<>();
+  STCONFIG.quickHideList.get().forEach(str -> {
+   if (str!=null) {
+   quickHideList.add(str);
+   }
+  });
+  
+  summonMountExcludeList= new ArrayList<>();
+  STCONFIG.summonMountExcludeList.get().forEach(str -> {
+   if (str!=null) {
+   summonMountExcludeList.add(str);
+   }
+  });
+  summonMountCustomName=STCONFIG.summonMountCustomName.get();
+  
+  displayDeathBoardPlacesTextList= new ArrayList<>();
+  STCONFIG.displayDeathBoardPlacesTextList.get().forEach(str -> {
+   if (str!=null) {
+    displayDeathBoardPlacesTextList.add(str);
+    }
+   });
  }
  
  public static class SwapThingsConfig {
@@ -176,8 +197,12 @@ public class Configs {
   public final IntValue randomTeleportYMin;
   public final IntValue randomTeleportZMin;
   
-//  public final ConfigValue<List<? extends String>> quickHideList;
-//  public final ConfigValue<List<? extends String>> summonMountExcludeList;
+  public final ConfigValue<List<? extends String>> quickHideList;
+  
+  public final ConfigValue<List<? extends String>> summonMountExcludeList;
+  public final BooleanValue summonMountCustomName;
+  
+  public final ConfigValue<List<? extends String>> displayDeathBoardPlacesTextList;
   
   
   
@@ -194,11 +219,11 @@ public class Configs {
    builder.pop();
 //   InventoryBomb config end
    
-// InventoryBomb config start
+// DisconnectPlayer config start
  builder.comment("DisconnectPlayer Command Settings").push("DisconnectPlayer");
  disconnectMsg=builder.comment("Message to show when disconnected").define("disconnectMsg", " and had a Dark PANIC moment and some how left the server.");
  builder.pop();
-// InventoryBomb config end
+// DisconnectPlayer config end
    
 //   PlayerNudger config end
    builder.comment("PlayerNudger Command Settings").push("PlayerNudger");
@@ -254,29 +279,49 @@ public class Configs {
    builder.pop(2);
 //   RandomTeleport config end
    
-////   QuickHide config start
-//   builder.comment("QuickHide Command settings").push("QuickHide");
-//   
-//   List<String> quiHidList=Lists.newArrayList();
-//   quiHidList.add("minecraft:deadbush,quick hide in these bushes!");
-//   quiHidList.add("minecraft:wheat,quick hide in the wheat field!");
-//   quiHidList.add("minecraft:feather,quick act like a chicken!");
-//   quiHidList.add("minecraft:painting,quick blend into the wall!");
-//   
-//   quickHideList=builder.comment("List of random options that can be chosen when using quickhide command").defineList("Quick Hide Options", quiHidList, null);
-//   builder.pop();
-////   QuickHide config end
+//   QuickHide config start
+   builder.comment("QuickHide Command settings").push("QuickHide");
    
-////   SummonMount config start
-//   builder.comment("SummonMount Command settings").push("SummonMount");
-//   
-//   List<String> sumMountList=Lists.newArrayList();
-//   sumMountList.add("minecraft:wither");
-//   sumMountList.add("minecraft:ender_dragon");
-//     
-//   summonMountExcludeList=builder.comment("List of entities for SummonMount command to EXCLUDE from possible entities").defineList("SummonMount", sumMountList, null);
-//   builder.pop();
-////   SummonMount config end
+   List<String> quiHidList=Lists.newArrayList();
+   quiHidList.add("minecraft:dead_bush,quick hide in these bushes!");
+   quiHidList.add("minecraft:wheat,quick hide in the wheat field!");
+   quiHidList.add("minecraft:feather,quick act like a chicken!");
+   quiHidList.add("minecraft:painting,quick blend into the wall!");
+   
+   quickHideList=builder.comment("List of random options that can be chosen when using quickhide command").defineList("Quick Hide Options", quiHidList, s -> s instanceof String);
+   builder.pop();
+//   QuickHide config end
+   
+//   SummonMount config start
+   builder.comment("SummonMount Command settings").push("SummonMount");
+   
+   List<String> sumMountList=Lists.newArrayList();
+   sumMountList.add("minecraft:wither");
+   sumMountList.add("minecraft:ender_dragon");
+   
+   summonMountExcludeList=builder.comment("List of entities for SummonMount command to EXCLUDE from possible entities").defineList("SummonMount", sumMountList, s -> s instanceof String);
+   summonMountCustomName=builder.comment("Custom name for SummonMount entities.").define("summonMountCustomName", true);
+   
+   builder.pop();
+//   SummonMount config end
+   
+   
+// DisplayDeathBoard config start
+ builder.comment("DisplayDeathBoard Command settings").push("DisplayDeathBoard");
+ 
+ List<String> deathBoardList=Lists.newArrayList();
+ deathBoardList.add(" rip");
+// deathBoardList.add(" has found what they are best at and will defend their spot to the death!");
+// deathBoardList.add(" has found a new rival they never knew they had. Lets cheer them on.");
+// deathBoardList.add("is grateful they made it this far but wish they had done better at this point.");
+// deathBoardList.add(" is lost in the confusion about their feelings on their rank.");
+// deathBoardList.add(" tried to rely on their ancient ancestors only to end up outdated advice.");
+// deathBoardList.add(" some other people who showed a small bit of their spirit.");
+ 
+ displayDeathBoardPlacesTextList=builder.comment("List of strings to put at the end based on position. Ranks without a separate value will use whatever the last value is").defineList("SummonMount", deathBoardList, s -> s instanceof String);
+ 
+ builder.pop();
+// DisplayDeathBoard config end
    
    builder.pop();
   }  

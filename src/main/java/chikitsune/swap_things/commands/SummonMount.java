@@ -75,11 +75,13 @@ public class SummonMount {
      
      
 //     newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.getPosition(),SpawnReason.COMMAND,true,true);
-     newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.func_233580_cy_(),SpawnReason.COMMAND,true,true);
+     newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.getPosition(),SpawnReason.COMMAND,true,true);
      if (newMount instanceof TameableEntity) {
-      ((TameableEntity) newMount).setTamed(true);
       ((TameableEntity) newMount).setTamedBy(targetedPlayer);
+      ((TameableEntity) newMount).setTamed(true);
      }
+     newMount.setCustomName(ArchCommand.getRainbowizedStr(fromName));
+     newMount.setCustomNameVisible(true);
     targetedPlayer.getLowestRidingEntity().startRiding(newMount, true);
     
     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Nice ride! " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " got a new " + TextFormatting.AQUA + tempEnt.getName().getString() + TextFormatting.GOLD + " mount by " + fromName + "."));

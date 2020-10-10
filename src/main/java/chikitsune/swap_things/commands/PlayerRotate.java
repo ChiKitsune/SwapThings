@@ -39,7 +39,7 @@ public static Random rand= new Random();
 //    targetedPlayer.setRenderYawOffset((playYaw+rndYaw));
 //    targetedPlayer.setHeadRotation((playYaw+rndYaw), (int) targetedPlayer.getPitchYaw().y);
     
-    targetedPlayer.setLocationAndAngles(targetedPlayer.func_233580_cy_().getX(), targetedPlayer.func_233580_cy_().getY(), targetedPlayer.func_233580_cy_().getZ(), (playYaw+rndYaw)%360F, targetedPlayer.getPitchYaw().y);
+    targetedPlayer.setLocationAndAngles(targetedPlayer.getPosition().getX(), targetedPlayer.getPosition().getY(), targetedPlayer.getPosition().getZ(), (playYaw+rndYaw)%360F, targetedPlayer.getPitchYaw().y);
     targetedPlayer.getServerWorld().getChunkProvider().updatePlayerPosition(targetedPlayer);
     
     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent("org:"+playYaw+" rnd:"+rndYaw+" new:"+((playYaw+rndYaw)%360)));

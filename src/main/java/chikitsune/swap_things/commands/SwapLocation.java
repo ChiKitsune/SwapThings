@@ -30,9 +30,9 @@ public class SwapLocation {
   private static int swapLocationLogic(CommandSource source, ServerPlayerEntity targetedPlayerOne, ServerPlayerEntity targetedPlayerTwo) {
    if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) targetedPlayerTwo=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
    
-   Boolean isSameDim=(targetedPlayerOne.getEntityWorld().func_230315_m_() == targetedPlayerTwo.getEntityWorld().func_230315_m_());
-   DimensionType playerOneDim=targetedPlayerOne.getEntityWorld().func_230315_m_();
-   DimensionType playerTwoDim=targetedPlayerTwo.getEntityWorld().func_230315_m_();
+   Boolean isSameDim=(targetedPlayerOne.getEntityWorld().getDimensionType() == targetedPlayerTwo.getEntityWorld().getDimensionType());
+   DimensionType playerOneDim=targetedPlayerOne.getEntityWorld().getDimensionType();
+   DimensionType playerTwoDim=targetedPlayerTwo.getEntityWorld().getDimensionType();
    Vector3d playerOneVec=targetedPlayerOne.getPositionVec();
    Float playerOneYaw=targetedPlayerOne.rotationYaw;
    Float playerOnePitch=targetedPlayerOne.rotationPitch;
