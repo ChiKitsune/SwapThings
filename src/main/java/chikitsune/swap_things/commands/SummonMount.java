@@ -46,6 +46,7 @@ public class SummonMount {
  }
   
   private static int summonMountLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName, ResourceLocation targetMountRL) throws CommandSyntaxException {
+   Configs.bakeConfig();
    Entity newMount;
    EntityType tempEnt = null;
    ServerWorld serverworld = source.getWorld();

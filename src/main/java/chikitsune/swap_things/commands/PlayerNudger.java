@@ -31,6 +31,7 @@ public class PlayerNudger {
  }
   
   private static int playerNudgerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
+   Configs.bakeConfig();
    double tempX,tempY,tempZ,nudgeStrength=.7,tempXLook,tempZLook;
    Integer randTemp;
    String directionStr,lookDirStr;

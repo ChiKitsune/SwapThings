@@ -39,6 +39,7 @@ public class QuickHide {
  }
   
  private static int quickhideLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, ItemInput itemInput, String message) {
+  Configs.bakeConfig();
   ItemStack rndStack = ItemStack.EMPTY;
   String curMsg="quick use these to hide!";
   ItemArgument iaStack=new ItemArgument();

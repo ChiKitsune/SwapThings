@@ -11,6 +11,8 @@ import com.electronwill.nightconfig.core.io.WritingMode;
 import com.google.common.collect.Lists;
 
 import chikitsune.swap_things.SwappingThings;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.Items;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -213,9 +215,11 @@ public class Configs {
    cmdSTPermissionsLevel=builder.comment("Sets all command to be this permission level.").defineInRange("cmdPermissionsLevel", 2, 0, 4);
    builder.pop();
    
+   
+   
 //   InventoryBomb config start
    builder.comment("InventoryBomb Command Settings").push("InventoryBomb");
-   inventoryBombItem=builder.comment("Item that will replace all inventory slots with after items are dropped").define("inventoryBombItem", "minecraft:dead_bush");
+   inventoryBombItem=builder.comment("Item that will replace all inventory slots with after items are dropped").define("inventoryBombItem", Items.DEAD_BUSH.getRegistryName().toString());
    builder.pop();
 //   InventoryBomb config end
    
@@ -283,10 +287,10 @@ public class Configs {
    builder.comment("QuickHide Command settings").push("QuickHide");
    
    List<String> quiHidList=Lists.newArrayList();
-   quiHidList.add("minecraft:dead_bush,quick hide in these bushes!");
-   quiHidList.add("minecraft:wheat,quick hide in the wheat field!");
-   quiHidList.add("minecraft:feather,quick act like a chicken!");
-   quiHidList.add("minecraft:painting,quick blend into the wall!");
+   quiHidList.add(Items.DEAD_BUSH.getRegistryName().toString()+",quick hide in these bushes!");
+   quiHidList.add(Items.WHEAT.getRegistryName().toString()+",quick hide in the wheat field!");
+   quiHidList.add(Items.FEATHER.getRegistryName().toString()+",quick act like a chicken!");
+   quiHidList.add(Items.PAINTING.getRegistryName().toString()+",quick blend into the wall!");
    
    quickHideList=builder.comment("List of random options that can be chosen when using quickhide command").defineList("Quick Hide Options", quiHidList, s -> s instanceof String);
    builder.pop();
@@ -296,8 +300,10 @@ public class Configs {
    builder.comment("SummonMount Command settings").push("SummonMount");
    
    List<String> sumMountList=Lists.newArrayList();
-   sumMountList.add("minecraft:wither");
-   sumMountList.add("minecraft:ender_dragon");
+   sumMountList.add(EntityType.WITHER.getRegistryName().toString());
+   sumMountList.add(EntityType.ENDER_DRAGON.getRegistryName().toString());
+   
+   
    
    summonMountExcludeList=builder.comment("List of entities for SummonMount command to EXCLUDE from possible entities").defineList("SummonMount", sumMountList, s -> s instanceof String);
    summonMountCustomName=builder.comment("Custom name for SummonMount entities.").define("summonMountCustomName", true);
@@ -318,7 +324,7 @@ public class Configs {
 // deathBoardList.add(" tried to rely on their ancient ancestors only to end up outdated advice.");
 // deathBoardList.add(" some other people who showed a small bit of their spirit.");
  
- displayDeathBoardPlacesTextList=builder.comment("List of strings to put at the end based on position. Ranks without a separate value will use whatever the last value is").defineList("SummonMount", deathBoardList, s -> s instanceof String);
+ displayDeathBoardPlacesTextList=builder.comment("List of strings to put at the end based on position. Ranks without a separate value will use whatever the last value is").defineList("DisplayDeathBoard", deathBoardList, s -> s instanceof String);
  
  builder.pop();
 // DisplayDeathBoard config end
