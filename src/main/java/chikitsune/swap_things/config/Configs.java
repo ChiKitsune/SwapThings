@@ -73,6 +73,7 @@ public class Configs {
  public static List<String> quickHideList;
  public static List<String> summonMountExcludeList;
  public static boolean summonMountCustomName;
+ public static boolean summonMountTamed;
  public static List<String> displayDeathBoardPlacesTextList;
  
  public static void loadConfig(ForgeConfigSpec spec, Path path) {
@@ -153,6 +154,7 @@ public class Configs {
    }
   });
   summonMountCustomName=STCONFIG.summonMountCustomName.get();
+  summonMountTamed=STCONFIG.summonMountTamed.get();
   
   displayDeathBoardPlacesTextList= new ArrayList<>();
   STCONFIG.displayDeathBoardPlacesTextList.get().forEach(str -> {
@@ -203,6 +205,7 @@ public class Configs {
   
   public final ConfigValue<List<? extends String>> summonMountExcludeList;
   public final BooleanValue summonMountCustomName;
+  public final BooleanValue summonMountTamed;
   
   public final ConfigValue<List<? extends String>> displayDeathBoardPlacesTextList;
   
@@ -307,6 +310,7 @@ public class Configs {
    
    summonMountExcludeList=builder.comment("List of entities for SummonMount command to EXCLUDE from possible entities").defineList("SummonMount", sumMountList, s -> s instanceof String);
    summonMountCustomName=builder.comment("Custom name for SummonMount entities.").define("summonMountCustomName", true);
+   summonMountTamed=builder.comment("Try to summon entity already tamed.").define("summonMountTamed", true);
    
    builder.pop();
 //   SummonMount config end

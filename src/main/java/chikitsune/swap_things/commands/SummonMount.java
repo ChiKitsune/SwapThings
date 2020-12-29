@@ -20,6 +20,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -54,18 +55,14 @@ public class SummonMount {
    CompoundNBT compoundnbt = new CompoundNBT();
    Boolean randMount=true;
    if(targetMountRL!=null) {
-    randMount=false;   
-   
+    randMount=false;
    compoundnbt.putString("id", targetMountRL.toString());
    }
    
    
-   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+   for(ServerPlayerEntity targetedPlayer : targetPlayers) {    
     if (randMount) {
-//     do {
       tempEnt=lstSummEnt.get(rand.nextInt(lstSummEnt.size()));
-//     } while (SwappingThings.sumMountList.contains(tempEnt.getRegistryName().toString()));
-//     } while (!(tempEnt.create(null) instanceof LivingEntity));
     } else {
      if(EntityType.readEntityType(compoundnbt).isPresent()) {
       tempEnt=EntityType.readEntityType(compoundnbt).get();
@@ -74,13 +71,14 @@ public class SummonMount {
      }
     }
      
-     
-//     newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.getPosition(),SpawnReason.COMMAND,true,true);
      newMount=tempEnt.spawn(source.getWorld(),new CompoundNBT(),null,null,targetedPlayer.getPosition(),SpawnReason.COMMAND,true,true);
-     if (newMount instanceof TameableEntity) {
+     if (newMount instanceof TameableEntity && Configs.summonMountTamed) {
       ((TameableEntity) newMount).setTamedBy(targetedPlayer);
       ((TameableEntity) newMount).setTamed(true);
+     } else if (newMount instanceof AbstractHorseEntity && Configs.summonMountTamed) {
+      ((AbstractHorseEntity) newMount).setHorseTamed(true);
      }
+     
      newMount.setCustomName(ArchCommand.getRainbowizedStr(fromName));
      newMount.setCustomNameVisible(true);
     targetedPlayer.getLowestRidingEntity().startRiding(newMount, true);
