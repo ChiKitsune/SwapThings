@@ -34,6 +34,7 @@ public class ArchCommand {
     .then(InventorySlotClearer.register())
     .then(InventorySlotEnchanting.register())
     .then(InventorySlotRenamer.register())
+    .then(InventorySlotUnnamer.register())
     .then(PlayerNudger.register())
 //    .then(PlayerRotate.register())
     .then(QuickHide.register())
@@ -49,6 +50,7 @@ public class ArchCommand {
     .then(SwapLocation.register())
     .then(ToggleCrouch.register())
     .then(ToggleRun.register())
+    .then(UnShuffleInventoryNames.register())
     );
  }
  
