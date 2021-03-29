@@ -2,7 +2,6 @@ package chikitsune.swap_things.commands;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Random;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -20,7 +19,7 @@ import net.minecraft.util.text.TextFormatting;
 
 public class SwapArmor {
  public static Random rand= new Random();
- public static List<String> realArmorList = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD");
+// public static List<String> realArmorList = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD");
   
  public static ArgumentBuilder<CommandSource, ?> register() { 
   return Commands.literal("swaparmor").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
@@ -42,8 +41,8 @@ public class SwapArmor {
   String targetedArmorSlotTwo="";
   
   if (isRandomArmorSlot) {
-   targetedArmorSlotOne=getRandomArmorSlotTarget(targetedPlayerOne,armorType,isRandomArmorSlot);
-   targetedArmorSlotTwo=getRandomArmorSlotTarget(targetedPlayerTwo,armorType,isRandomArmorSlot);
+   targetedArmorSlotOne=ArchCommand.getRandomArmorSlotTarget(targetedPlayerOne,armorType,isRandomArmorSlot);
+   targetedArmorSlotTwo=ArchCommand.getRandomArmorSlotTarget(targetedPlayerTwo,armorType,isRandomArmorSlot);
    } else {
    targetedArmorSlotOne=armorType;
    targetedArmorSlotTwo=armorType;
@@ -87,60 +86,12 @@ public class SwapArmor {
   return 0;  
  }
  
- public static String getRandomArmorSlotTarget(ServerPlayerEntity targetedPlayerOne,String targetedArmorSlot,Boolean isRandomArmorSlot) {
-  ItemStack tempItem=ItemStack.EMPTY;
-  Integer iCnt=0;
-  Integer tempRand=0;
-  String newEquipmentSlotTarget="";
-  
-  if (targetedArmorSlot == "RANDOM") {
-   targetedArmorSlot=realArmorList.get(rand.nextInt(realArmorList.size()));
-   isRandomArmorSlot=true;
-   }
-  tempItem=targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlot));
-  
-  if (tempItem == ItemStack.EMPTY && isRandomArmorSlot) {
-   do {
-    tempRand=rand.nextInt(6);
-    switch (tempRand) {
-     case 0: targetedArmorSlot="HEAD"; break;
-     case 1: targetedArmorSlot="CHEST"; break;
-     case 2: targetedArmorSlot="LEGS"; break;
-     case 3: targetedArmorSlot="FEET"; break;
-     case 4: targetedArmorSlot="OFFHAND"; break;
-     case 5: targetedArmorSlot="MAINHAND"; break;
-     default: break;
-    }
-    tempItem=targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlot));
-    iCnt++;
-   } while (tempItem == ItemStack.EMPTY && iCnt<=25);
-  }
-  return newEquipmentSlotTarget;
- }
- 
- public static String getArmorSlotDescription(String targetedArmorSlot) {
-  String armorSlotDesc="";
-  
-  switch (targetedArmorSlot.toUpperCase()) {
-   case "HEAD": armorSlotDesc="HELM"; break;
-   case "CHEST": armorSlotDesc="CHESTPLATE"; break;
-   case "LEGS": armorSlotDesc="LEGGINGS"; break;
-   case "FEET": armorSlotDesc="BOOTS"; break;
-   case "OFFHAND": armorSlotDesc="OFFHAND"; break;
-   case "MAINHAND": armorSlotDesc="HELD ITEM"; break;
-   case "ALL": armorSlotDesc="EQUIPMENT"; break;
-   case "SET": armorSlotDesc="ARMOR"; break;
-   default: break;
-  }
-  return armorSlotDesc;
- }
- 
  public static StringTextComponent getMessageString(ServerPlayerEntity targetedPlayerOne, ServerPlayerEntity targetedPlayerTwo,String targetedArmorSlotOne, String targetedArmorSlotTwo) {
   StringTextComponent txtMsg=null,txtMsg2=null;
     ItemStack targetedArmorOne=targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotOne.toLowerCase()));
   ItemStack targetedArmorTwo=targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlotTwo.toLowerCase()));
-  String targetedArmorSlotDescOne=getArmorSlotDescription(targetedArmorSlotOne);
-  String targetedArmorSlotDescTwo=getArmorSlotDescription(targetedArmorSlotTwo);
+  String targetedArmorSlotDescOne=ArchCommand.getArmorSlotDescription(targetedArmorSlotOne);
+  String targetedArmorSlotDescTwo=ArchCommand.getArmorSlotDescription(targetedArmorSlotTwo);
   
   if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) {
    

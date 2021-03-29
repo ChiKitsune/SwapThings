@@ -43,10 +43,13 @@ public class QuickHide {
   ItemStack rndStack = ItemStack.EMPTY;
   String curMsg="quick use these to hide!";
   ItemArgument iaStack=new ItemArgument();
+  Integer newRanNum;
 
+  for(ServerPlayerEntity targetedPlayer : targetPlayers) {  
+   newRanNum=0;
   try {
    if (itemInput==null && message == null) {
-    Integer newRanNum=rand.nextInt(Configs.quickHideList.size());
+    newRanNum=rand.nextInt(Configs.quickHideList.size());
     rndStack=iaStack.parse(new StringReader(Configs.quickHideList.get(newRanNum).split(",")[0])).createStack(1, false);
     curMsg=Configs.quickHideList.get(newRanNum).split(",")[1];
    } else {
@@ -57,9 +60,8 @@ public class QuickHide {
   } catch (CommandSyntaxException e) {
    e.printStackTrace();
    rndStack=new ItemStack(Items.DEAD_BUSH);
-  }
+  }  
   
-  for(ServerPlayerEntity targetedPlayer : targetPlayers) {  
   if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.HEAD) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.HEAD), false, true);
   if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.CHEST) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.CHEST), false, true);
   if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.FEET) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.FEET), false, true);

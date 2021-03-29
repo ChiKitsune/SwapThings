@@ -75,6 +75,7 @@ public class Configs {
  public static boolean summonMountCustomName;
  public static boolean summonMountTamed;
  public static List<String> displayDeathBoardPlacesTextList;
+ public static List<String> randomGiftList;
  
  public static void loadConfig(ForgeConfigSpec spec, Path path) {
 
@@ -162,6 +163,13 @@ public class Configs {
     displayDeathBoardPlacesTextList.add(str);
     }
    });
+  
+  randomGiftList= new ArrayList<>();
+  STCONFIG.randomGiftList.get().forEach(str -> {
+   if (str!=null) {
+    randomGiftList.add(str);
+   }
+  });
  }
  
  public static class SwapThingsConfig {
@@ -209,6 +217,7 @@ public class Configs {
   
   public final ConfigValue<List<? extends String>> displayDeathBoardPlacesTextList;
   
+  public final ConfigValue<List<? extends String>> randomGiftList;  
   
   
   public SwapThingsConfig(ForgeConfigSpec.Builder builder) {
@@ -332,6 +341,18 @@ public class Configs {
  
  builder.pop();
 // DisplayDeathBoard config end
+ 
+//RandomGift config start
+builder.comment("RandomGift Command settings").push("RandomGift");
+
+List<String> randGiftList=Lists.newArrayList();
+randGiftList.add(Items.DIAMOND.getRegistryName().toString()+",1,1");
+randGiftList.add(Items.FEATHER.getRegistryName().toString()+",64,99");
+
+randomGiftList=builder.comment("List of items (resource location,amount,weighted chance) to be chosen for RandomGift command to choose from").defineList("RandomGift", randGiftList, s -> s instanceof String);
+
+builder.pop();
+//RandomGift config end
    
    builder.pop();
   }  

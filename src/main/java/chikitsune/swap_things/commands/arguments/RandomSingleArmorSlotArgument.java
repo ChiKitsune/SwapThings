@@ -16,13 +16,13 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class RandomArmorSlotArgument implements ArgumentType<String> {
- private static final Collection<String> EXAMPLES = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD","RANDOM","SET","ALL");
- private static final DynamicCommandExceptionType NOT_IN_LIST = new DynamicCommandExceptionType((msg) -> { return new TranslationTextComponent("arguments.randomarmorslot.notFound", msg); });
+public class RandomSingleArmorSlotArgument implements ArgumentType<String> {
+ private static final Collection<String> EXAMPLES = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD","RANDOM");
+ private static final DynamicCommandExceptionType NOT_IN_LIST = new DynamicCommandExceptionType((msg) -> { return new TranslationTextComponent("arguments.randomsinglearmorslot.notFound", msg); });
  
- public static RandomArmorSlotArgument allArmorSlots() { return new RandomArmorSlotArgument(); }
+ public static RandomSingleArmorSlotArgument allArmorSlots() { return new RandomSingleArmorSlotArgument(); }
  
- public static String getRandomArmorSlot(CommandContext<CommandSource> context, String name) throws CommandSyntaxException {
+ public static String getSingleRandomArmorSlot(CommandContext<CommandSource> context, String name) throws CommandSyntaxException {
   return context.getArgument(name, String.class);
 }
   
