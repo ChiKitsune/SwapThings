@@ -92,19 +92,19 @@ public class ArchCommand {
   Integer iCnt=0;
   strMsg=TextFormatting.getTextWithoutFormattingCodes(strMsg);
   
-  newStrMsg.append(new StringTextComponent(TextFormatting.RED + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.RED + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.append(new StringTextComponent(TextFormatting.GOLD + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.GOLD + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.append(new StringTextComponent(TextFormatting.YELLOW + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.YELLOW + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.append(new StringTextComponent(TextFormatting.GREEN + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.GREEN + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.append(new StringTextComponent(TextFormatting.BLUE + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.BLUE + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.append(new StringTextComponent(TextFormatting.DARK_PURPLE + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.DARK_PURPLE + strMsg.substring(iCnt, iCnt+colorStrLen)));
   iCnt=iCnt+colorStrLen;
-  newStrMsg.append(new StringTextComponent(TextFormatting.LIGHT_PURPLE + strMsg.substring(iCnt)));
+  newStrMsg.appendSibling(new StringTextComponent(TextFormatting.LIGHT_PURPLE + strMsg.substring(iCnt)));
   
   return newStrMsg;
  }
