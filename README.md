@@ -1,4 +1,4 @@
-# SwapThings a 1.16.1 Minecraft Forge Mod
+# SwapThings a 1.16.5 Minecraft Forge Mod
 
 Mod mainly created to work with CCI/TwitchSpawn for some Twitch Integration. 
 Adds commands for viewers to interact and make things more entertaining for the streamer.
@@ -8,6 +8,15 @@ Adds commands for viewers to interact and make things more entertaining for the 
       - Note: All playername arguments are optional. First playername will attempt to use who did the command else will use @r.
       - Note: Any commands with two players will attempt to get a different second playername than the first unless it isn't randomly choosen. However it will only attempt to get a different one 10 * currently only players number of times. If the player name is still the same will use as is.
       - Note: All commands can be used regardless of if there is only one player on or several. Although, most swap commands will not show a visible difference other than a message in chat. 
+
+#####  ```/swapthings disconnectplayer [playername] [courtesy of]```
+    Disconnects the given player from the world or server
+        - Note: Message on disconnect is controlled by the config value
+
+#####  ```/swapthings displaydeathboard```
+    Gets death count from the player Stats and list them in chat
+        - Note: Message next to each name is controlled by the config value
+        - Note: If one value is given will use it for all places. If there is at least two values separated by a comma will put messages in order
       
 #####  ```/swapthings heldenchanting [playername] [courtesy of] [enchantment] [enchantment_level]```
     Adds/removes/updates held item with a given enchantment or random if none is given
@@ -19,19 +28,25 @@ Adds commands for viewers to interact and make things more entertaining for the 
     Drops and replaces all inventory items with the item specified in the config
       - Note: Default is minecraft:dead_bush or if config value is invalid
 
+#####  ```/swapthings inventoryequalizer [playername] [item] [stack amount] [courtesy of]```
+    Drops and replaces all inventory items with the item specified with each stack having the same amount
+      - Note: Default item is minecraft:dead_bush and a stack size of 1/li>
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+
 #####  ```/swapthings inventoryslotclearer [playername] [amount] [courtesy of]```
     Clears a specific inventory slot based on the decimal place of the amount or random if not given one.
-      - Note: Amount ignores the whole number amount and only looks for decimal places. https://i.imgur.com/pJBKExE.jpg
-                .00 - .08 is hotbar
-                .09 - .17 is top line in inventory
-                .18 - .26 is second line in inventory
-                .27 - .35 is third line in inventory
-                .36 is boots
-                .37 is leggings
-                .38 is chestplate
-                .39 is helmet
-                .40 is offhand
-                .41 and above is outside of the default player's inventory size
+      - Note: Amount ignores the whole number amount and only looks for decimal places. https://i.imgur.com/5qokaCR.jpg
+            .00 is held item
+            .01 - .09 is hotbar
+            .10 - .18 is top line in inventory
+            .19 - .27 is second line in inventory
+            .28 - .36 is third line in inventory
+            .37 is boots
+            .38 is leggings
+            .39 is chestplate
+            .40 is helmet
+            .41 is offhand
+            .42 and above is outside of the default player's inventory size
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
 #####  ```/swapthings inventoryslotenchanting [playername] [amount] [courtesy of] [enchantment] [enchantment_level]```
@@ -69,6 +84,23 @@ Adds commands for viewers to interact and make things more entertaining for the 
       - Note: If an amount is not given it will try to find a non empty inventory slot and use that
       - Note: If a courtesy of name is not given it will default to "Someone"
 
+
+#####  ```/swapthings inventoryslotunnamer [playername] [courtesy of] [amount]```
+    Unnames an inventory item back to the default name
+      - Note: Amount ignores the whole number amount and only looks for decimal places. https://i.imgur.com/5qokaCR.jpg
+            .00 is held item
+            .01 - .09 is hotbar
+            .10 - .18 is top line in inventory
+            .19 - .27 is second line in inventory
+            .28 - .36 is third line in inventory
+            .37 is boots
+            .38 is leggings
+            .39 is chestplate
+            .40 is helmet
+            .41 is offhand
+            .42 and above is outside of the default player's inventory size
+      - Note: If an amount is not given it will try to find a non empty inventory slot and use that
+
 #####  ```/swapthings playernudger [playername] [courtesy of]```
     Nudges the player in a random direction
       - Note: Direction chances are based on the config chance values
@@ -84,6 +116,23 @@ Adds commands for viewers to interact and make things more entertaining for the 
          - minecraft:painting, quick blend into the wall!
       - Note: If want do your own item and message playername is required
       
+#####  ```/swapthings randomgift [playername] [courtesy of]```
+    Gifts a random item based on the list in the configs
+      - Note: Each list item contains three parts.
+         - Item name/ Namespaced ID - i.e. minecraft:stone_button
+         - Stack amount - Any number 1-64
+         - Weighted chance number - if put 5 it means it will have five chances of choosing this item
+      - Note: If want an equal chance of choosing can put the weighted chance number as 1 for all
+
+#####  ```/swapthings randomteleport [playername] [courtesy of]```
+    Teleports the player to a random location based on config min/max values for each axis.
+      - Note: Direction chances are based on the config chance values
+
+#####  ```/swapthings replacearmorpiece [playername] [head|chest|legs|feet|mainhand|offhand|random] [item] [courtesy of]```
+    Drops and replaces armor in the given slot with the given item
+      - Note: DRANDOM will choose a random single option (helm, chest, legs, boots, mainhand, or offhand) from the list.
+      - Note: DIf no item is given it defaults to a dead bush
+
 #####  ```/swapthings shufflehotbar [playername] [courtesy of]```
     Goes through all of the hotbar slots and randomly swaps it with another hotbar slot.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
@@ -128,8 +177,5 @@ Adds commands for viewers to interact and make things more entertaining for the 
     Toggles if the player is running until command is run again, player presses their sprint key, or stops.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
-#### Effects:
-
-#####  ```(Currently disabled) /effect give [player] fovflip [duration]```
-    Flips the Field of View (FOV) for the duration.
-        - Note: Currently still in the process of setting up icons and potion items
+#####  ```/swapthings unshuffleinventorynames [playername] [courtesy of]```
+    Goes through all of the inventory slots and removes all custom names
