@@ -3,6 +3,7 @@ package chikitsune.swap_things.config;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -11,6 +12,7 @@ import com.electronwill.nightconfig.core.io.WritingMode;
 import com.google.common.collect.Lists;
 
 import chikitsune.swap_things.SwappingThings;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -74,6 +76,8 @@ public class Configs {
  public static List<String> summonMountExcludeList;
  public static boolean summonMountCustomName;
  public static boolean summonMountTamed;
+ public static List<EntityClassification> summonMountIncludeList;
+ public static List<EntityClassification> summonRiderIncludeList;
  public static List<String> displayDeathBoardPlacesTextList;
  public static List<String> randomGiftList;
  
@@ -148,6 +152,20 @@ public class Configs {
    }
   });
   
+  summonMountIncludeList=new ArrayList<>();
+  
+  if (STCONFIG.summonMountIncludeList.get().stream().map(String::toLowerCase).collect(Collectors.toList()).contains("any")) {
+     for( EntityClassification ec : EntityClassification.values()) {
+      summonMountIncludeList.add(ec);
+     }
+   
+  } else {  
+   STCONFIG.summonMountIncludeList.get().forEach(str -> {
+    if (str!=null) {
+     summonMountIncludeList.add(EntityClassification.getClassificationByName(str.toLowerCase()));
+    }
+   });
+  }  
   summonMountExcludeList= new ArrayList<>();
   STCONFIG.summonMountExcludeList.get().forEach(str -> {
    if (str!=null) {
@@ -156,6 +174,21 @@ public class Configs {
   });
   summonMountCustomName=STCONFIG.summonMountCustomName.get();
   summonMountTamed=STCONFIG.summonMountTamed.get();
+  
+  summonRiderIncludeList=new ArrayList<>();
+  
+  if (STCONFIG.summonRiderIncludeList.get().stream().map(String::toLowerCase).collect(Collectors.toList()).contains("any")) {
+     for( EntityClassification ec : EntityClassification.values()) {
+      summonRiderIncludeList.add(ec);
+     }
+   
+  } else {  
+   STCONFIG.summonRiderIncludeList.get().forEach(str -> {
+    if (str!=null) {
+     summonRiderIncludeList.add(EntityClassification.getClassificationByName(str.toLowerCase()));
+    }
+   });
+  }  
   
   displayDeathBoardPlacesTextList= new ArrayList<>();
   STCONFIG.displayDeathBoardPlacesTextList.get().forEach(str -> {
@@ -212,8 +245,11 @@ public class Configs {
   public final ConfigValue<List<? extends String>> quickHideList;
   
   public final ConfigValue<List<? extends String>> summonMountExcludeList;
+  public final ConfigValue<List<? extends String>> summonMountIncludeList;
   public final BooleanValue summonMountCustomName;
   public final BooleanValue summonMountTamed;
+  
+  public final ConfigValue<List<? extends String>> summonRiderIncludeList;
   
   public final ConfigValue<List<? extends String>> displayDeathBoardPlacesTextList;
   
@@ -315,14 +351,35 @@ public class Configs {
    sumMountList.add(EntityType.WITHER.getRegistryName().toString());
    sumMountList.add(EntityType.ENDER_DRAGON.getRegistryName().toString());
    
+   List<String> sumMountClassList=Lists.newArrayList();
+   sumMountClassList.add(EntityClassification.AMBIENT.getName());
+   sumMountClassList.add(EntityClassification.CREATURE.getName());
+   sumMountClassList.add(EntityClassification.WATER_CREATURE.getName());
+   sumMountClassList.add(EntityClassification.WATER_AMBIENT.getName());
+   sumMountClassList.add(EntityClassification.MONSTER.getName());
    
-   
+   summonMountIncludeList=builder.comment("List of Classifications for SummonMount command to INCLUDE from possible entities. Use \"ANY\" for all.").defineList("SummonMountClass", sumMountClassList, s -> s instanceof String);
    summonMountExcludeList=builder.comment("List of entities for SummonMount command to EXCLUDE from possible entities").defineList("SummonMount", sumMountList, s -> s instanceof String);
    summonMountCustomName=builder.comment("Custom name for SummonMount entities.").define("summonMountCustomName", true);
    summonMountTamed=builder.comment("Try to summon entity already tamed.").define("summonMountTamed", true);
    
    builder.pop();
 //   SummonMount config end
+   
+// SummonRider config start
+ builder.comment("SummonRider Command settings").push("SummonRider");
+ 
+ List<String> sumRiderClassList=Lists.newArrayList();
+ sumRiderClassList.add(EntityClassification.AMBIENT.getName());
+ sumRiderClassList.add(EntityClassification.CREATURE.getName()); 
+ sumRiderClassList.add(EntityClassification.WATER_CREATURE.getName());
+ sumRiderClassList.add(EntityClassification.WATER_AMBIENT.getName());
+ 
+ summonRiderIncludeList=builder.comment("List of Classifications for SummonRide command to INCLUDE from possible entities. Use \"ANY\" for all.").defineList("SummonRiderClass", sumRiderClassList, s -> s instanceof String);
+ 
+ builder.pop();
+// SummonRider config end
+   
    
    
 // DisplayDeathBoard config start

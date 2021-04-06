@@ -23,6 +23,7 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -30,31 +31,36 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class SummonMount {
+public class SummonRider {
  public static Random rand= new Random();
 
  public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("summonmount").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return summonMountLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),"someone",null);
+  return Commands.literal("summonrider").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
+   return summonRiderLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),"someone",null);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
-     return summonMountLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone",null);
+     return summonRiderLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone",null);
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
-      return summonMountLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"),null);
+      return summonRiderLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"),null);
       }).then(Commands.argument("mount", EntitySummonArgument.entitySummon()).executes((cmd_3arg) -> {
-       return summonMountLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),StringArgumentType.getString(cmd_3arg, "fromName"),EntitySummonArgument.getEntityId(cmd_3arg, "mount"));
+       return summonRiderLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),StringArgumentType.getString(cmd_3arg, "fromName"),EntitySummonArgument.getEntityId(cmd_3arg, "mount"));
        })
      )));
  }
   
-  private static int summonMountLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName, ResourceLocation targetMountRL) throws CommandSyntaxException {
+  private static int summonRiderLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName, ResourceLocation targetMountRL) throws CommandSyntaxException {
    Configs.bakeConfig();
    Entity newMount;
    EntityType tempEnt = null;
    ServerWorld serverworld = source.getWorld();
+   
+//   Boolean boolCreature=true;
+//   List<EntityClassification> ttt= new ArrayList<>();
+//   ttt.add(EntityClassification.getClassificationByName("creature"));
+   
    List<EntityType<?>> lstSummEnt = ForgeRegistries.ENTITIES.getValues().stream()
      .filter((EntityType eT) -> !Configs.summonMountExcludeList.contains(eT.getRegistryName().toString()))
      .filter(EntityType::isSummonable)
-     .filter((EntityType eT) -> Configs.summonMountIncludeList.contains(eT.getClassification()))
+     .filter((EntityType eT) -> Configs.summonRiderIncludeList.contains(eT.getClassification()))
      .collect(Collectors.toList());
    CompoundNBT compoundnbt = new CompoundNBT();
    Boolean randMount=true;
@@ -82,14 +88,23 @@ public class SummonMount {
      } else if (newMount instanceof AbstractHorseEntity && Configs.summonMountTamed) {
       ((AbstractHorseEntity) newMount).setHorseTamed(true);
      }
-     
      newMount.setCustomName(ArchCommand.getRainbowizedStr(fromName));
      newMount.setCustomNameVisible(true);
-    targetedPlayer.getLowestRidingEntity().startRiding(newMount, true);
-    
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Nice ride! " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " got a new " + TextFormatting.AQUA + tempEnt.getName().getString() + TextFormatting.GOLD + " mount by " + fromName + "."));
+     
+     boolean isRidingNow=false;
+     if (targetedPlayer.getPassengers().size()>0) {
+      Entity tempPass=targetedPlayer.getPassengers().get(0);
+      tempPass.stopRiding();
+      tempPass.startRiding(newMount, true);
+     }
+      isRidingNow=newMount.startRiding(targetedPlayer,true);
+     if (isRidingNow && targetedPlayer.connection != null) {
+      targetedPlayer.connection.sendPacket(new SSetPassengersPacket(targetedPlayer));
+    }
+     
+    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + "'s " + TextFormatting.GOLD + "head feels about a " + TextFormatting.AQUA + tempEnt.getName().getString() + "'s " + TextFormatting.GOLD + "weight worth heavier. " + fromName + " you wouldn't know why would you?"));
    }
    return 0;
   }
-  
+
 }

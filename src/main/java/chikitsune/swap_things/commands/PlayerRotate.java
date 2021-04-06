@@ -12,6 +12,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.SPlayerPositionLookPacket;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -30,19 +31,19 @@ public static Random rand= new Random();
  }
   
   private static int playerRotateLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
-   float playYaw,rndYaw;
+   float playYaw,rndYaw,rndPitch;
    
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-    playYaw=targetedPlayer.getPitchYaw().x;
+    playYaw=targetedPlayer.getPitchYaw().y;
     rndYaw=rand.nextInt(360)-180;
-//    targetedPlayer.setRotationYawHead((playYaw+rndYaw));
-//    targetedPlayer.setRenderYawOffset((playYaw+rndYaw));
-//    targetedPlayer.setHeadRotation((playYaw+rndYaw), (int) targetedPlayer.getPitchYaw().y);
+    rndPitch=rand.nextInt(180)-90;
+
+    if (targetedPlayer.connection != null) {
+    targetedPlayer.connection.sendPacket(new SPlayerPositionLookPacket(targetedPlayer.getPosX(),targetedPlayer.getPosY(),targetedPlayer.getPosZ(),rndYaw,rndPitch, Collections.emptySet(),0));
+    }
     
-    targetedPlayer.setLocationAndAngles(targetedPlayer.getPosition().getX(), targetedPlayer.getPosition().getY(), targetedPlayer.getPosition().getZ(), (playYaw+rndYaw)%360F, targetedPlayer.getPitchYaw().y);
-    targetedPlayer.getServerWorld().getChunkProvider().updatePlayerPosition(targetedPlayer);
-    
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent("org:"+playYaw+" rnd:"+rndYaw+" new:"+((playYaw+rndYaw)%360)));
+//    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent("Pitch org:"+targetedPlayer.getPitchYaw().x+" rnd:"+rndPitch));
+//    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent("Yaw org:"+targetedPlayer.getPitchYaw().y+" rnd:"+rndYaw));
     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + fromName + " spun " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " right round."));
    }
    return 0;

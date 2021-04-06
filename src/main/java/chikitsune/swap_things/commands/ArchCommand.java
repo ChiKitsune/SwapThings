@@ -36,8 +36,9 @@ public class ArchCommand {
     .then(InventorySlotEnchanting.register())
     .then(InventorySlotRenamer.register())
     .then(InventorySlotUnnamer.register())
+//    .then(Panicing.register())
     .then(PlayerNudger.register())
-//    .then(PlayerRotate.register())
+    .then(PlayerRotate.register())
     .then(QuickHide.register())
     .then(RandomGift.register())
     .then(RandomTeleport.register())
@@ -46,6 +47,7 @@ public class ArchCommand {
     .then(ShuffleInventory.register())
     .then(ShuffleInventoryNames.register())
     .then(SummonMount.register())
+    .then(SummonRider.register())
     .then(SwapArmor.register())
     .then(SwapHands.register())
     .then(SwapIdentity.register())
@@ -53,6 +55,7 @@ public class ArchCommand {
     .then(SwapLocation.register())
     .then(ToggleCrouch.register())
     .then(ToggleRun.register())
+    .then(UnMounter.register())
     .then(UnShuffleInventoryNames.register())
     );
  }
