@@ -35,6 +35,7 @@ public class ArchCommand {
     .then(InventorySlotClearer.register())
     .then(InventorySlotEnchanting.register())
     .then(InventorySlotRenamer.register())
+    .then(InventorySlotReplacer.register())
     .then(InventorySlotUnnamer.register())
 //    .then(Panicing.register())
     .then(PlayerNudger.register())

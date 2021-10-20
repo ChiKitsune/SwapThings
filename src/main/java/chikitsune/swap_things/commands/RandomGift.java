@@ -63,7 +63,7 @@ public static Random rand= new Random();
      }
      curLoop+=1;
     }
-    curMsg=TextFormatting.GOLD + "Oh! " + fromName + " was nice and gave " + TextFormatting.RED + targetedPlayer.getName().getString() + " " + TextFormatting.GOLD + tempStack.getCount() + TextFormatting.AQUA + tempStack.getDisplayName().getString();
+    curMsg=TextFormatting.GOLD + "Oh! " + fromName + " was nice and gave " + TextFormatting.RED + targetedPlayer.getName().getString() + " " + TextFormatting.GOLD + tempStack.getCount() + " " + TextFormatting.AQUA + tempStack.getDisplayName().getString();
     
     targetedPlayer.addItemStackToInventory(tempStack);
     
