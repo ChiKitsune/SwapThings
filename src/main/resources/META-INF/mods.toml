@@ -1,0 +1,45 @@
+modLoader="javafml"
+#loaderVersion="${forge_version_range}"
+#license="${mod_license}"
+#issueTrackerURL="${mod_issues}"
+
+loaderVersion="[37,)"
+license="MIT License"
+issueTrackerURL="https://github.com/ChiKitsune/SwapThings/issues"
+
+[[mods]]
+#modId="${mod_id}"
+#version="${mod_version}"
+#displayName="${toml_name}"
+##updateJSONURL=""
+##displayURL="${mod_url}"
+##logoFile="${mod_logo}"
+#credits="${mod_credits}"
+#authors="${mod_authors}"
+#description='''${mod_description}'''
+
+ modId="swap_things" #mandatory
+ version="${file.jarVersion}" #mandatory
+ displayName="Swap Things" #mandatory
+ displayURL="https://github.com/ChiKitsune/SwapThings" #optional
+ authors="ChiKitsune" #optional
+ description='''
+ Mod mainly created to work with CCI/TwitchSpawn for some Twitch Integration.
+ Adds commands for viewers to interact and make things more entertaining for the streamer.
+ '''
+
+
+[[dependencies.swap_things]]
+    modId="forge"
+    mandatory=true
+    #versionRange="${forge_version_range}"
+    versionRange="[37,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.swap_things]]
+    modId="minecraft"
+    mandatory=true
+    #versionRange="${mc_versionRange}"
+    versionRange="[1.17.1,1.18)"
+    ordering="NONE"
+    side="BOTH"
