@@ -8,20 +8,20 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public class ShuffleInventoryNames {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("shuffleinventorynames").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return shuffleInventoryNamesLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),null);
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("shuffleinventorynames").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return shuffleInventoryNamesLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),null);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return shuffleInventoryNamesLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null);
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
@@ -30,34 +30,35 @@ public class ShuffleInventoryNames {
      ));
  }
   
-  private static int shuffleInventoryNamesLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
+  private static int shuffleInventoryNamesLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
+   ArchCommand.ReloadConfig();
    ItemStack tempItem=ItemStack.EMPTY;
    Integer tempRandNum=0,tempFirstNonEmpty=0;
-   StringTextComponent tempItemName=null,prevItemName=null;
+   TextComponent tempItemName=null,prevItemName=null;
    String strPref="",strMsgFromName="Someone";
    if (fromName!=null) {
     strPref=fromName + "'s ";
     strMsgFromName=fromName;
    }
    
-   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+   for(ServerPlayer targetedPlayer : targetPlayers) {
     tempFirstNonEmpty=null;
     prevItemName=null;
     
-    for (int i=0;i<targetedPlayer.inventory.getSizeInventory();i++) {
+    for (int i=0;i<targetedPlayer.getInventory().getContainerSize();i++) {
      tempItem=ItemStack.EMPTY;
-     tempItem=targetedPlayer.inventory.getStackInSlot(i);
+     tempItem=targetedPlayer.getInventory().getItem(i);
      if (!tempItem.isEmpty()) {
       if (tempFirstNonEmpty==null) tempFirstNonEmpty=i;       
        //tempItemName=new StringTextComponent(strPref + tempItem.getDisplayName().getUnformattedComponentText());
-      tempItemName=new StringTextComponent(strPref + tempItem.getDisplayName().getString());
-       tempItem.setDisplayName(prevItemName);
+      tempItemName=new TextComponent(strPref + tempItem.getHoverName().getString());
+       tempItem.setHoverName(prevItemName);
        prevItemName=tempItemName;
       }
      }
-    if (tempFirstNonEmpty!=null) targetedPlayer.inventory.getStackInSlot(tempFirstNonEmpty).setDisplayName(prevItemName);
+    if (tempFirstNonEmpty!=null) targetedPlayer.getInventory().getItem(tempFirstNonEmpty).setHoverName(prevItemName);
    
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
+   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
    }
    return 0;
   }

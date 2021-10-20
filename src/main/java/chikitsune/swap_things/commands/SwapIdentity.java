@@ -6,75 +6,76 @@ import java.util.Collection;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.phys.Vec3;
 
 public class SwapIdentity {
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("swapidentity").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return swapLocationLogic(cmd_0arg.getSource(),cmd_0arg.getSource().asPlayer(),cmd_0arg.getSource().asPlayer());
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("swapidentity").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return swapLocationLogic(cmd_0arg.getSource(),cmd_0arg.getSource().getPlayerOrException(),cmd_0arg.getSource().getPlayerOrException());
   }).then(Commands.argument("targetedPlayerOne", EntityArgument.players()).executes((cmd_1arg) -> {
-   return swapLocationLogic(cmd_1arg.getSource(),EntityArgument.getPlayer(cmd_1arg, "targetedPlayerOne"),cmd_1arg.getSource().asPlayer());
+   return swapLocationLogic(cmd_1arg.getSource(),EntityArgument.getPlayer(cmd_1arg, "targetedPlayerOne"),cmd_1arg.getSource().getPlayerOrException());
   }).then(Commands.argument("targetedPlayerTwo", EntityArgument.players()).executes((cmd_2arg) -> {
    return swapLocationLogic(cmd_2arg.getSource(),EntityArgument.getPlayer(cmd_2arg, "targetedPlayerOne"),EntityArgument.getPlayer(cmd_2arg, "targetedPlayerTwo"));
   })));
  }
   
-  private static int swapLocationLogic(CommandSource source, ServerPlayerEntity targetedPlayerOne, ServerPlayerEntity targetedPlayerTwo) {
-   if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) targetedPlayerTwo=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
+  private static int swapLocationLogic(CommandSourceStack source, ServerPlayer targetedPlayerOne, ServerPlayer targetedPlayerTwo) {
+   ArchCommand.ReloadConfig();
+   if (targetedPlayerOne.getName().getContents() == targetedPlayerTwo.getName().getContents()) targetedPlayerTwo=ArchCommand.getNewRandomSecondTarget(targetedPlayerOne, targetedPlayerTwo, source.getServer());
    
 //   Boolean isSameDim=(targetedPlayerOne.dimension == targetedPlayerTwo.dimension);
-   Boolean isSameDim=(targetedPlayerOne.getEntityWorld().getDimensionType() == targetedPlayerTwo.getEntityWorld().getDimensionType());
-   DimensionType playerOneDim=targetedPlayerOne.getEntityWorld().getDimensionType();
-   DimensionType playerTwoDim=targetedPlayerTwo.getEntityWorld().getDimensionType();
-   Vector3d playerOneVec=targetedPlayerOne.getPositionVec();
-   Float playerOneYaw=targetedPlayerOne.rotationYaw;
-   Float playerOnePitch=targetedPlayerOne.rotationPitch;
-   Vector3d playerTwoVec=targetedPlayerTwo.getPositionVec();
-   Float playerTwoYaw=targetedPlayerTwo.rotationYaw;
-   Float playerTwoPitch=targetedPlayerTwo.rotationPitch;
-   ServerWorld playerOnedimWorld=targetedPlayerOne.getServerWorld();
-   ServerWorld playerTwodimWorld=targetedPlayerTwo.getServerWorld();
+   Boolean isSameDim=(targetedPlayerOne.getCommandSenderWorld().dimensionType() == targetedPlayerTwo.getCommandSenderWorld().dimensionType());
+   DimensionType playerOneDim=targetedPlayerOne.getCommandSenderWorld().dimensionType();
+   DimensionType playerTwoDim=targetedPlayerTwo.getCommandSenderWorld().dimensionType();
+   Vec3 playerOneVec=targetedPlayerOne.position();
+   Float playerOneYaw=targetedPlayerOne.getYRot();
+   Float playerOnePitch=targetedPlayerOne.getXRot();
+   Vec3 playerTwoVec=targetedPlayerTwo.position();
+   Float playerTwoYaw=targetedPlayerTwo.getYRot();
+   Float playerTwoPitch=targetedPlayerTwo.getXRot();
+   ServerLevel playerOnedimWorld=targetedPlayerOne.getLevel();
+   ServerLevel playerTwodimWorld=targetedPlayerTwo.getLevel();
    
-   PlayerInventory playerOneInv=new PlayerInventory(null);
-   PlayerInventory playerTwoInv=new PlayerInventory(null);
-   Integer playerOneCurSlot=targetedPlayerOne.inventory.currentItem;
-   Integer playerTwoCurSlot=targetedPlayerTwo.inventory.currentItem;
-   ItemStack playerOneHead=GetCustomHead(targetedPlayerOne.getName().getUnformattedComponentText(), targetedPlayerOne.getName().getUnformattedComponentText());
-   ItemStack playerTwoHead=GetCustomHead(targetedPlayerTwo.getName().getUnformattedComponentText(), targetedPlayerTwo.getName().getUnformattedComponentText());
+   Inventory playerOneInv=new Inventory(null);
+   Inventory playerTwoInv=new Inventory(null);
+   Integer playerOneCurSlot=targetedPlayerOne.getInventory().selected;
+   Integer playerTwoCurSlot=targetedPlayerTwo.getInventory().selected;
+   ItemStack playerOneHead=GetCustomHead(targetedPlayerOne.getName().getContents(), targetedPlayerOne.getName().getContents());
+   ItemStack playerTwoHead=GetCustomHead(targetedPlayerTwo.getName().getContents(), targetedPlayerTwo.getName().getContents());
    Float playerOneExp,playerTwoExp, playerOneHealth, playerTwoHealth;
    Integer playerOneExpLvl, playerTwoExpLvl;
    
-   playerOneInv.copyInventory(targetedPlayerOne.inventory);
-   playerTwoInv.copyInventory(targetedPlayerTwo.inventory);
+   playerOneInv.replaceWith(targetedPlayerOne.getInventory());
+   playerTwoInv.replaceWith(targetedPlayerTwo.getInventory());
    
-   targetedPlayerOne.inventory.copyInventory(playerTwoInv);
-   targetedPlayerTwo.inventory.copyInventory(playerOneInv);
+   targetedPlayerOne.getInventory().replaceWith(playerTwoInv);
+   targetedPlayerTwo.getInventory().replaceWith(playerOneInv);
    
-   playerOneExp=targetedPlayerOne.experience;
+   playerOneExp=targetedPlayerOne.experienceProgress;
    playerOneExpLvl=targetedPlayerOne.experienceLevel;
-   Integer playerOneExpTot=targetedPlayerOne.experienceTotal;
-   playerTwoExp=targetedPlayerTwo.experience;
+   Integer playerOneExpTot=targetedPlayerOne.totalExperience;
+   playerTwoExp=targetedPlayerTwo.experienceProgress;
    playerTwoExpLvl=targetedPlayerTwo.experienceLevel;
-   Integer playerTwoExpTot=targetedPlayerTwo.experienceTotal;
+   Integer playerTwoExpTot=targetedPlayerTwo.totalExperience;
    
-   targetedPlayerOne.addExperienceLevel(-(playerOneExpLvl+1));
-   targetedPlayerTwo.addExperienceLevel(-(playerTwoExpLvl+1));
-   targetedPlayerOne.addExperienceLevel(playerTwoExpLvl);
-   targetedPlayerOne.experience=playerTwoExp;
-   targetedPlayerTwo.addExperienceLevel(playerOneExpLvl);
-   targetedPlayerTwo.experience=playerOneExp;
+   targetedPlayerOne.giveExperienceLevels(-(playerOneExpLvl+1));
+   targetedPlayerTwo.giveExperienceLevels(-(playerTwoExpLvl+1));
+   targetedPlayerOne.giveExperienceLevels(playerTwoExpLvl);
+   targetedPlayerOne.experienceProgress=playerTwoExp;
+   targetedPlayerTwo.giveExperienceLevels(playerOneExpLvl);
+   targetedPlayerTwo.experienceProgress=playerOneExp;
    
    playerOneHealth=targetedPlayerOne.getHealth();
    playerTwoHealth=targetedPlayerTwo.getHealth();
@@ -82,17 +83,17 @@ public class SwapIdentity {
    targetedPlayerOne.setHealth(playerTwoHealth);
    targetedPlayerTwo.setHealth(playerOneHealth);
 
-   targetedPlayerOne.teleport(playerTwodimWorld, MathHelper.floor(playerTwoVec.getX()), MathHelper.floor(playerTwoVec.getY()), MathHelper.floor(playerTwoVec.getZ()), playerTwoYaw, playerTwoPitch);
-   targetedPlayerTwo.teleport(playerOnedimWorld, MathHelper.floor(playerOneVec.getX()), MathHelper.floor(playerOneVec.getY()), MathHelper.floor(playerOneVec.getZ()), playerOneYaw, playerOnePitch);
+   targetedPlayerOne.teleportTo(playerTwodimWorld, Mth.floor(playerTwoVec.x()), Mth.floor(playerTwoVec.y()), Mth.floor(playerTwoVec.z()), playerTwoYaw, playerTwoPitch);
+   targetedPlayerTwo.teleportTo(playerOnedimWorld, Mth.floor(playerOneVec.x()), Mth.floor(playerOneVec.y()), Mth.floor(playerOneVec.z()), playerOneYaw, playerOnePitch);
    
-   if (targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.HEAD) != ItemStack.EMPTY) targetedPlayerOne.dropItem(targetedPlayerOne.getItemStackFromSlot(EquipmentSlotType.HEAD), false, true);
-   if (targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.HEAD) != ItemStack.EMPTY && targetedPlayerOne.getName() != targetedPlayerTwo.getName()) targetedPlayerTwo.dropItem(targetedPlayerTwo.getItemStackFromSlot(EquipmentSlotType.HEAD), false, true);
+   if (targetedPlayerOne.getItemBySlot(EquipmentSlot.HEAD) != ItemStack.EMPTY) targetedPlayerOne.drop(targetedPlayerOne.getItemBySlot(EquipmentSlot.HEAD), false, true);
+   if (targetedPlayerTwo.getItemBySlot(EquipmentSlot.HEAD) != ItemStack.EMPTY && targetedPlayerOne.getName() != targetedPlayerTwo.getName()) targetedPlayerTwo.drop(targetedPlayerTwo.getItemBySlot(EquipmentSlot.HEAD), false, true);
    
-   targetedPlayerOne.setItemStackToSlot(EquipmentSlotType.HEAD, playerTwoHead);
-   targetedPlayerTwo.setItemStackToSlot(EquipmentSlotType.HEAD, playerOneHead);
+   targetedPlayerOne.setItemSlot(EquipmentSlot.HEAD, playerTwoHead);
+   targetedPlayerTwo.setItemSlot(EquipmentSlot.HEAD, playerOneHead);
    
-   Collection<ServerPlayerEntity> targetPlayers=Arrays.asList(targetedPlayerOne);
-   if (targetedPlayerOne.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText()) {
+   Collection<ServerPlayer> targetPlayers=Arrays.asList(targetedPlayerOne);
+   if (targetedPlayerOne.getName().getContents() == targetedPlayerTwo.getName().getContents()) {
     ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("Hurray " +targetedPlayerTwo.getName().getString()  + " you found yourself!"));
   } else {
    ArchCommand.playerMsger(source, targetPlayers,ArchCommand.getRainbowizedStr("That was quite a trip " +targetedPlayerTwo.getName().getString()  + " ... wait a second you are " + targetedPlayerOne.getName().getString() + ". You didn't go anywhere so better luck next time."));
@@ -103,8 +104,8 @@ public class SwapIdentity {
   }
   
   private static ItemStack GetCustomHead(String playerName, String headName) {
-   ItemStack customHead = new ItemStack(net.minecraft.item.Items.PLAYER_HEAD);
-   customHead.setTag(new CompoundNBT());
+   ItemStack customHead = new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD);
+   customHead.setTag(new CompoundTag());
    customHead.getTag().putString("SkullOwner", playerName);
    return customHead;         
   }

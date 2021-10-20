@@ -8,20 +8,20 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public class InventorySlotClearer {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("inventoryslotclearer").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return inventorySlotClearerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),null,"someone");
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("inventoryslotclearer").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return inventorySlotClearerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),null,"someone");
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return inventorySlotClearerLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null,"someone");
      }).then(Commands.argument("slotNum", StringArgumentType.string()).executes((cmd_2arg) -> {
@@ -32,7 +32,8 @@ public class InventorySlotClearer {
      )));
  }
   
-  private static int inventorySlotClearerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String slotNum, String fromName) {
+  private static int inventorySlotClearerLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String slotNum, String fromName) {
+   ArchCommand.ReloadConfig();
    Integer selectedSlotNum=null;
    Float slotNumParsed=null;
    Integer modFloatResult=null;
@@ -44,29 +45,29 @@ public class InventorySlotClearer {
     slotNumParsed=-1F;
    }
    
-   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+   for(ServerPlayer targetedPlayer : targetPlayers) {
     tempStack=ItemStack.EMPTY;
     
     if(slotNumParsed!=null && (slotNumParsed == 0 || (slotNumParsed % 1 == 0) ) && slotNum !=null) {
-     selectedSlotNum=targetedPlayer.inventory.currentItem;
+     selectedSlotNum=targetedPlayer.getInventory().selected;
     } else if(slotNumParsed!=null && slotNumParsed > 0 && slotNum !=null) {
      modFloatResult=Math.round((slotNumParsed % 1)*100) -1;
-      if (slotNumParsed % 1 < targetedPlayer.inventory.getSizeInventory() && slotNumParsed % 1 > 0) {
+      if (slotNumParsed % 1 < targetedPlayer.getInventory().getContainerSize() && slotNumParsed % 1 > 0) {
        selectedSlotNum=modFloatResult.intValue();       
       } else {
-       selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
+       selectedSlotNum=rand.nextInt(targetedPlayer.getInventory().getContainerSize());
       }
     } else {
-     selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
+     selectedSlotNum=rand.nextInt(targetedPlayer.getInventory().getContainerSize());
     }
     
-    tempStack=targetedPlayer.inventory.getStackInSlot(selectedSlotNum).copy();
-    targetedPlayer.inventory.setInventorySlotContents(selectedSlotNum, ItemStack.EMPTY.copy());
+    tempStack=targetedPlayer.getInventory().getItem(selectedSlotNum).copy();
+    targetedPlayer.getInventory().setItem(selectedSlotNum, ItemStack.EMPTY.copy());
    
     if (tempStack.isEmpty()) {
-     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + fromName + " tried to clear an inventory slot from " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " but it was already empty."));
+     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + fromName + " tried to clear an inventory slot from " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " but it was already empty."));
     } else {
-     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + fromName + " just took "  + tempStack.getCount() + " of " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + "'s " + tempStack.getDisplayName().getString()));
+     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + fromName + " just took "  + tempStack.getCount() + " of " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + "'s " + tempStack.getHoverName().getString()));
     }
    }
    return 0;

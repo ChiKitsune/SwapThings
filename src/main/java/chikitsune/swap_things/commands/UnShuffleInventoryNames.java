@@ -8,20 +8,20 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public class UnShuffleInventoryNames {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("unshuffleinventorynames").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return unShuffleInventoryNamesLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),null);
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("unshuffleinventorynames").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return unShuffleInventoryNamesLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),null);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return unShuffleInventoryNamesLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null);
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
@@ -30,31 +30,32 @@ public class UnShuffleInventoryNames {
      ));
  }
   
-  private static int unShuffleInventoryNamesLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
+  private static int unShuffleInventoryNamesLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
+   ArchCommand.ReloadConfig();
    ItemStack tempItem=ItemStack.EMPTY;
    Integer tempRandNum=0,tempFirstNonEmpty=0;
-   StringTextComponent tempItemName=null,prevItemName=null;
+   TextComponent tempItemName=null,prevItemName=null;
    String strMsgFromName="Someone";
    if (fromName!=null) {
     strMsgFromName=fromName;
    }
    
-   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+   for(ServerPlayer targetedPlayer : targetPlayers) {
     tempFirstNonEmpty=null;
     prevItemName=null;
     
-    for (int i=0;i<targetedPlayer.inventory.getSizeInventory();i++) {
+    for (int i=0;i<targetedPlayer.getInventory().getContainerSize();i++) {
      tempItem=ItemStack.EMPTY;
-     tempItem=targetedPlayer.inventory.getStackInSlot(i);
+     tempItem=targetedPlayer.getInventory().getItem(i);
      if (!tempItem.isEmpty()) {
       if (tempFirstNonEmpty==null) tempFirstNonEmpty=i;
-      tempItem.setDisplayName(null);
+      tempItem.setHoverName(null);
        prevItemName=tempItemName;
       }
      }
-    if (tempFirstNonEmpty!=null) targetedPlayer.inventory.getStackInSlot(tempFirstNonEmpty).setDisplayName(prevItemName);
+    if (tempFirstNonEmpty!=null) targetedPlayer.getInventory().getItem(tempFirstNonEmpty).setHoverName(prevItemName);
    
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + strMsgFromName + " decided that " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " had too many items with fancy names and changed them back."));
+   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + strMsgFromName + " decided that " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " had too many items with fancy names and changed them back."));
    }
    return 0;
   }

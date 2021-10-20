@@ -8,20 +8,20 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 
 public class PlayerNudger {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("playernudger").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return playerNudgerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),"someone");
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("playernudger").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return playerNudgerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone");
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return playerNudgerLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone");
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
@@ -30,30 +30,30 @@ public class PlayerNudger {
      ));
  }
   
-  private static int playerNudgerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
-   Configs.bakeConfig();
+  private static int playerNudgerLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
+   ArchCommand.ReloadConfig();   
    double tempX,tempY,tempZ,nudgeStrength=.7,tempXLook,tempZLook;
    Integer randTemp;
    String directionStr,lookDirStr;
    Integer dirNorth,dirNorthEast,dirEast,dirSouthEast,dirSouth,dirSouthWest,dirWest,dirNorthWest,dirUp,dirDown;
    float playYaw, playPitch;
    
-   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+   for(ServerPlayer targetedPlayer : targetPlayers) {
     tempX=0;
     tempY=0;
     tempZ=0;
-    dirNorth=Configs.playerNudgerNorthChance;
-    dirNorthEast=Configs.playerNudgerNorthEastChance;
-    dirEast=Configs.playerNudgerEastChance;
-    dirSouthEast=Configs.playerNudgerSouthEastChance;
-    dirSouth=Configs.playerNudgerSouthChance;
-    dirSouthWest=Configs.playerNudgerSouthWestChance;
-    dirWest=Configs.playerNudgerWestChance;
-    dirNorthWest=Configs.playerNudgerNorthWestChance;
-    dirUp=Configs.playerNudgerUpChance;
-    dirDown=Configs.playerNudgerDownChance;
-    tempXLook=Math.round(targetedPlayer.getLookVec().getX()*4);
-    tempZLook=Math.round(targetedPlayer.getLookVec().getZ()*4);
+    dirNorth=Configs.PN_N_CHA.get();
+    dirNorthEast=Configs.PN_NE_CHA.get();
+    dirEast=Configs.PN_E_CHA.get();
+    dirSouthEast=Configs.PN_SE_CHA.get();
+    dirSouth=Configs.PN_S_CHA.get();
+    dirSouthWest=Configs.PN_SW_CHA.get();
+    dirWest=Configs.PN_W_CHA.get();
+    dirNorthWest=Configs.PN_NW_CHA.get();
+    dirUp=Configs.PN_U_CHA.get();
+    dirDown=Configs.PN_D_CHA.get();
+    tempXLook=Math.round(targetedPlayer.getLookAngle().x()*4);
+    tempZLook=Math.round(targetedPlayer.getLookAngle().z()*4);
     lookDirStr="";
 //ZZZZZZZZZZZZZZ Axis
 //  0 - 1 = 0-.25 = W/E
@@ -81,83 +81,83 @@ public class PlayerNudger {
   }
   switch(lookDirStr) {
    case "NORTH": 
-    dirNorth*=Configs.playerNudgerForwardMultiplier; dirSouth*=Configs.playerNudgerBackwardMultiplier;
-    dirWest*=Configs.playerNudgerLeftMultiplier; dirEast*=Configs.playerNudgerRightMultiplier;
+    dirNorth*=Configs.PN_PFD_FOR.get(); dirSouth*=Configs.PN_PFD_BAC.get();
+    dirWest*=Configs.PN_PFD_LEF.get(); dirEast*=Configs.PN_PFD_RIG.get();
     break;
    case "NORTHEAST":
-    dirNorthEast*=Configs.playerNudgerForwardMultiplier; dirSouthWest*=Configs.playerNudgerBackwardMultiplier;
-    dirNorthWest*=Configs.playerNudgerLeftMultiplier; dirSouthEast*=Configs.playerNudgerRightMultiplier;
+    dirNorthEast*=Configs.PN_PFD_FOR.get(); dirSouthWest*=Configs.PN_PFD_BAC.get();
+    dirNorthWest*=Configs.PN_PFD_LEF.get(); dirSouthEast*=Configs.PN_PFD_RIG.get();
     break;
    case "EAST":
-    dirEast*=Configs.playerNudgerForwardMultiplier; dirWest*=Configs.playerNudgerBackwardMultiplier;
-    dirNorth*=Configs.playerNudgerLeftMultiplier; dirSouth*=Configs.playerNudgerRightMultiplier;
+    dirEast*=Configs.PN_PFD_FOR.get(); dirWest*=Configs.PN_PFD_BAC.get();
+    dirNorth*=Configs.PN_PFD_LEF.get(); dirSouth*=Configs.PN_PFD_RIG.get();
     break;
    case "SOUTHEAST":
-    dirSouthEast*=Configs.playerNudgerForwardMultiplier; dirNorthWest*=Configs.playerNudgerBackwardMultiplier;
-    dirNorthEast*=Configs.playerNudgerLeftMultiplier; dirSouthWest*=Configs.playerNudgerRightMultiplier;
+    dirSouthEast*=Configs.PN_PFD_FOR.get(); dirNorthWest*=Configs.PN_PFD_BAC.get();
+    dirNorthEast*=Configs.PN_PFD_LEF.get(); dirSouthWest*=Configs.PN_PFD_RIG.get();
     break;
    case "SOUTH":
-    dirSouth*=Configs.playerNudgerForwardMultiplier; dirNorth*=Configs.playerNudgerBackwardMultiplier;
-    dirEast*=Configs.playerNudgerLeftMultiplier; dirWest*=Configs.playerNudgerRightMultiplier;
+    dirSouth*=Configs.PN_PFD_FOR.get(); dirNorth*=Configs.PN_PFD_BAC.get();
+    dirEast*=Configs.PN_PFD_LEF.get(); dirWest*=Configs.PN_PFD_RIG.get();
     break;
    case "SOUTHWEST":
-    dirSouthWest*=Configs.playerNudgerForwardMultiplier; dirNorthEast*=Configs.playerNudgerBackwardMultiplier;
-    dirSouthEast*=Configs.playerNudgerLeftMultiplier; dirNorthWest*=Configs.playerNudgerRightMultiplier;
+    dirSouthWest*=Configs.PN_PFD_FOR.get(); dirNorthEast*=Configs.PN_PFD_BAC.get();
+    dirSouthEast*=Configs.PN_PFD_LEF.get(); dirNorthWest*=Configs.PN_PFD_RIG.get();
     break;
    case "WEST":
-    dirWest*=Configs.playerNudgerForwardMultiplier; dirEast*=Configs.playerNudgerBackwardMultiplier;
-    dirSouth*=Configs.playerNudgerLeftMultiplier; dirNorth*=Configs.playerNudgerRightMultiplier;
+    dirWest*=Configs.PN_PFD_FOR.get(); dirEast*=Configs.PN_PFD_BAC.get();
+    dirSouth*=Configs.PN_PFD_LEF.get(); dirNorth*=Configs.PN_PFD_RIG.get();
     break;
    case "NORTHWEST":
-    dirNorthWest*=Configs.playerNudgerForwardMultiplier; dirSouthEast*=Configs.playerNudgerBackwardMultiplier;
-    dirSouthWest*=Configs.playerNudgerLeftMultiplier; dirNorthEast*=Configs.playerNudgerRightMultiplier;
+    dirNorthWest*=Configs.PN_PFD_FOR.get(); dirSouthEast*=Configs.PN_PFD_BAC.get();
+    dirSouthWest*=Configs.PN_PFD_LEF.get(); dirNorthEast*=Configs.PN_PFD_RIG.get();
     break;
     default:
     break;
   }
     
     randTemp=rand.nextInt(dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp+dirDown);
-    playYaw=targetedPlayer.getPitchYaw().x;
-    playPitch=targetedPlayer.getPitchYaw().y;
+    playYaw=targetedPlayer.getRotationVector().x;
+    playPitch=targetedPlayer.getRotationVector().y;
     
     if (0 <= randTemp && randTemp <dirNorth) {
-     tempX=0;tempZ=-Configs.playerNudgerNorthStrength; directionStr="north"; playYaw=-180;
+     tempX=0;tempZ=-Configs.PN_N_STR.get(); directionStr="north"; playYaw=-180;
     } else if (dirNorth <= randTemp && randTemp <dirNorth+dirNorthEast) {
-     tempX=Configs.playerNudgerNorthEastStrength; tempZ=-Configs.playerNudgerNorthEastStrength; directionStr="northeast"; playYaw=-135;
+     tempX=Configs.PN_NE_STR.get(); tempZ=-Configs.PN_NE_STR.get(); directionStr="northeast"; playYaw=-135;
     } else if (dirNorth+dirNorthEast <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast) {
-     tempX=Configs.playerNudgerEastStrength; tempZ=0; directionStr="east"; playYaw=-90;
+     tempX=Configs.PN_E_STR.get(); tempZ=0; directionStr="east"; playYaw=-90;
     } else if (dirNorth+dirNorthEast+dirEast <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast) {
-     tempX=Configs.playerNudgerSouthEastStrength;tempZ=Configs.playerNudgerSouthEastStrength; directionStr="southeast"; playYaw=-45;
+     tempX=Configs.PN_SE_STR.get();tempZ=Configs.PN_SE_STR.get(); directionStr="southeast"; playYaw=-45;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth) {
-     tempX=0;tempZ=Configs.playerNudgerSouthStrength; directionStr="south"; playYaw=0;
+     tempX=0;tempZ=Configs.PN_S_STR.get(); directionStr="south"; playYaw=0;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest) {
-     tempX=-Configs.playerNudgerSouthWestStrength; tempZ=Configs.playerNudgerSouthWestStrength; directionStr="southwest"; playYaw=45;
+     tempX=-Configs.PN_SW_STR.get(); tempZ=Configs.PN_SW_STR.get(); directionStr="southwest"; playYaw=45;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest) {
-     tempX=-Configs.playerNudgerWestStrength; tempZ=0; directionStr="west"; playYaw=90;
+     tempX=-Configs.PN_W_STR.get(); tempZ=0; directionStr="west"; playYaw=90;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest) {
-     tempX=-Configs.playerNudgerNorthWestStrength; tempZ=-Configs.playerNudgerNorthWestStrength; directionStr="northwest"; playYaw=135;
+     tempX=-Configs.PN_NW_STR.get(); tempZ=-Configs.PN_NW_STR.get(); directionStr="northwest"; playYaw=135;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp) {
-     tempY=Configs.playerNudgerUpStrength; directionStr ="up"; playPitch=-90;
+     tempY=Configs.PN_U_STR.get(); directionStr ="up"; playPitch=-90;
     } else if (dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp <= randTemp && randTemp <dirNorth+dirNorthEast+dirEast+dirSouthEast+dirSouth+dirSouthWest+dirWest+dirNorthWest+dirUp+dirDown) {
-     tempY=-Configs.playerNudgerDownStrength-.4; directionStr ="down"; playPitch=90;
+     tempY=-Configs.PN_D_STR.get()-.4; directionStr ="down"; playPitch=90;
     } else {
      directionStr ="nowhere";
     }
    
-    if (targetedPlayer.getRidingEntity() !=null) {
-     Entity ridingUpon=targetedPlayer.getLowestRidingEntity();
-     ridingUpon.setMotion(tempX, tempY + .4, tempZ);
-     ridingUpon.setLocationAndAngles(ridingUpon.getPositionVec().getX(), ridingUpon.getPositionVec().getY(), ridingUpon.getPositionVec().getZ(), playYaw, playPitch);
-     ridingUpon.velocityChanged=true;
+    if (targetedPlayer.getVehicle() !=null) {
+     Entity ridingUpon=targetedPlayer.getRootVehicle();
+     ridingUpon.setDeltaMovement(tempX, tempY + .4, tempZ);
+     ridingUpon.moveTo(ridingUpon.position().x(), ridingUpon.position().y(), ridingUpon.position().z(), playYaw, playPitch);
+     ridingUpon.hurtMarked=true;
     } else {
      targetedPlayer.stopRiding();
      if (targetedPlayer.isSleeping()) targetedPlayer.stopSleepInBed(true, false);
 //     if (targetedPlayer.isSleeping()) targetedPlayer.wakeUpPlayer(true, false, false);
-     targetedPlayer.setMotion(tempX, tempY + .4, tempZ);
-     targetedPlayer.setLocationAndAngles(targetedPlayer.getPositionVec().getX(), targetedPlayer.getPositionVec().getY(), targetedPlayer.getPositionVec().getZ(), playYaw, playPitch);
-     targetedPlayer.velocityChanged=true;
+     targetedPlayer.setDeltaMovement(tempX, tempY + .4, tempZ);
+     targetedPlayer.moveTo(targetedPlayer.position().x(), targetedPlayer.position().y(), targetedPlayer.position().z(), playYaw, playPitch);
+     targetedPlayer.hurtMarked=true;
     }
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
+    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no! " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
    }
    return 0;
   }

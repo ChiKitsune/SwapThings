@@ -18,29 +18,30 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.SChatPacket;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundChatPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.storage.FolderName;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.common.UsernameCache;
 
 public class DisplayDeathBoard {
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("displaydeathboard").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("displaydeathboard").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
    return displayDeathBoardLogic(cmd_0arg.getSource());
   });
  }
   
   
-  private static int displayDeathBoardLogic(CommandSource source) {
-   List<ServerPlayerEntity> plyList=new ArrayList<ServerPlayerEntity>(source.getServer().getPlayerList().getPlayers());
+  private static int displayDeathBoardLogic(CommandSourceStack source) {
+   ArchCommand.ReloadConfig();
+   List<ServerPlayer> plyList=new ArrayList<ServerPlayer>(source.getServer().getPlayerList().getPlayers());
    PlayerList plyListForStats= source.getServer().getPlayerList();
    Map<String, Integer> playerDeaths = buildDeathBoardPlayerList(source.getServer());
    
@@ -51,7 +52,7 @@ public class DisplayDeathBoard {
    
    
    String placeStrPre = null,placeStrPost = null;
-   source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(new StringTextComponent(TextFormatting.GOLD + "** DEATH LEADERBOARD **"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUniqueID()));
+   source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(ChatFormatting.GOLD + "** DEATH LEADERBOARD **"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUUID()));
    
    if (playerDeaths.entrySet().size()>0) {
    int c=0;
@@ -67,12 +68,12 @@ public class DisplayDeathBoard {
      }
     
     
-    if (Configs.displayDeathBoardPlacesTextList.size()>0) {
+    if (Configs.DB_LIST.get().size()>0) {
      int c_post=c-1;
-     if (c_post>Configs.displayDeathBoardPlacesTextList.size()-1) c_post=Configs.displayDeathBoardPlacesTextList.size()-1;
+     if (c_post>Configs.DB_LIST.get().size()-1) c_post=Configs.DB_LIST.get().size()-1;
      
-     if (Configs.displayDeathBoardPlacesTextList.get(c_post) != null) {
-     placeStrPost=Configs.displayDeathBoardPlacesTextList.get(c_post);
+     if (Configs.DB_LIST.get().get(c_post) != null) {
+     placeStrPost=Configs.DB_LIST.get().get(c_post);
      } else {
       placeStrPost="";
      }
@@ -81,29 +82,29 @@ public class DisplayDeathBoard {
      }
     }
 
-    source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(new StringTextComponent(
-      TextFormatting.GOLD + placeStrPre + 
-      TextFormatting.DARK_RED + entry.getValue() +
-      TextFormatting.GOLD + " deaths: " + 
-      TextFormatting.RED + entry.getKey() +
-      TextFormatting.WHITE + placeStrPost
-      ),ChatType.SYSTEM,plyList.stream().findFirst().get().getUniqueID()));
+    source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(
+      ChatFormatting.GOLD + placeStrPre + 
+      ChatFormatting.DARK_RED + entry.getValue() +
+      ChatFormatting.GOLD + " deaths: " + 
+      ChatFormatting.RED + entry.getKey() +
+      ChatFormatting.WHITE + placeStrPost
+      ),ChatType.SYSTEM,plyList.stream().findFirst().get().getUUID()));
    }
    } else {
-    source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(new StringTextComponent(TextFormatting.GOLD + "No deaths ... for now!"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUniqueID()));
+    source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(ChatFormatting.GOLD + "No deaths ... for now!"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUUID()));
    }
-   source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(new StringTextComponent(TextFormatting.GOLD + "*********************************"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUniqueID()));
+   source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(ChatFormatting.GOLD + "*********************************"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUUID()));
    return 0;
   }
   
   private static Map<String, Integer> buildDeathBoardPlayerList (MinecraftServer server) {
    Map<String, Integer> playerDeaths = new LinkedHashMap<>();
-   List<ServerPlayerEntity> plyList=new ArrayList<ServerPlayerEntity>(server.getPlayerList().getPlayers());
+   List<ServerPlayer> plyList=new ArrayList<ServerPlayer>(server.getPlayerList().getPlayers());
    
-   plyList.forEach((ServerPlayerEntity ply)->playerDeaths.put(ply.getName().getString(), ply.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS))));
+   plyList.forEach((ServerPlayer ply)->playerDeaths.put(ply.getName().getString(), ply.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS))));
 
    try {
-    File statsFolder = server.func_240776_a_(FolderName.STATS).toFile();
+    File statsFolder = server.getWorldPath(LevelResource.PLAYER_STATS_DIR).toFile();
     if(statsFolder.isDirectory() && statsFolder.listFiles() != null && statsFolder.listFiles().length > 0) {
      for (File playerStatFile : statsFolder.listFiles()) {
       String uuid = FilenameUtils.removeExtension(playerStatFile.getName());

@@ -15,13 +15,13 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 
 @Mod(SwappingThings.MODID)
 @Mod.EventBusSubscriber(modid = SwappingThings.MODID, bus = Bus.MOD)
@@ -43,10 +43,12 @@ public class SwappingThings {
   eventBus.addListener(this::enqueueIMC);
   eventBus.addListener(this::processIMC);
   eventBus.addListener(this::doClientStuff);
-  eventBus.addListener(this::config);
+//  eventBus.addListener(this::config);
+  
   
 //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Configs.CLIENT_CONFIG);
 ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configs.STCONFIG_SPEC);
+Configs.init(FMLPaths.CONFIGDIR.get().resolve(MODID + "-common.toml"));
 ////Register the setup method for modloading
 //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 //// Register the enqueueIMC method for modloading
@@ -68,11 +70,11 @@ private void setup(final FMLCommonSetupEvent event) {
 
 }
 
-private void config(final ModConfigEvent evt) {
- if (evt.getConfig().getModId().equals(MODID)) {
-   Configs.bakeConfig();
- }
-}
+//private void config(final ModConfigEvent evt) {
+// if (evt.getConfig().getModId().equals(MODID)) {
+//   Configs.bakeConfig();
+// }
+//}
 
 private void doClientStuff(final FMLClientSetupEvent event) {
 // do something that can only be done on the client

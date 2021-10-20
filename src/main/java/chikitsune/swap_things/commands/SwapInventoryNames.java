@@ -11,21 +11,21 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SwapInventoryNames {
 public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("swapinventorynames").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return swapInventoryNamesLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),null);
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("swapinventorynames").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return swapInventoryNamesLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),null);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return swapInventoryNamesLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null);
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
@@ -34,13 +34,14 @@ public static Random rand= new Random();
      ));
  }
   
-  private static int swapInventoryNamesLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName) {
+  private static int swapInventoryNamesLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
+   ArchCommand.ReloadConfig();
    ItemStack tempItem=ItemStack.EMPTY;
    int tempRandNum=0;
-   StringTextComponent tempItemName=null,prevItemName=null;
+   TextComponent tempItemName=null,prevItemName=null;
    String strPref="",strMsgFromName="Someone";
    List<ItemStack> tempInventory=null,tempBUInventory;
-   ServerPlayerEntity targetedPlayerTwo;
+   ServerPlayer targetedPlayerTwo;
    boolean isSamePerson=true;
    
 //   tempInventory=ForgeRegistries.ITEMS.getValues().stream().map(ItemStack::new).collect(Collectors.toList());
@@ -51,35 +52,35 @@ public static Random rand= new Random();
     strMsgFromName=fromName;
    }
    
-   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+   for(ServerPlayer targetedPlayer : targetPlayers) {
     targetedPlayerTwo=ArchCommand.getNewRandomSecondTarget(targetedPlayer, targetedPlayer, source.getServer());
-    isSamePerson=(targetedPlayer.getName().getUnformattedComponentText() == targetedPlayerTwo.getName().getUnformattedComponentText());
+    isSamePerson=(targetedPlayer.getName().getContents() == targetedPlayerTwo.getName().getContents());
     prevItemName=null;
     
     if (!isSamePerson) {
      tempInventory=new ArrayList<ItemStack>();
-     for (int i=0;i<targetedPlayerTwo.inventory.getSizeInventory();i++) {
+     for (int i=0;i<targetedPlayerTwo.getInventory().getContainerSize();i++) {
       tempItem=ItemStack.EMPTY;
       
-      if (!tempItem.isEmpty()) tempInventory.add(targetedPlayerTwo.inventory.getStackInSlot(i));
+      if (!tempItem.isEmpty()) tempInventory.add(targetedPlayerTwo.getInventory().getItem(i));
       }
     }
     if (isSamePerson || tempInventory.size()<1 || tempInventory == null) tempInventory=ForgeRegistries.ITEMS.getValues().stream().map(ItemStack::new).collect(Collectors.toList());    
     tempBUInventory=tempInventory;
     
-    for (int i=0;i<targetedPlayer.inventory.getSizeInventory();i++) {
+    for (int i=0;i<targetedPlayer.getInventory().getContainerSize();i++) {
      tempItem=ItemStack.EMPTY;
-     tempItem=targetedPlayer.inventory.getStackInSlot(i);
+     tempItem=targetedPlayer.getInventory().getItem(i);
      if (!tempItem.isEmpty()) {
       if (tempInventory.size()<1) tempInventory=tempBUInventory;
       tempRandNum=rand.nextInt(tempInventory.size());
-      tempItemName=new StringTextComponent(strPref + tempInventory.get(tempRandNum).getDisplayName().getString());
-      tempItem.setDisplayName(tempItemName);
+      tempItemName=new TextComponent(strPref + tempInventory.get(tempRandNum).getHoverName().getString());
+      tempItem.setHoverName(tempItemName);
       tempInventory.remove(tempRandNum);
      }
     }
     
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
+    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
    }   
    return 0;
   }

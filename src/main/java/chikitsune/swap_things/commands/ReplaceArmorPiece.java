@@ -12,25 +12,25 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import chikitsune.swap_things.commands.arguments.RandomSingleArmorSlotArgument;
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.command.arguments.ItemInput;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class ReplaceArmorPiece {
  public static Random rand= new Random();
  public static List<String> realArmorList = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD");
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("replacearmorpiece").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return replaceArmorPieceLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),"RANDOM",null,"someone");
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("replacearmorpiece").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return replaceArmorPieceLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"RANDOM",null,"someone");
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return replaceArmorPieceLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"RANDOM",null,"someone");
    }).then(Commands.argument("armorType", RandomSingleArmorSlotArgument.allArmorSlots()).executes((cmd_2arg) -> {
@@ -43,7 +43,8 @@ public class ReplaceArmorPiece {
        ))));
  }
  
- private static int replaceArmorPieceLogic(CommandSource source, Collection<ServerPlayerEntity> targetPlayers, String armorType, ItemInput itemInput, String fromName) {
+ private static int replaceArmorPieceLogic(CommandSourceStack source, Collection<ServerPlayer> targetPlayers, String armorType, ItemInput itemInput, String fromName) {
+  ArchCommand.ReloadConfig();
   Boolean isRandomArmorSlot="RANDOM".equals(armorType.toUpperCase());
   String targetedArmorSlot="";
   ItemStack tempStack=ItemStack.EMPTY,defItemStack=ItemStack.EMPTY;
@@ -51,14 +52,14 @@ public class ReplaceArmorPiece {
   
   if (itemInput!=null) {
    try {
-   defItemStack=itemInput.createStack(1, true);
+   defItemStack=itemInput.createItemStack(1, true);
    } catch (CommandSyntaxException e) {
     e.printStackTrace();
     defItemStack=new ItemStack(Items.DEAD_BUSH);
    }
   }
   
-  for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+  for(ServerPlayer targetedPlayer : targetPlayers) {
    
    if (isRandomArmorSlot) {
     targetedArmorSlot=ArchCommand.getRandomArmorSlotTarget(targetedPlayer,armorType,isRandomArmorSlot);
@@ -66,14 +67,14 @@ public class ReplaceArmorPiece {
     targetedArmorSlot=armorType;
     }
    
-   tempStack=targetedPlayer.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlot.toLowerCase()));
+   tempStack=targetedPlayer.getItemBySlot(EquipmentSlot.byName(targetedArmorSlot.toLowerCase()));
    
-   if (targetedPlayer.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlot.toLowerCase())) != ItemStack.EMPTY) targetedPlayer.dropItem(targetedPlayer.getItemStackFromSlot(EquipmentSlotType.fromString(targetedArmorSlot.toLowerCase())), false, true);
+   if (targetedPlayer.getItemBySlot(EquipmentSlot.byName(targetedArmorSlot.toLowerCase())) != ItemStack.EMPTY) targetedPlayer.drop(targetedPlayer.getItemBySlot(EquipmentSlot.byName(targetedArmorSlot.toLowerCase())), false, true);
    
-   targetedPlayer.setItemStackToSlot(EquipmentSlotType.fromString(targetedArmorSlot.toLowerCase()), defItemStack);
+   targetedPlayer.setItemSlot(EquipmentSlot.byName(targetedArmorSlot.toLowerCase()), defItemStack);
    
    
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " got a brand new " + ArchCommand.getArmorSlotDescription(targetedArmorSlot) 
+   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " got a brand new " + ArchCommand.getArmorSlotDescription(targetedArmorSlot) 
    ));
   }
   return 0;

@@ -11,27 +11,27 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.block.BlockState;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class RandomTeleport {
 public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  Configs.bakeConfig();
-  return Commands.literal("randomteleport").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return randomTeleportLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),"someone",Configs.randomTeleportXMin, Configs.randomTeleportXMax, Configs.randomTeleportYMin, Configs.randomTeleportYMax, Configs.randomTeleportZMin, Configs.randomTeleportZMax);
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  ArchCommand.ReloadConfig();
+  return Commands.literal("randomteleport").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return randomTeleportLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone", Configs.RT_X_MIN.get(), Configs.RT_X_MAX.get(), Configs.RT_Y_MIN.get(), Configs.RT_Y_MAX.get(), Configs.RT_Z_MIN.get(), Configs.RT_Z_MAX.get());
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
-     return randomTeleportLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone",Configs.randomTeleportXMin, Configs.randomTeleportXMax, Configs.randomTeleportYMin, Configs.randomTeleportYMax, Configs.randomTeleportZMin, Configs.randomTeleportZMax);
+     return randomTeleportLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone", Configs.RT_X_MIN.get(), Configs.RT_X_MAX.get(), Configs.RT_Y_MIN.get(), Configs.RT_Y_MAX.get(), Configs.RT_Z_MIN.get(), Configs.RT_Z_MAX.get());
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
-      return randomTeleportLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"),Configs.randomTeleportXMin, Configs.randomTeleportXMax, Configs.randomTeleportYMin, Configs.randomTeleportYMax, Configs.randomTeleportZMin, Configs.randomTeleportZMax);
+      return randomTeleportLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"), Configs.RT_X_MIN.get(), Configs.RT_X_MAX.get(), Configs.RT_Y_MIN.get(), Configs.RT_Y_MAX.get(), Configs.RT_Z_MIN.get(), Configs.RT_Z_MAX.get());
       }).then(Commands.argument("X_Min", IntegerArgumentType.integer())
         .then(Commands.argument("X_Max", IntegerArgumentType.integer())
           .then(Commands.argument("Y_Min", IntegerArgumentType.integer())
@@ -47,15 +47,16 @@ public static Random rand= new Random();
      ))))))));
  }
   
-  private static int randomTeleportLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName,
-        Integer X_Min, Integer X_Max, Integer Y_Min, Integer Y_Max, Integer Z_Min, Integer Z_Max) {
-   Configs.bakeConfig();
-//   Integer X_Max=Configs.randomTeleportXMax;
-//   Integer Y_Max=Configs.randomTeleportYMax;
-//   Integer Z_Max=Configs.randomTeleportZMax;
-//   Integer X_Min=Configs.randomTeleportXMin;
-//   Integer Y_Min=Configs.randomTeleportYMin;
-//   Integer Z_Min=Configs.randomTeleportZMin;
+//  private static int randomTeleportLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
+ private static int randomTeleportLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName,
+       Integer X_Min, Integer X_Max, Integer Y_Min, Integer Y_Max, Integer Z_Min, Integer Z_Max) {
+   ArchCommand.ReloadConfig();
+//   Integer X_Max=Configs.RT_X_MAX.get();
+//   Integer Y_Max=Configs.RT_Y_MAX.get();
+//   Integer Z_Max=Configs.RT_Z_MAX.get();
+//   Integer X_Min=Configs.RT_X_MIN.get();
+//   Integer Y_Min=Configs.RT_Y_MIN.get();
+//   Integer Z_Min=Configs.RT_Z_MIN.get();
    Integer teleX=0,teleY=0,teleZ=0;
    Integer plyX,plyY,plyZ;
    Integer loopCnt=0,listLoopCnt=0;
@@ -64,15 +65,16 @@ public static Random rand= new Random();
    BlockPos blockpos;
    BlockState blockstate;
    
-   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+   
+   for(ServerPlayer targetedPlayer : targetPlayers) {
     attTele=false;
     teleX=0;
     teleY=0;
     teleZ=0;
     loopCnt=0;
-    plyX= MathHelper.floor(targetedPlayer.getPosition().getX());
-    plyY= MathHelper.floor(targetedPlayer.getPosition().getY());
-    plyZ= MathHelper.floor(targetedPlayer.getPosition().getZ());
+    plyX= Mth.floor(targetedPlayer.blockPosition().getX());
+    plyY= Mth.floor(targetedPlayer.blockPosition().getY());
+    plyZ= Mth.floor(targetedPlayer.blockPosition().getZ());
 
     
     do {
@@ -80,13 +82,13 @@ public static Random rand= new Random();
      do { teleY=rand.nextInt((Y_Max*2)+1) - Y_Max; } while (!(Math.abs(teleY)>=Y_Min && Math.abs(teleY)<=Y_Max && ((teleY+plyY)>=1) && ((plyY+teleY)<=255)));
      do { teleZ=rand.nextInt((Z_Max*2)+1) - Z_Max; } while (!(Math.abs(teleZ)>=Z_Min && Math.abs(teleZ)<=Z_Max));     
      
-     targetedPlayer.teleport(targetedPlayer.getServerWorld(),(plyX + teleX), (plyY + teleY), (plyZ + teleZ), targetedPlayer.rotationYaw, targetedPlayer.rotationPitch);
-     attTele=targetedPlayer.attemptTeleport((plyX + teleX), (plyY + teleY), (plyZ + teleZ), true);
+     targetedPlayer.teleportTo(targetedPlayer.getLevel(),(plyX + teleX), (plyY + teleY), (plyZ + teleZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
+     attTele=targetedPlayer.randomTeleport((plyX + teleX), (plyY + teleY), (plyZ + teleZ), true);
      
      if (!attTele) {
       blockpos = new BlockPos((plyX + teleX), (plyY + teleY), (plyZ + teleZ));
       
-      blockstate=targetedPlayer.world.getBlockState(blockpos);
+      blockstate=targetedPlayer.level.getBlockState(blockpos);
       
       yPossibleList=Lists.newArrayList();
       
@@ -100,7 +102,7 @@ public static Random rand= new Random();
       listLoopCnt=0;
       do {
 //       System.out.println("yPossibleList.get(listLoopCnt)="+yPossibleList.get(listLoopCnt));
-       attTele=targetedPlayer.attemptTeleport((plyX + teleX), yPossibleList.get(listLoopCnt), (plyZ + teleZ), true);
+       attTele=targetedPlayer.randomTeleport((plyX + teleX), yPossibleList.get(listLoopCnt), (plyZ + teleZ), true);
        listLoopCnt++;
       } while (!attTele && listLoopCnt<yPossibleList.size());
      }
@@ -111,10 +113,10 @@ public static Random rand= new Random();
     } while (!attTele && loopCnt<=20);
     
     if (attTele) {
-     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh no! " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " was distracted by " + fromName + " and is now lost."));
+     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no! " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " was distracted by " + fromName + " and is now lost."));
      } else {
-      targetedPlayer.teleport(targetedPlayer.getServerWorld(),(plyX), (plyY), (plyZ), targetedPlayer.rotationYaw, targetedPlayer.rotationPitch);
-      ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh no " + fromName + " tried to distract " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " but they were distracted instead."));
+      targetedPlayer.teleportTo(targetedPlayer.getLevel(),(plyX), (plyY), (plyZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
+      ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no " + fromName + " tried to distract " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " but they were distracted instead."));
      }
    }  
    

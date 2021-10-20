@@ -12,17 +12,17 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class RandomArmorSlotArgument implements ArgumentType<String> {
  private static final Collection<String> EXAMPLES = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD","RANDOM","SET","ALL");
- private static final DynamicCommandExceptionType NOT_IN_LIST = new DynamicCommandExceptionType((msg) -> { return new TranslationTextComponent("arguments.randomarmorslot.notFound", msg); });
+ private static final DynamicCommandExceptionType NOT_IN_LIST = new DynamicCommandExceptionType((msg) -> { return new TranslatableComponent("arguments.randomarmorslot.notFound", msg); });
  
  public static RandomArmorSlotArgument allArmorSlots() { return new RandomArmorSlotArgument(); }
  
- public static String getRandomArmorSlot(CommandContext<CommandSource> context, String name) throws CommandSyntaxException {
+ public static String getRandomArmorSlot(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
   return context.getArgument(name, String.class);
 }
   
@@ -38,7 +38,7 @@ public class RandomArmorSlotArgument implements ArgumentType<String> {
  }
  
  public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder suggestList) {
-  return ISuggestionProvider.suggest(EXAMPLES, suggestList);
+  return SharedSuggestionProvider.suggest(EXAMPLES, suggestList);
 }
 
  public Collection<String> getExamples() { return EXAMPLES; }

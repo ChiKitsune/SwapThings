@@ -8,20 +8,20 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public class InventorySlotUnnamer {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("inventoryslotunnamer").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return inventorySlotUnnamerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),null,null);
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("inventoryslotunnamer").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return inventorySlotUnnamerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),null,null);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return inventorySlotUnnamerLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null,null);
    }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
@@ -31,7 +31,8 @@ public class InventorySlotUnnamer {
    }))));
  }
  
- private static int inventorySlotUnnamerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, String fromName, String slotNum) {
+ private static int inventorySlotUnnamerLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName, String slotNum) {
+  ArchCommand.ReloadConfig();
   ItemStack tempStack=ItemStack.EMPTY;
   Integer iCnt=0;
   Integer selectedSlotNum=null;
@@ -49,41 +50,41 @@ public class InventorySlotUnnamer {
    slotNumParsed=-1F;
   }
   
-  for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+  for(ServerPlayer targetedPlayer : targetPlayers) {
    tempStack=ItemStack.EMPTY;
    
    if(slotNumParsed!=null && (slotNumParsed == 0 || (slotNumParsed % 1 == 0) ) && slotNum !=null) {
-    selectedSlotNum=targetedPlayer.inventory.currentItem;
+    selectedSlotNum=targetedPlayer.getInventory().selected;
    } else if(slotNumParsed!=null && slotNumParsed > 0 && slotNum !=null) {
     modFloatResult=Math.round((slotNumParsed % 1)*100) -1;
-     if (slotNumParsed % 1 < targetedPlayer.inventory.getSizeInventory() && slotNumParsed % 1 > 0) {
+     if (slotNumParsed % 1 < targetedPlayer.getInventory().getContainerSize() && slotNumParsed % 1 > 0) {
       selectedSlotNum=modFloatResult.intValue();    
      } else {
       iCnt=0;
       do {
-      selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
+      selectedSlotNum=rand.nextInt(targetedPlayer.getInventory().getContainerSize());
       iCnt++;
-      } while (targetedPlayer.inventory.getStackInSlot(selectedSlotNum).isEmpty() && iCnt<100);
+      } while (targetedPlayer.getInventory().getItem(selectedSlotNum).isEmpty() && iCnt<100);
      }
    } else {
     iCnt=0;
     do {
-    selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
+    selectedSlotNum=rand.nextInt(targetedPlayer.getInventory().getContainerSize());
     iCnt++;
-    } while (targetedPlayer.inventory.getStackInSlot(selectedSlotNum).isEmpty() && iCnt<100);
+    } while (targetedPlayer.getInventory().getItem(selectedSlotNum).isEmpty() && iCnt<100);
    }
    
-   tempStack=targetedPlayer.inventory.getStackInSlot(selectedSlotNum);
-   if (!tempStack.isEmpty() && tempStack.hasDisplayName()) {
-    targetedPlayer.inventory.getStackInSlot(selectedSlotNum).setDisplayName(null);
+   tempStack=targetedPlayer.getInventory().getItem(selectedSlotNum);
+   if (!tempStack.isEmpty() && tempStack.hasCustomHoverName()) {
+    targetedPlayer.getInventory().getItem(selectedSlotNum).setHoverName(null);
    
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + TextFormatting.RED + targetedPlayer.getName().getString() + "'s " + TextFormatting.GOLD + prevItemName + " had too fancy of a name and made it plain."));
+   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + prevItemName + " had too fancy of a name and made it plain."));
    }
-   else if (!tempStack.isEmpty() && !tempStack.hasDisplayName()) {
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + TextFormatting.RED + targetedPlayer.getName().getString() + "'s " + TextFormatting.GOLD + prevItemName + " had too fancy of a name but it wasn't."));
+   else if (!tempStack.isEmpty() && !tempStack.hasCustomHoverName()) {
+    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + prevItemName + " had too fancy of a name but it wasn't."));
    }
    else {
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh. " + strMsgFromName + " couldn't find an item that had a fancy name in " + TextFormatting.RED + targetedPlayer.getName().getString() + "'s inventory."));
+    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh. " + strMsgFromName + " couldn't find an item that had a fancy name in " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s inventory."));
    }
   }
   

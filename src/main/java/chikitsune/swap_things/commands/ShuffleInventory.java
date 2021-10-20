@@ -8,20 +8,20 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public class ShuffleInventory {
  public static Random rand= new Random();
 
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("shuffleinventory").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return shuffleInventoryLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),"someone");
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("shuffleinventory").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return shuffleInventoryLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone");
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return shuffleInventoryLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone");
    }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
@@ -29,24 +29,25 @@ public class ShuffleInventory {
    })));
  }
 
- private static int shuffleInventoryLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers,String fromName) {
+ private static int shuffleInventoryLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers,String fromName) {
+  ArchCommand.ReloadConfig();
   ItemStack tempItem=ItemStack.EMPTY;
   Integer tempRandNum=0;
   
-  for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-   for (int i=0;i<targetedPlayer.inventory.getSizeInventory();i++) {
+  for(ServerPlayer targetedPlayer : targetPlayers) {
+   for (int i=0;i<targetedPlayer.getInventory().getContainerSize();i++) {
     tempItem=ItemStack.EMPTY;
     tempRandNum=i;
     
     while (tempRandNum==i) {
-     tempRandNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
+     tempRandNum=rand.nextInt(targetedPlayer.getInventory().getContainerSize());
     }
     
-    tempItem=targetedPlayer.inventory.getStackInSlot(i).copy();
-    targetedPlayer.inventory.setInventorySlotContents(i, targetedPlayer.inventory.getStackInSlot(tempRandNum).copy());
-    targetedPlayer.inventory.setInventorySlotContents(tempRandNum,tempItem);
+    tempItem=targetedPlayer.getInventory().getItem(i).copy();
+    targetedPlayer.getInventory().setItem(i, targetedPlayer.getInventory().getItem(tempRandNum).copy());
+    targetedPlayer.getInventory().setItem(tempRandNum,tempItem);
    }
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " let " + fromName + " re-sort their inventory."));
+   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + fromName + " re-sort their inventory."));
   }
   return 0;
  }

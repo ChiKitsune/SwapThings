@@ -14,26 +14,26 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.command.arguments.ItemInput;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class InventoryEqualizer {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("inventoryequalizer").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return inventoryEqualizerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),null,null,"someone");
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("inventoryequalizer").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return inventoryEqualizerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),null,null,"someone");
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
     return inventoryEqualizerLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null,null,"someone");
     }).then(Commands.argument("item", ItemArgument.item()).executes((cmd_2arg) -> {
@@ -45,14 +45,15 @@ public class InventoryEqualizer {
       })))));
  }
  
- private static int inventoryEqualizerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, ItemInput itemInput, Integer stackAmt, String fromName) {
+ private static int inventoryEqualizerLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, ItemInput itemInput, Integer stackAmt, String fromName) {
+  ArchCommand.ReloadConfig();
   ItemStack defItemStack=ItemStack.EMPTY;
   ItemStack tempItemStack=ItemStack.EMPTY;
   Integer tempStackAmt=1;
   if (stackAmt!=null) tempStackAmt=stackAmt;
   if (itemInput!=null) {
    try {
-   defItemStack=itemInput.createStack(1, true);
+   defItemStack=itemInput.createItemStack(1, true);
    } catch (CommandSyntaxException e) {
     e.printStackTrace();
     defItemStack=new ItemStack(Items.DEAD_BUSH);
@@ -64,8 +65,8 @@ public class InventoryEqualizer {
   defItemStack.setCount(tempStackAmt);
   
   List<NonNullList<ItemStack>> allInventories;
-  for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-   allInventories = ImmutableList.of(targetedPlayer.inventory.mainInventory, targetedPlayer.inventory.armorInventory, targetedPlayer.inventory.offHandInventory);
+  for(ServerPlayer targetedPlayer : targetPlayers) {
+   allInventories = ImmutableList.of(targetedPlayer.getInventory().items, targetedPlayer.getInventory().armor, targetedPlayer.getInventory().offhand);
    for(List<ItemStack> list : allInventories) {
     for(int i = 0; i < list.size(); ++i) {
      tempItemStack = list.get(i);
@@ -76,28 +77,28 @@ public class InventoryEqualizer {
     }
  }
    
-   ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " just found out what their inventory would look like if it only had " + TextFormatting.DARK_GREEN + defItemStack.getDisplayName().getString() + TextFormatting.GOLD + " in it."));
+   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " just found out what their inventory would look like if it only had " + ChatFormatting.DARK_GREEN + defItemStack.getHoverName().getString() + ChatFormatting.GOLD + " in it."));
   }
   
   return 0;
  }
  
  @Nullable
- private static ItemEntity ibDropItem(ItemStack droppedItem, ServerPlayerEntity targetedPlayer) {
+ private static ItemEntity ibDropItem(ItemStack droppedItem, ServerPlayer targetedPlayer) {
   if (droppedItem.isEmpty()) {
    return null;
   } else {
-   double d0 = targetedPlayer.getPosY() - (double)0.3F + (double)targetedPlayer.getEyeHeight();
-   ItemEntity itementity = new ItemEntity(targetedPlayer.world, targetedPlayer.getPosX(), d0, targetedPlayer.getPosZ(), droppedItem);
-   itementity.setPickupDelay(20);
-   itementity.setThrowerId(targetedPlayer.getUniqueID());
+   double d0 = targetedPlayer.getY() - (double)0.3F + (double)targetedPlayer.getEyeHeight();
+   ItemEntity itementity = new ItemEntity(targetedPlayer.level, targetedPlayer.getX(), d0, targetedPlayer.getZ(), droppedItem);
+   itementity.setPickUpDelay(20);
+   itementity.setThrower(targetedPlayer.getUUID());
    float f = rand.nextFloat() * 0.5F;
    float f1 = rand.nextFloat() * ((float)Math.PI * 2F);
-   itementity.setMotion((double)(-MathHelper.sin(f1) * f), (double)0.2F, (double)(MathHelper.cos(f1) * f));
+   itementity.setDeltaMovement((double)(-Mth.sin(f1) * f), (double)0.2F, (double)(Mth.cos(f1) * f));
    
    if (itementity.captureDrops() != null) itementity.captureDrops().add(itementity);
    else
-    itementity.world.addEntity(itementity);
+    itementity.level.addFreshEntity(itementity);
    return itementity;
   }
  }
