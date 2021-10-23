@@ -9,22 +9,32 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import chikitsune.swap_things.config.Configs;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.command.arguments.ItemInput;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+
+//import net.minecraft.command.CommandSource;
+//import net.minecraft.command.Commands;
+//import net.minecraft.command.arguments.EntityArgument;
+//import net.minecraft.command.arguments.ItemArgument;
+//import net.minecraft.command.arguments.ItemInput;
+//import net.minecraft.entity.player.ServerPlayerEntity;
+//import net.minecraft.item.ItemStack;
+//import net.minecraft.util.text.StringTextComponent;
+//import net.minecraft.util.text.ChatFormatting;
 
 public class InventorySlotReplacer {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSource, ?> register() { 
-  return Commands.literal("inventoryslotreplacer").requires((cmd_init) -> { return cmd_init.hasPermissionLevel(Configs.cmdSTPermissionsLevel); }).executes((cmd_0arg) -> {
-   return inventorySlotReplacerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().asPlayer()),null,null,"someone");
+ public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+  return Commands.literal("inventoryslotreplacer").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return inventorySlotReplacerLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),null,null,"someone");
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return inventorySlotReplacerLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null,null,"someone");
      }).then(Commands.argument("item", ItemArgument.item()).executes((cmd_2arg) -> {
@@ -37,56 +47,66 @@ public class InventorySlotReplacer {
      ))));
  }
   
-  private static int inventorySlotReplacerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, ItemInput itemInput, String slotNum, String fromName) {
+  private static int inventorySlotReplacerLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, ItemInput itemInput, String slotNum, String fromName) {
    Integer selectedSlotNum=null;
-   Float slotNumParsed=null;
+   Integer slotNumParsed=null;
    Integer modFloatResult=null;
    ItemStack tempStack=ItemStack.EMPTY;
    ItemStack rndStack = ItemStack.EMPTY;
+   boolean randomSlot=true;
+   Integer iCnt=0,maxPlayerInvSize;
    
    try {
-    slotNumParsed=Float.parseFloat(slotNum);
+    slotNumParsed=Integer.parseInt(slotNum);
    } catch (Exception e) {
-    slotNumParsed=-1F;
+    slotNumParsed=-1;
    }
-   try {
-    if (itemInput==null) {
-//     rndStack
-    } else {
-     rndStack=itemInput.createStack(1, false);
-    }
-   } catch (CommandSyntaxException e) {
-    e.printStackTrace();
-    rndStack=ItemStack.EMPTY;
-   }  
+   if (slotNumParsed>=0) randomSlot=false;
    
-   for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+   try {
+    if (itemInput!=null) rndStack=itemInput.createItemStack(1, false);
+   } catch (CommandSyntaxException e) {
+    rndStack=ItemStack.EMPTY;
+   } 
+   
+   for(ServerPlayer targetedPlayer : targetPlayers) {
     tempStack=ItemStack.EMPTY;
+    maxPlayerInvSize=targetedPlayer.getInventory().getContainerSize();
     
-    if(slotNumParsed!=null && (slotNumParsed == 0 || (slotNumParsed % 1 == 0) ) && slotNum !=null) {
-     selectedSlotNum=targetedPlayer.inventory.currentItem;
-    } else if(slotNumParsed!=null && slotNumParsed > 0 && slotNum !=null) {
-     modFloatResult=Math.round((slotNumParsed % 1)*100) -1;
-      if (slotNumParsed % 1 < targetedPlayer.inventory.getSizeInventory() && slotNumParsed % 1 > 0) {
-       selectedSlotNum=modFloatResult.intValue();       
-      } else {
-       selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
-      }
+    if (randomSlot) {
+     iCnt=0;
+     do {
+     selectedSlotNum=rand.nextInt(maxPlayerInvSize);
+     iCnt++;
+     } while (targetedPlayer.getInventory().getItem(selectedSlotNum).isEmpty() && iCnt<50);
     } else {
-     selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
+     if (slotNumParsed == 0) {
+      selectedSlotNum=targetedPlayer.getInventory().selected;
+     } else if (slotNumParsed > 0) {
+      System.out.println("slotNumParsed: "+slotNumParsed+" maxPlayerInvSize: "+maxPlayerInvSize+" mod: "+(slotNumParsed % maxPlayerInvSize));
+      selectedSlotNum=Math.round(slotNumParsed % maxPlayerInvSize)-1;
+      if (selectedSlotNum<0) selectedSlotNum=0;
+      
+     } else {
+      iCnt=0;
+      do {
+      selectedSlotNum=rand.nextInt(maxPlayerInvSize);
+      iCnt++;
+      } while (targetedPlayer.getInventory().getItem(selectedSlotNum).isEmpty() && iCnt<50);
+     }
     }
     
-    tempStack=targetedPlayer.inventory.getStackInSlot(selectedSlotNum).copy();
+    tempStack=targetedPlayer.getInventory().getItem(selectedSlotNum).copy();
     if (!tempStack.isEmpty()) {
-     targetedPlayer.dropItem(targetedPlayer.inventory.getStackInSlot(selectedSlotNum),false,true);
-     targetedPlayer.inventory.setInventorySlotContents(selectedSlotNum, rndStack.copy());
+     targetedPlayer.drop(targetedPlayer.getInventory().getItem(selectedSlotNum),false,true);
+     targetedPlayer.getInventory().setItem(selectedSlotNum, rndStack.copy());
     }
     
    
     if (tempStack.isEmpty()) {
-     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + fromName + " tried to drop one of " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " but it was already empty."));
+     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + fromName + " tried to drop one of " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " but it was already empty."));
     } else {
-     ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.GOLD + "Oh! " + fromName + " just dropped "  + tempStack.getCount() + " of " + TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + "'s " + tempStack.getDisplayName().getString()));
+     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + fromName + " just dropped "  + tempStack.getCount() + " of " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + "'s " + tempStack.getDisplayName().getString()));
     }
    }
    return 0;

@@ -54,7 +54,7 @@ public class Configs {
  public static final String CAT_CMDS_CMT = "Command Settings";
  
  public static final String CAT_GEN = "general";
- public static ForgeConfigSpec.BooleanValue MSG_ALL_SERVER;
+   public static ForgeConfigSpec.BooleanValue MSG_ALL_SERVER;
    public static boolean MSG_ALL_SERVER_DEF = false;
    private static final String MSG_ALL_SERVER_NAM = "msgAllPlayers";
    private static final String MSG_ALL_SERVER_CMT = "Command messages show to all players on server.";
@@ -64,6 +64,10 @@ public class Configs {
    public static int CMD_PERMISSION_LEVEL_MAX = 4;
    public static final String CMD_PERMISSION_LEVEL_NAM = "cmdPermissionsLevel";
    public static final String CMD_PERMISSION_LEVEL_CMT = "Sets all command to be this permission level.";
+   public static ForgeConfigSpec.BooleanValue MSG_SHOW;
+   public static boolean MSG_SHOW_DEF = true;
+   private static final String MSG_SHOW_NAM = "msgShow";
+   private static final String MSG_SHOW_CMT = "Commands show a message in chat.";
 
  public static final String CAT_IB = "InventoryBomb";
  public static final String CAT_IB_CMT = "InventoryBomb Command Settings";
@@ -335,6 +339,7 @@ public class Configs {
   BUILDER.push(CAT_GEN);
   MSG_ALL_SERVER=BUILDER.comment(MSG_ALL_SERVER_CMT).define(MSG_ALL_SERVER_NAM, MSG_ALL_SERVER_DEF);
   CMD_PERMISSION_LEVEL=BUILDER.comment(CMD_PERMISSION_LEVEL_CMT).defineInRange(CMD_PERMISSION_LEVEL_NAM, CMD_PERMISSION_LEVEL_DEF, CMD_PERMISSION_LEVEL_MIN, CMD_PERMISSION_LEVEL_MAX);
+  MSG_SHOW=BUILDER.comment(MSG_SHOW_CMT).define(MSG_SHOW_NAM, MSG_SHOW_DEF);
   BUILDER.pop();
   
   BUILDER.comment(CAT_IB_CMT).push(CAT_IB);

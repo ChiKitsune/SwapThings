@@ -41,6 +41,7 @@ public class ArchCommand {
     .then(InventorySlotClearer.register())
     .then(InventorySlotEnchanting.register())
     .then(InventorySlotRenamer.register())
+    .then(InventorySlotReplacer.register())
     .then(InventorySlotUnnamer.register())
 //    .then(Panicing.register())
     .then(PlayerNudger.register())
@@ -170,6 +171,7 @@ public class ArchCommand {
  }
  
  public static void playerMsger(CommandSourceStack source,Collection<ServerPlayer> targetPlayers,TextComponent msg) {
+  if (!Configs.MSG_SHOW.get()) return;
   if (Configs.MSG_ALL_SERVER.get()) {
 //   source.getServer().getPlayerList().broadcastMessage(msg);
    source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(msg,ChatType.SYSTEM,targetPlayers.stream().findFirst().get().getUUID()));
