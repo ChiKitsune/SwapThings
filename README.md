@@ -1,4 +1,4 @@
-# SwapThings a 1.16.5 Minecraft Forge Mod
+# SwapThings a Minecraft Forge Mod (Mainly 1.16.5 & 1.17.1 being updated)
 
 Mod mainly created to work with CCI/TwitchSpawn for some Twitch Integration. 
 Adds commands for viewers to interact and make things more entertaining for the streamer.
@@ -88,17 +88,18 @@ Adds commands for viewers to interact and make things more entertaining for the 
     drops and then replaces a specific inventory slot based on the decimal place of the amount or random if not given one.
       - Note: If no item is given it defaults to Air/empty slot
       - Note: slot num ignores the whole number amount and only looks for decimal places. https://i.imgur.com/5qokaCR.jpg
-            .00 is held item
-            .01 - .09 is hotbar
-            .10 - .18 is top line in inventory
-            .19 - .27 is second line in inventory
-            .28 - .36 is third line in inventory
-            .37 is boots
-            .38 is leggings
-            .39 is chestplate
-            .40 is helmet
-            .41 is offhand
-            .42 and above is outside of the default player's inventory size
+            -1 will try to choose a random non empty slot
+             0 is held item
+            01 - 09 is hotbar
+            10 - 18 is top line in inventory
+            19 - 27 is second line in inventory
+            28 - 36 is third line in inventory
+            37 is boots
+            38 is leggings
+            39 is chestplate
+            40 is helmet
+            41 is offhand
+            42 and above is outside of the default player's inventory size and will loop back around to force it within the inventory size
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
 #####  ```/swapthings inventoryslotunnamer [playername] [courtesy of] [amount]```
@@ -141,9 +142,10 @@ Adds commands for viewers to interact and make things more entertaining for the 
       - Note: If want an equal chance of choosing can put the weighted chance number as 1 for all
 
 #####  ```/swapthings randomteleport [playername] [courtesy of]```
+    Teleports the player to a random location based on config min/max values for each axis.
 #####  ```/swapthings randomteleport [playername] [courtesy of] [X_Min] [X_Max] [Y_Min] [Y_Max] [Z_Min] [Z_Max]```
-    Teleports the player to a random location based on config min/max values for each axis unless fill in the axis values in the command
-      - Note: Direction chances are based on the config chance values
+    Teleports the player to a random location based on given numbers instead of the config min/max values for each axis.
+      - Note: Min/Max values should all be positive as it is block distance amounts
 
 #####  ```/swapthings replacearmorpiece [playername] [head|chest|legs|feet|mainhand|offhand|random] [item] [courtesy of]```
     Drops and replaces armor in the given slot with the given item
