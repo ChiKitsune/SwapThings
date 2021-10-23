@@ -41,6 +41,7 @@ public class Configs {
  public static String inventoryBombItem;
  public static int cmdSTPermissionsLevel;
  public static String disconnectMsg;
+ public static boolean cmdMsgShow;
  
  public static int playerNudgerNorthChance;
  public static Double playerNudgerNorthStrength;
@@ -112,6 +113,7 @@ public class Configs {
   inventoryBombItem=STCONFIG.inventoryBombItem.get();
   cmdSTPermissionsLevel=STCONFIG.cmdSTPermissionsLevel.get();
   disconnectMsg=STCONFIG.disconnectMsg.get();
+  cmdMsgShow=STCONFIG.cmdMsgShow.get();
   
   playerNudgerNorthChance=STCONFIG.playerNudgerNorthChance.get();
   playerNudgerNorthStrength=STCONFIG.playerNudgerNorthStrength.get();
@@ -210,6 +212,7 @@ public class Configs {
   public final ConfigValue<String> inventoryBombItem;
   public final IntValue cmdSTPermissionsLevel;
   public final ConfigValue<String> disconnectMsg;
+  public final BooleanValue cmdMsgShow;
   
   public final IntValue playerNudgerNorthChance;
   public final DoubleValue playerNudgerNorthStrength;
@@ -261,6 +264,7 @@ public class Configs {
    builder.push("general");
    cmdMsgAllServer=builder.comment("Command messages show to all players on server.").define("msgAllPlayers", false);
    cmdSTPermissionsLevel=builder.comment("Sets all command to be this permission level.").defineInRange("cmdPermissionsLevel", 2, 0, 4);
+   cmdMsgShow=builder.comment("Show message in chat when command is ran").define("cmdMsgShow", true);
    builder.pop();
    
    

@@ -165,6 +165,7 @@ public class ArchCommand {
  }
  
  public static void playerMsger(CommandSource source,Collection<ServerPlayerEntity> targetPlayers,StringTextComponent msg) {
+  if (!Configs.cmdMsgShow) return;
   if (Configs.cmdMsgAllServer) {
 //   source.getServer().getPlayerList().func_232641_a_(msg);
    source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(msg,ChatType.SYSTEM,targetPlayers.stream().findFirst().get().getUniqueID()));

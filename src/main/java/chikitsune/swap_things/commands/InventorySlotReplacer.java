@@ -39,41 +39,51 @@ public class InventorySlotReplacer {
   
   private static int inventorySlotReplacerLogic(CommandSource source,Collection<ServerPlayerEntity> targetPlayers, ItemInput itemInput, String slotNum, String fromName) {
    Integer selectedSlotNum=null;
-   Float slotNumParsed=null;
+   Integer slotNumParsed=null;
    Integer modFloatResult=null;
    ItemStack tempStack=ItemStack.EMPTY;
    ItemStack rndStack = ItemStack.EMPTY;
+   boolean randomSlot=true;
+   Integer iCnt=0,maxPlayerInvSize;
    
    try {
-    slotNumParsed=Float.parseFloat(slotNum);
+    slotNumParsed=Integer.parseInt(slotNum);
    } catch (Exception e) {
-    slotNumParsed=-1F;
+    slotNumParsed=-1;
    }
+   if (slotNumParsed>=0) randomSlot=false;
+   
    try {
-    if (itemInput==null) {
-//     rndStack
-    } else {
-     rndStack=itemInput.createStack(1, false);
-    }
+    if (itemInput!=null) rndStack=itemInput.createStack(1, false);
    } catch (CommandSyntaxException e) {
-    e.printStackTrace();
     rndStack=ItemStack.EMPTY;
-   }  
+   } 
    
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
     tempStack=ItemStack.EMPTY;
+    maxPlayerInvSize=targetedPlayer.inventory.getSizeInventory();
     
-    if(slotNumParsed!=null && (slotNumParsed == 0 || (slotNumParsed % 1 == 0) ) && slotNum !=null) {
-     selectedSlotNum=targetedPlayer.inventory.currentItem;
-    } else if(slotNumParsed!=null && slotNumParsed > 0 && slotNum !=null) {
-     modFloatResult=Math.round((slotNumParsed % 1)*100) -1;
-      if (slotNumParsed % 1 < targetedPlayer.inventory.getSizeInventory() && slotNumParsed % 1 > 0) {
-       selectedSlotNum=modFloatResult.intValue();       
-      } else {
-       selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
-      }
+    if (randomSlot) {
+     iCnt=0;
+     do {
+     selectedSlotNum=rand.nextInt(maxPlayerInvSize);
+     iCnt++;
+     } while (targetedPlayer.inventory.getStackInSlot(selectedSlotNum).isEmpty() && iCnt<50);
     } else {
-     selectedSlotNum=rand.nextInt(targetedPlayer.inventory.getSizeInventory());
+     if (slotNumParsed == 0) {
+      selectedSlotNum=targetedPlayer.inventory.currentItem;
+     } else if (slotNumParsed > 0) {
+      System.out.println("slotNumParsed: "+slotNumParsed+" maxPlayerInvSize: "+maxPlayerInvSize+" mod: "+(slotNumParsed % maxPlayerInvSize));
+      selectedSlotNum=Math.round(slotNumParsed % maxPlayerInvSize)-1;
+      if (selectedSlotNum<0) selectedSlotNum=0;
+      
+     } else {
+      iCnt=0;
+      do {
+      selectedSlotNum=rand.nextInt(maxPlayerInvSize);
+      iCnt++;
+      } while (targetedPlayer.inventory.getStackInSlot(selectedSlotNum).isEmpty() && iCnt<50);
+     }
     }
     
     tempStack=targetedPlayer.inventory.getStackInSlot(selectedSlotNum).copy();

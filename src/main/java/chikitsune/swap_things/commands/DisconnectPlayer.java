@@ -30,7 +30,7 @@ public class DisconnectPlayer {
    String disMsg=Configs.disconnectMsg;
    
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
-    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getUnformattedComponentText() + TextFormatting.GOLD + " was surprised by " + fromName + disMsg));;
+    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getUnformattedComponentText() + TextFormatting.GOLD + " was surprised by " + fromName + disMsg));
     targetedPlayer.connection.disconnect(new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getUnformattedComponentText() + TextFormatting.GOLD + " was surprised by " + fromName + disMsg));
    }
    return 0;
