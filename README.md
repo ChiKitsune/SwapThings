@@ -124,6 +124,9 @@ Adds commands for viewers to interact and make things more entertaining for the 
       - Note: Strength is also in the config and default to .7 which will push the player one block in that direction
       - Note: Multiplier config values will times the normal direction chance by the multiplier based on what direction the player is facing. A 0 for either the Chance or Multiplier will never nudge that direction and a 1 is default.
       
+#####  ```/swapthings playerrotate [playername] [courtesy of]```
+    Forces the player to look at a random direction.
+      
 #####  ```/swapthings quickhide [playername] [<item> <message>]```
     Throws the four basic armor slots, offhand, and held item onto the ground. Then replaces all of those slots with the item given or if none given a random one in the below list and displays a message to all players on server.
       - Currently these are the choices it will choose from at random (will change into a config in future)
@@ -169,6 +172,11 @@ Adds commands for viewers to interact and make things more entertaining for the 
     Summons a random Entity and makes the player ride it.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
+#####  ```/swapthings summonrider  [playername] [courtesy of]```
+    Summons a random Entity and makes it ride the player.
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      - Note: Some cases may need to use the UnMounter command or a death to remove it.
+      
 #####  ```/swapthings swaparmor <head|chest|legs|feet|mainhand|offhand|all|set|random> [playername] [playername]```
     Based on the option given will swap armor with another player. 
     - ALL will swap all six of the options before it (four basic armor, mainhand, and offhand) at once. 
@@ -184,7 +192,12 @@ Adds commands for viewers to interact and make things more entertaining for the 
     Swaps the location, inventory, and experience of the two players with each other and drops any helmets equipped, and equips the skull of the other player. 
       - Note: Players will also be set to look in the direction the other person was looking
 
-#####  ```/swapthings swaplocations [playername] [playername]```
+#####  ```/swapthings swapinventorynames  [playername] [courtesy of]```
+    Goes through all of the hotbar, equipment, and inventory slots and randomly replaces the name with another player's item name or a random item name. 
+      - Note: Courtesy of is an optional text string. If nothing is given will just shuffle item names around.
+      - Note: If "Courtesy of" is given it will prefix all shuffled item names with what is given plus 's
+
+#####  ```/swapthings swaplocation [playername] [playername]```
     Swaps the location of the two players with each other.
       - Note: Players will also be set to look in the direction the other person was looking
 
@@ -196,5 +209,8 @@ Adds commands for viewers to interact and make things more entertaining for the 
     Toggles if the player is running until command is run again, player presses their sprint key, or stops.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
+#####  ```/swapthings unmounter  [playername] [courtesy of]```
+    Unmounts whatever the player is riding on or that is riding on the player
+    
 #####  ```/swapthings unshuffleinventorynames [playername] [courtesy of]```
     Goes through all of the inventory slots and removes all custom names
