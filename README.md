@@ -150,6 +150,11 @@ Adds commands for viewers to interact and make things more entertaining for the 
     Teleports the player to a random location based on given numbers instead of the config min/max values for each axis.
       - Note: Min/Max values should all be positive as it is block distance amounts
 
+#####  ```/swapthings randomteleportdirection [playername] [courtesy of] [distance]```
+    Teleports user in a random direction with the given amount as distance from their original spot.
+      - Note: If no distance is given will use the config value
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+
 #####  ```/swapthings replacearmorpiece [playername] [head|chest|legs|feet|mainhand|offhand|random] [item] [courtesy of]```
     Drops and replaces armor in the given slot with the given item
       - Note: DRANDOM will choose a random single option (helm, chest, legs, boots, mainhand, or offhand) from the list.
