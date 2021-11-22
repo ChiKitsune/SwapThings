@@ -81,6 +81,7 @@ public class Configs {
  public static List<EntityClassification> summonRiderIncludeList;
  public static List<String> displayDeathBoardPlacesTextList;
  public static List<String> randomGiftList;
+ public static int randomTeleportDirectionDistance;
  
  public static void loadConfig(ForgeConfigSpec spec, Path path) {
 
@@ -205,6 +206,8 @@ public class Configs {
     randomGiftList.add(str);
    }
   });
+  
+  randomTeleportDirectionDistance=STCONFIG.randomTeleportDirectionDistance.get();
  }
  
  public static class SwapThingsConfig {
@@ -256,7 +259,9 @@ public class Configs {
   
   public final ConfigValue<List<? extends String>> displayDeathBoardPlacesTextList;
   
-  public final ConfigValue<List<? extends String>> randomGiftList;  
+  public final ConfigValue<List<? extends String>> randomGiftList;
+  
+  public final IntValue randomTeleportDirectionDistance;
   
   
   public SwapThingsConfig(ForgeConfigSpec.Builder builder) {
@@ -414,6 +419,13 @@ randomGiftList=builder.comment("List of items (resource location,amount,weighted
 
 builder.pop();
 //RandomGift config end
+
+
+
+builder.comment("RandomTeleportDirection Command Settings").push("RandomTeleportDirection");
+randomTeleportDirectionDistance=builder.comment("Teleports user in a random direction with the given amount as distance from their original spot").defineInRange("RandomTeleportDirection",500,0,100000);
+builder.pop();
+
    
    builder.pop();
   }  

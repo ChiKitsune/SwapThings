@@ -65,6 +65,7 @@ public static Random rand= new Random();
    BlockState blockstate;
    
    for(ServerPlayerEntity targetedPlayer : targetPlayers) {
+    rand= new Random();
     attTele=false;
     teleX=0;
     teleY=0;

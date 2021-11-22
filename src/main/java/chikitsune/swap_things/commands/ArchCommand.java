@@ -43,6 +43,7 @@ public class ArchCommand {
     .then(QuickHide.register())
     .then(RandomGift.register())
     .then(RandomTeleport.register())
+    .then(RandomTeleportDirection.register())
     .then(ReplaceArmorPiece.register())
     .then(ShuffleHotbar.register())
     .then(ShuffleInventory.register())
