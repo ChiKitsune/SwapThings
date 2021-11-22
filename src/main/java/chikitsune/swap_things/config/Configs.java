@@ -330,6 +330,16 @@ public class Configs {
      public static final String RG_LIST_NAM = "RandomGift";
      public static final String RG_LIST_CMT = "List of items (resource location,amount,weighted chance) to be chosen for RandomGift command to choose from";
  
+   public static final String CAT_RTD = "RandomTeleportDirection";
+   public static final String CAT_RTD_CMT = "RandomTeleportDirection Command Settings";
+     public static ForgeConfigSpec.IntValue RTD_AMT;
+     public static int RTD_AMT_DEF = 500;
+     public static int RTD_AMT_MIN = 1;
+     public static int RTD_AMT_MAX = 100000;
+     public static final String RTD_AMT_NAM = "RandomTeleportDirection";
+     public static final String RTD_AMT_CMT = "Teleports user in a random direction with the given amount as distance from their original spot";
+     
+     
  static {
   PopLists();
   
@@ -432,6 +442,11 @@ public class Configs {
   RG_LIST=BUILDER.comment(RG_LIST_CMT).defineList(RG_LIST_NAM, RG_LIST_DEF, s -> s instanceof String);
   BUILDER.pop();
   //*/
+  
+  BUILDER.comment(CAT_RTD_CMT).push(CAT_RTD);
+  RTD_AMT=BUILDER.comment(RTD_AMT_CMT).defineInRange(RTD_AMT_NAM, RTD_AMT_DEF, RTD_AMT_MIN, RTD_AMT_MAX);
+  BUILDER.pop();
+  
   BUILDER.pop();
   
   STCONFIG_SPEC = BUILDER.build();

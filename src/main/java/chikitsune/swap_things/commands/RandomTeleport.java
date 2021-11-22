@@ -67,6 +67,7 @@ public static Random rand= new Random();
    
    
    for(ServerPlayer targetedPlayer : targetPlayers) {
+    rand= new Random();
     attTele=false;
     teleX=0;
     teleY=0;
