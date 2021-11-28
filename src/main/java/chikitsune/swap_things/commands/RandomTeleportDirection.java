@@ -57,10 +57,8 @@ private static int randomTeleportDirectionLogic(CommandSourceStack source,Collec
    
    
    for(ServerPlayer targetedPlayer : targetPlayers) {
-    
-    rdmAngle = Math.random()*Math.PI*2;
-    teleX = Math.cos(rdmAngle)*distance;
-    teleZ = Math.sin(rdmAngle)*distance;
+    rand= new Random();
+
     
     attTele=false;
     teleY=0;
@@ -70,6 +68,9 @@ private static int randomTeleportDirectionLogic(CommandSourceStack source,Collec
     plyZ= Mth.floor(targetedPlayer.blockPosition().getZ());
     
     do {
+     rdmAngle = Math.random()*Math.PI*2;
+     teleX = Math.cos(rdmAngle)*distance;
+     teleZ = Math.sin(rdmAngle)*distance;
      do { teleY=rand.nextInt((255)+1); } while (!(((teleY+plyY)>=1) && ((plyY+teleY)<=255)));
      
      targetedPlayer.teleportTo(targetedPlayer.getLevel(),(plyX + teleX), (plyY + teleY), (plyZ + teleZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
