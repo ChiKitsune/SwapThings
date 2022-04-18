@@ -83,7 +83,7 @@ public class InventorySlotReplacer {
      if (slotNumParsed == 0) {
       selectedSlotNum=targetedPlayer.getInventory().selected;
      } else if (slotNumParsed > 0) {
-      System.out.println("slotNumParsed: "+slotNumParsed+" maxPlayerInvSize: "+maxPlayerInvSize+" mod: "+(slotNumParsed % maxPlayerInvSize));
+//      System.out.println("slotNumParsed: "+slotNumParsed+" maxPlayerInvSize: "+maxPlayerInvSize+" mod: "+(slotNumParsed % maxPlayerInvSize));
       selectedSlotNum=Math.round(slotNumParsed % maxPlayerInvSize)-1;
       if (selectedSlotNum<0) selectedSlotNum=0;
       

@@ -52,8 +52,8 @@ public class SummonMount {
    EntityType tempEnt = null;
    ServerLevel serverworld = source.getLevel();
    
-   System.out.println("ArchCommand.GetSM_EXT_LIST(): "+ArchCommand.GetSM_EXT_LIST());
-   System.out.println("ArchCommand.GetSM_INC_LIST(): "+ArchCommand.GetSM_INC_LIST());
+//   System.out.println("ArchCommand.GetSM_EXT_LIST(): "+ArchCommand.GetSM_EXT_LIST());
+//   System.out.println("ArchCommand.GetSM_INC_LIST(): "+ArchCommand.GetSM_INC_LIST());
    
    List<EntityType<?>> lstSummEnt = ForgeRegistries.ENTITIES.getValues().stream()
      .filter((EntityType eT) -> !ArchCommand.GetSM_EXT_LIST().contains(eT.getRegistryName().toString()))

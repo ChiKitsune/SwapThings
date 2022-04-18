@@ -47,9 +47,8 @@ private static int randomTeleportDirectionLogic(CommandSourceStack source,Collec
    List<Integer> yPossibleList;
    BlockPos blockpos;
    BlockState blockstate;
-   
-   
-   
+   Integer Y_Min=Configs.RTD_Y_MIN.get();
+   Integer Y_Max=Configs.RTD_Y_MAX.get();
    double rdmDegree;
    double rdmAngle, rdmX, rdmY, rdmZ;
    double teleX=0,teleY=0,teleZ=0;
@@ -68,10 +67,13 @@ private static int randomTeleportDirectionLogic(CommandSourceStack source,Collec
     plyZ= Mth.floor(targetedPlayer.blockPosition().getZ());
     
     do {
+     Integer rndYloopCnt=0;
      rdmAngle = Math.random()*Math.PI*2;
      teleX = Math.cos(rdmAngle)*distance;
      teleZ = Math.sin(rdmAngle)*distance;
-     do { teleY=rand.nextInt((255)+1); } while (!(((teleY+plyY)>=1) && ((plyY+teleY)<=255)));
+//     do { teleY=rand.nextInt((255)+1); } while (!(((teleY+plyY)>=1) && ((plyY+teleY)<=255)));
+     do { teleY=rand.nextInt((Y_Max*2)+1) - Y_Max; rndYloopCnt++; } while (!(Math.abs(teleY)>=Y_Min && Math.abs(teleY)<=Y_Max) && rndYloopCnt<=100);
+     
      
      targetedPlayer.teleportTo(targetedPlayer.getLevel(),(plyX + teleX), (plyY + teleY), (plyZ + teleZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
      attTele=targetedPlayer.randomTeleport((plyX + teleX), (plyY + teleY), (plyZ + teleZ), true);
@@ -83,15 +85,18 @@ private static int randomTeleportDirectionLogic(CommandSourceStack source,Collec
       
       yPossibleList=Lists.newArrayList();
       
-      for (int i = 0; i <= 255; i++){
-       if ((i>=1) && (i<=255)) yPossibleList.add(i);
-       }
+      for (int i = (plyY-Y_Max); i <= (plyY+Y_Max); i++){
+       if ((Math.abs(i)>=Y_Min)) yPossibleList.add(i);
+      }
+//      for (int i = 0; i <= 255; i++){
+//       if ((i>=1) && (i<=255)) yPossibleList.add(i);
+//       }
       Collections.shuffle(yPossibleList);
       listLoopCnt=0;
       do {
        attTele=targetedPlayer.randomTeleport((plyX + teleX), yPossibleList.get(listLoopCnt), (plyZ + teleZ), true);
        listLoopCnt++;
-      } while (!attTele && listLoopCnt<yPossibleList.size());
+      } while (!attTele && listLoopCnt<yPossibleList.size() && listLoopCnt <=300);
      }
      
      loopCnt++;

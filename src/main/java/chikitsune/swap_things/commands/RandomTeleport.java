@@ -51,12 +51,7 @@ public static Random rand= new Random();
  private static int randomTeleportLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName,
        Integer X_Min, Integer X_Max, Integer Y_Min, Integer Y_Max, Integer Z_Min, Integer Z_Max) {
    ArchCommand.ReloadConfig();
-//   Integer X_Max=Configs.RT_X_MAX.get();
-//   Integer Y_Max=Configs.RT_Y_MAX.get();
-//   Integer Z_Max=Configs.RT_Z_MAX.get();
-//   Integer X_Min=Configs.RT_X_MIN.get();
-//   Integer Y_Min=Configs.RT_Y_MIN.get();
-//   Integer Z_Min=Configs.RT_Z_MIN.get();
+   Integer rndXloopCnt=0,rndYloopCnt=0,rndZloopCnt=0;
    Integer teleX=0,teleY=0,teleZ=0;
    Integer plyX,plyY,plyZ;
    Integer loopCnt=0,listLoopCnt=0;
@@ -64,6 +59,13 @@ public static Random rand= new Random();
    List<Integer> yPossibleList;
    BlockPos blockpos;
    BlockState blockstate;
+   
+   if(X_Max<0) X_Max=0;
+   if(X_Min<0) X_Min=0;
+   if(Y_Max<0) Y_Max=0;
+   if(Y_Min<0) Y_Min=0;
+   if(Z_Max<0) Z_Max=0;
+   if(Z_Min<0) Z_Min=0;
    
    
    for(ServerPlayer targetedPlayer : targetPlayers) {
@@ -79,9 +81,12 @@ public static Random rand= new Random();
 
     
     do {
-     do { teleX=rand.nextInt((X_Max*2)+1) - X_Max; } while (!(Math.abs(teleX)>=X_Min && Math.abs(teleX)<=X_Max));
-     do { teleY=rand.nextInt((Y_Max*2)+1) - Y_Max; } while (!(Math.abs(teleY)>=Y_Min && Math.abs(teleY)<=Y_Max && ((teleY+plyY)>=1) && ((plyY+teleY)<=255)));
-     do { teleZ=rand.nextInt((Z_Max*2)+1) - Z_Max; } while (!(Math.abs(teleZ)>=Z_Min && Math.abs(teleZ)<=Z_Max));     
+     rndXloopCnt=0;
+     rndYloopCnt=0;
+     rndZloopCnt=0;
+     do { teleX=rand.nextInt((X_Max*2)+1) - X_Max; rndXloopCnt++;} while (!(Math.abs(teleX)>=X_Min && Math.abs(teleX)<=X_Max) && rndXloopCnt<=100);
+     do { teleY=rand.nextInt((Y_Max*2)+1) - Y_Max; rndYloopCnt++; } while (!(Math.abs(teleY)>=Y_Min && Math.abs(teleY)<=Y_Max) && rndYloopCnt<=100);
+     do { teleZ=rand.nextInt((Z_Max*2)+1) - Z_Max; rndZloopCnt++; } while (!(Math.abs(teleZ)>=Z_Min && Math.abs(teleZ)<=Z_Max) && rndZloopCnt<=100);     
      
      targetedPlayer.teleportTo(targetedPlayer.getLevel(),(plyX + teleX), (plyY + teleY), (plyZ + teleZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
      attTele=targetedPlayer.randomTeleport((plyX + teleX), (plyY + teleY), (plyZ + teleZ), true);
@@ -93,9 +98,11 @@ public static Random rand= new Random();
       
       yPossibleList=Lists.newArrayList();
       
+      
+      
       for (int i = (plyY-Y_Max); i <= (plyY+Y_Max); i++){
 //       System.out.println("i="+i);
-       if ((Math.abs(i)>=Y_Min) && (i>=1) && (i<=255)) yPossibleList.add(i);
+       if ((Math.abs(i)>=Y_Min)) yPossibleList.add(i);
        }
 //      System.out.println("ul="+yPossibleList.toString());
       Collections.shuffle(yPossibleList);
@@ -105,7 +112,7 @@ public static Random rand= new Random();
 //       System.out.println("yPossibleList.get(listLoopCnt)="+yPossibleList.get(listLoopCnt));
        attTele=targetedPlayer.randomTeleport((plyX + teleX), yPossibleList.get(listLoopCnt), (plyZ + teleZ), true);
        listLoopCnt++;
-      } while (!attTele && listLoopCnt<yPossibleList.size());
+      } while (!attTele && listLoopCnt<yPossibleList.size() && listLoopCnt <=300);
      }
      
      

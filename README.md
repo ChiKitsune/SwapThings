@@ -1,4 +1,4 @@
-# SwapThings a Minecraft Forge Mod (Mainly 1.16.5 & 1.17.1 being updated)
+# SwapThings a Minecraft Forge Mod (Mainly 1.18.2 being updated)
 
 Mod mainly created to work with CCI/TwitchSpawn for some Twitch Integration. 
 Adds commands for viewers to interact and make things more entertaining for the streamer.
@@ -136,6 +136,18 @@ Adds commands for viewers to interact and make things more entertaining for the 
          - minecraft:painting, quick blend into the wall!
       - Note: If want do your own item and message playername is required
       
+#####  ```/swapthings randomenchanting [playername] [courtesy of] [effecttype] [enchantment] [enchantment level]```
+    Chooses a random item in inventory and gives, changes, or removes an enchantment at random
+      - Note: effecttype can be a value of ANY, POSSITIVE, NEGATIVE, RANDOM.
+         - ANY: will do from 0 - max normal level of the enchantment
+         - POSSITIVE: will always increase the enchantment's level unless already at max
+         - NEGATIVE: will always decrease level by at least one or if already at level one will remove enchantment.
+         - RANDOM: will determine a random range and choose from that for what it will do.
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      - Note: If an enchantment is not given will choose a random valid enchantment and level
+      - Note: If an enchantment level is not given will choose a random valid one for the given enchantment (0 is possible which will remove the enchantment
+      - Note: When specifying the enchantment level can do higher than usual (i.e. minecraft:efficiency 10 will give Efficiency X)
+
 #####  ```/swapthings randomgift [playername] [courtesy of]```
     Gifts a random item based on the list in the configs
       - Note: Each list item contains three parts.
@@ -150,7 +162,7 @@ Adds commands for viewers to interact and make things more entertaining for the 
     Teleports the player to a random location based on given numbers instead of the config min/max values for each axis.
       - Note: Min/Max values should all be positive as it is block distance amounts
 
-#####  ```/swapthings randomteleportdirection [playername] [courtesy of] [distance]```
+#####  ```/swapthings randomteleportdirection [playername] [courtesy of] [distance]```
     Teleports user in a random direction with the given amount as distance from their original spot.
       - Note: If no distance is given will use the config value
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
@@ -173,13 +185,15 @@ Adds commands for viewers to interact and make things more entertaining for the 
       - Note: Courtesy of is an optional text string. If nothing is given will just shuffle item names around.
       - Note: If Courtesy of is given it will prefix all shuffled item names with what is given plus 's
 
-#####  ```/swapthings summonmount [playername] [courtesy of]```
+#####  ```/swapthings summonmount [playername] [courtesy of] [mount]```
     Summons a random Entity and makes the player ride it.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      - Note: If a mount is given in the command it will summon that mount instead of a random one.
 
-#####  ```/swapthings summonrider  [playername] [courtesy of]```
+#####  ```/swapthings summonrider  [playername] [courtesy of] [mount]```
     Summons a random Entity and makes it ride the player.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      - Note: If a mount is given in the command it will summon that mount instead of a random one.
       - Note: Some cases may need to use the UnMounter command or a death to remove it.
       
 #####  ```/swapthings swaparmor <head|chest|legs|feet|mainhand|offhand|all|set|random> [playername] [playername]```

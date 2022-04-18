@@ -246,42 +246,43 @@ public class Configs {
    public static final String CAT_RT_X = "X Axis";
      public static ForgeConfigSpec.IntValue RT_X_MIN;
      public static int RT_X_MIN_DEF = 100;
-     public static int RT_X_MIN_MIN = 1;
+     public static int RT_X_MIN_MIN = 0;
      public static int RT_X_MIN_MAX = 100000;
      public static final String RT_X_MIN_NAM = "randomTeleportXMin";
-     public static final String RT_X_MIN_CMT = "Min Block +/- range on the X Axis that could teleport along";
+     public static final String RT_X_MIN_CMT = "Miniumum X offset from original X level. (i.e. 10 means when teleported will be at least 10 blocks along the X axis from original position)";
      public static ForgeConfigSpec.IntValue RT_X_MAX;
-     public static int RT_X_MAX_DEF = 500;
-     public static int RT_X_MAX_MIN = 1;
+     public static int RT_X_MAX_DEF = 1000;
+     public static int RT_X_MAX_MIN = 0;
      public static int RT_X_MAX_MAX = 100000;
      public static final String RT_X_MAX_NAM = "randomTeleportXMax";
-     public static final String RT_X_MAX_CMT = "Max Block +/- range on the X Axis that could teleport along";
+     public static final String RT_X_MAX_CMT = "Maximum X offset from original X level. (i.e. 100 means when teleported will be less than 100 blocks away on the X axis from original position)";
    public static final String CAT_RT_Y = "Y Axis";
      public static ForgeConfigSpec.IntValue RT_Y_MIN;
      public static int RT_Y_MIN_DEF = 0;
-     public static int RT_Y_MIN_MIN = 1;
-     public static int RT_Y_MIN_MAX = 255;
+     public static int RT_Y_MIN_MIN = 0;
+     public static int RT_Y_MIN_MAX = 30000000;
      public static final String RT_Y_MIN_NAM = "randomTeleportYMin";
-     public static final String RT_Y_MIN_CMT = "Min Block +/- range on the Y Axis that could teleport along";
+     public static final String RT_Y_MIN_CMT = "Miniumum Y offset from original Y level. (i.e. 10 means when teleported will be at least 10 blocks higher or lower than original position)";
      public static ForgeConfigSpec.IntValue RT_Y_MAX;
-     public static int RT_Y_MAX_DEF = 10;
-     public static int RT_Y_MAX_MIN = 1;
-     public static int RT_Y_MAX_MAX = 255;
+     public static int RT_Y_MAX_DEF = 320;
+     public static int RT_Y_MAX_MIN = 0;
+     public static int RT_Y_MAX_MAX = 30000000;
      public static final String RT_Y_MAX_NAM = "randomTeleportYMax";
-     public static final String RT_Y_MAX_CMT = "Max Block +/- range on the Y Axis that could teleport along";
+     public static final String RT_Y_MAX_CMT = "Maximum Y offset from original Y level. (i.e. 100 means when teleported will be less than 100 blocks higher or lower than original position)";
+//     "Max Block +/- range on the Y Axis that could teleport along";
    public static final String CAT_RT_Z = "Z Axis";
      public static ForgeConfigSpec.IntValue RT_Z_MIN;
      public static int RT_Z_MIN_DEF = 100;
-     public static int RT_Z_MIN_MIN = 1;
+     public static int RT_Z_MIN_MIN = 0;
      public static int RT_Z_MIN_MAX = 100000;
      public static final String RT_Z_MIN_NAM = "randomTeleportZMin";
-     public static final String RT_Z_MIN_CMT = "Min Block +/- range on the Z Axis that could teleport along";
+     public static final String RT_Z_MIN_CMT = "Miniumum Z offset from original X level. (i.e. 10 means when teleported will be at least 10 blocks along the Z axis from original position)";
      public static ForgeConfigSpec.IntValue RT_Z_MAX;
-     public static int RT_Z_MAX_DEF = 500;
-     public static int RT_Z_MAX_MIN = 1;
+     public static int RT_Z_MAX_DEF = 1000;
+     public static int RT_Z_MAX_MIN = 0;
      public static int RT_Z_MAX_MAX = 100000;
      public static final String RT_Z_MAX_NAM = "randomTeleportZMax";
-     public static final String RT_Z_MAX_CMT = "Max Block +/- range on the Z Axis that could teleport along";
+     public static final String RT_Z_MAX_CMT = "Maximum Z offset from original X level. (i.e. 100 means when teleported will be less than 100 blocks away on the Z axis from original position)";
        
    public static final String CAT_QH = "QuickHide";
    public static final String CAT_QH_CMT = "QuickHide Command Settings";
@@ -333,11 +334,23 @@ public class Configs {
    public static final String CAT_RTD = "RandomTeleportDirection";
    public static final String CAT_RTD_CMT = "RandomTeleportDirection Command Settings";
      public static ForgeConfigSpec.IntValue RTD_AMT;
-     public static int RTD_AMT_DEF = 500;
-     public static int RTD_AMT_MIN = 1;
+     public static int RTD_AMT_DEF = 1000;
+     public static int RTD_AMT_MIN = 0;
      public static int RTD_AMT_MAX = 100000;
      public static final String RTD_AMT_NAM = "RandomTeleportDirection";
      public static final String RTD_AMT_CMT = "Teleports user in a random direction with the given amount as distance from their original spot";
+     public static ForgeConfigSpec.IntValue RTD_Y_MIN;
+     public static int RTD_Y_MIN_DEF = 0;
+     public static int RTD_Y_MIN_MIN = 0;
+     public static int RTD_Y_MIN_MAX = 30000000;
+     public static final String RTD_Y_MIN_NAM = "randomTeleportdDirectionYMin";
+     public static final String RTD_Y_MIN_CMT = "Miniumum Y offset from original Y level. (i.e. 10 means when teleported will be at least 10 blocks higher or lower than original position";
+     public static ForgeConfigSpec.IntValue RTD_Y_MAX;
+     public static int RTD_Y_MAX_DEF = 320;
+     public static int RTD_Y_MAX_MIN = 0;
+     public static int RTD_Y_MAX_MAX = 30000000;
+     public static final String RTD_Y_MAX_NAM = "randomTeleportYDirectionMax";
+     public static final String RTD_Y_MAX_CMT = "Maximum Y offset from original Y level. (i.e. 100 means when teleported will be less than 100 blocks higher or lower than original position";
      
      
  static {
@@ -445,6 +458,8 @@ public class Configs {
   
   BUILDER.comment(CAT_RTD_CMT).push(CAT_RTD);
   RTD_AMT=BUILDER.comment(RTD_AMT_CMT).defineInRange(RTD_AMT_NAM, RTD_AMT_DEF, RTD_AMT_MIN, RTD_AMT_MAX);
+  RTD_Y_MIN=BUILDER.comment(RTD_Y_MIN_CMT).defineInRange(RTD_Y_MIN_NAM, RTD_Y_MIN_DEF, RTD_Y_MIN_MIN, RTD_Y_MIN_MAX);
+  RTD_Y_MAX=BUILDER.comment(RTD_Y_MAX_CMT).defineInRange(RTD_Y_MAX_NAM, RTD_Y_MAX_DEF, RTD_Y_MAX_MIN, RTD_Y_MAX_MAX);
   BUILDER.pop();
   
   BUILDER.pop();

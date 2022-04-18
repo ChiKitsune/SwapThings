@@ -47,6 +47,7 @@ public class ArchCommand {
     .then(PlayerNudger.register())
     .then(PlayerRotate.register())
     .then(QuickHide.register())
+    .then(RandomEnchanting.register())
     .then(RandomGift.register())
     .then(RandomTeleport.register())
     .then(RandomTeleportDirection.register())

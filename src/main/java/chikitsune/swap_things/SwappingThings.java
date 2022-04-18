@@ -9,7 +9,6 @@ import chikitsune.swap_things.proxies.IProxy;
 import chikitsune.swap_things.proxies.ServerProxy;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -21,7 +20,6 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 
 @Mod(SwappingThings.MODID)
 @Mod.EventBusSubscriber(modid = SwappingThings.MODID, bus = Bus.MOD)
@@ -95,8 +93,8 @@ private void processIMC(final InterModProcessEvent event) {
 }
 
 // You can use SubscribeEvent and let the Event Bus discover methods to call
-@SubscribeEvent
-public void onServerStarting(FMLServerStartingEvent event) {
+//@SubscribeEvent
+//public void onServerStarting(FMLServerStartingEvent event) {
 // do something when the server starts
 //LOGGER.info("HELLO from server starting");
 //SwappingThings.quiHidList=Lists.newArrayList();
@@ -110,7 +108,7 @@ public void onServerStarting(FMLServerStartingEvent event) {
 //SwappingThings.sumMountList.add("minecraft:ender_dragon");
 
 //SwappingThings.sumMountList=(List<String>) Configs.SUMMONMOUNT_EXCLUDE_LIST.get();
-}
+//}
 
 // You can use EventBusSubscriber to automatically subscribe events on the
 // contained class (this is subscribing to the MOD

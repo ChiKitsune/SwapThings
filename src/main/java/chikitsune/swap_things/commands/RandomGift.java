@@ -37,7 +37,7 @@ public static Random rand= new Random();
   private static int randomGiftLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
    ArchCommand.ReloadConfig();
    ItemStack tempStack = ItemStack.EMPTY;
-   String curMsg="quick use these to hide!";
+   String curMsg="where is the gift?";
    ItemArgument iaStack=new ItemArgument();
    Integer weightedChance=0, weightedMax=1 ,randTemp,curWeight,curLoop,stackAmount=64;
    
