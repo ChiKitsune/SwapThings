@@ -236,6 +236,16 @@ public class ArchCommand {
   return summonRiderIncludeList;
  }
  
+ public static List<String> GetRE_EXT_LIST() {
+ List<String> randomEnchantExcludeList= new ArrayList<>();
+ Configs.RE_EX_LIST.get().forEach(str -> {
+  if (str!=null) {
+   randomEnchantExcludeList.add(str);
+  }
+ });
+ return randomEnchantExcludeList;
+ }
+ 
  public static void ReloadConfig() {
   final CommentedFileConfig configData = CommentedFileConfig.builder(FMLPaths.CONFIGDIR.get().resolve(SwappingThings.MODID + "-common.toml"))
     .sync()

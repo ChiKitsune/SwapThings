@@ -19,8 +19,8 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public class RandomEffectType implements ArgumentType<String> {
- public static Set<String> reTypeIDs = new HashSet<>(Arrays.asList("ANY","POSSITIVE","NEGATIVE","RANDOM"));
- private static final Collection<String> EXAMPLES = Arrays.asList("ANY","POSSITIVE","NEGATIVE","RANDOM");
+ public static Set<String> reTypeIDs = new HashSet<>(Arrays.asList("ANY","POSITIVE","NEGATIVE","RANDOM"));
+ private static final Collection<String> EXAMPLES = Arrays.asList("ANY","POSITIVE","NEGATIVE","RANDOM");
  private static final DynamicCommandExceptionType NOT_IN_LIST = new DynamicCommandExceptionType(msg -> new TranslatableComponent("arguments.randomeffecttype.notFound", msg));
  
  public static RandomEffectType randomEffectType() { return new RandomEffectType();}

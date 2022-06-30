@@ -55,14 +55,16 @@ public class RandomEnchanting {
   Map<Enchantment, Integer> itemEnchantsNew=Maps.<Enchantment, Integer>newLinkedHashMap();
   List<Enchantment> lstPossEnch = ForgeRegistries.ENCHANTMENTS.getValues().stream()
 //    .filter((Enchantment e) -> e.category
-//    .filter((EntityType eT) -> !ArchCommand.GetSM_EXT_LIST().contains(eT.getRegistryName().toString()))
-//    .filter((EntityType eT) -> ArchCommand.GetSM_INC_LIST().contains(eT.getCategory()))
+    .filter((Enchantment eT) -> !ArchCommand.GetRE_EXT_LIST().contains(eT.getRegistryName().toString()))
+//    .filter((Enchantment eT) -> ArchCommand.Enchantment().contains(eT.getCategory()))
     .collect(Collectors.toList());
+  List<Enchantment> lstPossEnchLoop;
   
   for(ServerPlayer targetedPlayer : targetPlayers) {
    rand= new Random();
    itemEnchants=null;
    itemEnchantsNew=Maps.<Enchantment, Integer>newLinkedHashMap();
+   lstPossEnchLoop=lstPossEnch;
       
    iCnt=0;
    do {
@@ -75,16 +77,60 @@ public class RandomEnchanting {
    if (tempStack.isEmpty()) continue;
    itemEnchants=EnchantmentHelper.getEnchantments(tempStack);
    
-   
+   boolean allowedEnchant=false;
+   Integer chkCurLevel=0;
    if (enchInput!=null) {
     tempEnch=enchInput;
    } else {
     iCnt=0;
+    boolean getAnotherEnchant=false;
+    
     do {
-     tempEnch=(Enchantment)ForgeRegistries.ENCHANTMENTS.getValues().toArray()[rand.nextInt(ForgeRegistries.ENCHANTMENTS.getValues().size())];
+     int rndIntEnch=rand.nextInt(lstPossEnch.size());
+     Collections.shuffle(lstPossEnch);
+     tempEnch=(Enchantment)lstPossEnch.get(rndIntEnch);
+
+     chkCurLevel=itemEnchants.get(tempEnch)!=null ? itemEnchants.get(tempEnch) : 0;
+     boolean isCurMaxLevel=(chkCurLevel==tempEnch.getMaxLevel()) ? true : false;
+          
+     if (!Configs.RE_FORCE_ENCHANT.get() && !tempEnch.canEnchant(tempStack)) {
+      allowedEnchant=false;
+     } else {
+      allowedEnchant=true;
+     }
+     if (chkCurLevel>0) allowedEnchant=true;
+
+     switch (randomEffectType.toUpperCase()) {
+      case "POSITIVE": getAnotherEnchant=isCurMaxLevel || tempEnch.isCurse() ? true : false;
+       break;
+      case "NEGATIVE": getAnotherEnchant=chkCurLevel==0 ? true : false;      
+       break;
+      default:
+       break;
+     }
+     
+
+     
+//     System.out.println("iCnt: "+iCnt);
+//     System.out.println("RE_FORCE_ENCHANT: "+Configs.RE_FORCE_ENCHANT.get());
+//     System.out.println("tempEnch.canEnchant(): "+tempEnch.canEnchant(tempStack));
+//     System.out.println("allowedEnchant: "+allowedEnchant);
+//     
+//     System.out.println("isCurMaxLevel: "+isCurMaxLevel);
+//     System.out.println("tempEnch.isCurse(): "+tempEnch.isCurse());
+//     System.out.println("getAnotherEnchant: "+getAnotherEnchant);
+//     
+//     System.out.println("while loop check: "+(!allowedEnchant && getAnotherEnchant && iCnt<200));
+//     System.out.println("while loop check 2/3: "+(!allowedEnchant && getAnotherEnchant));
+//     System.out.println("while loop check 2/3v2: "+(getAnotherEnchant && iCnt<200));     
+     
+     
     iCnt++;
-    } while (!tempEnch.canEnchant(tempStack) && iCnt<50);
+    } while ( !(allowedEnchant && !getAnotherEnchant) && iCnt<(lstPossEnch.size()*20));
    }
+//   System.out.println("Chosen tempEnch: "+tempEnch.getRegistryName());
+   
+
    
    if (enchLevel==null) {
 //    System.out.println("tempEnch: "+tempEnch.getRegistryName()+" max level: "+tempEnch.getMaxLevel());
@@ -93,11 +139,11 @@ public class RandomEnchanting {
     switch (randomEffectType.toUpperCase()) {
      case "ANY": tempRandEnchMin=0;tempRandEnchMax=tempEnch.getMaxLevel();
       break;
-     case "POSSITIVE": 
+     case "POSITIVE": 
       tempRandEnchMin=curLevel+1>tempEnch.getMaxLevel() ? tempEnch.getMaxLevel() : curLevel+1;
       tempRandEnchMax=tempEnch.getMaxLevel();
       break;
-     case "NEGATIVE":tempRandEnchMin=0;tempRandEnchMax= curLevel-1<0 ? 0 : curLevel-1;
+     case "NEGATIVE":tempRandEnchMin=0;tempRandEnchMax= curLevel-1<0 ? 0 : curLevel-1; 
      break;
      case "RANDOM":
      default:tempRandEnchMax=rand.nextInt(tempEnch.getMaxLevel()+1);tempRandEnchMin=rand.nextInt(tempRandEnchMax+1);
@@ -112,7 +158,10 @@ public class RandomEnchanting {
    }
    if (tempEnchLevel<0) tempEnchLevel=0;
    
-
+   if (!allowedEnchant || chkCurLevel == tempEnchLevel) {
+    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.AQUA + tempStack.getHoverName().getString() +  ChatFormatting.GOLD + " shimmered but seems nothing changed despite " + fromName + "'s effort"));
+    return 0;
+   }
    
    for (Map.Entry<Enchantment, Integer> curMapEnch : itemEnchants.entrySet()) {
     if (curMapEnch.getKey().getRegistryName()!=tempEnch.getRegistryName()) {
