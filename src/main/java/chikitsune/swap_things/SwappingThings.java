@@ -3,6 +3,7 @@ package chikitsune.swap_things;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import chikitsune.swap_things.commands.ArchCommand;
 import chikitsune.swap_things.config.Configs;
 import chikitsune.swap_things.proxies.ClientProxy;
 import chikitsune.swap_things.proxies.IProxy;
@@ -31,9 +32,6 @@ public class SwappingThings {
  public static final String MODID = "swap_things";
  public static final String NAME = "Swapping Things";
  
-// public static List<List<String>> quiHidList;
-// public static List<String> sumMountList;
- 
  public SwappingThings() {
   IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
   
@@ -58,6 +56,9 @@ Configs.init(FMLPaths.CONFIGDIR.get().resolve(MODID + "-common.toml"));
 
 // Register ourselves for server and other game events we are interested in
 MinecraftForge.EVENT_BUS.register(this);
+
+
+ArchCommand.CMD_ARG_REG.register(FMLJavaModLoadingContext.get().getModEventBus());
 
 //Configs.loadConfig(Configs.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-client.toml"));
 //Configs.loadConfig(Configs.STCONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-common.toml"));

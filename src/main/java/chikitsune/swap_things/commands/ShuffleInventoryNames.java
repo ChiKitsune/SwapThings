@@ -12,7 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -34,7 +34,7 @@ public class ShuffleInventoryNames {
    ArchCommand.ReloadConfig();
    ItemStack tempItem=ItemStack.EMPTY;
    Integer tempRandNum=0,tempFirstNonEmpty=0;
-   TextComponent tempItemName=null,prevItemName=null;
+   Component tempItemName=null,prevItemName=null;
    String strPref="",strMsgFromName="Someone";
    if (fromName!=null) {
     strPref=fromName + "'s ";
@@ -51,14 +51,17 @@ public class ShuffleInventoryNames {
      if (!tempItem.isEmpty()) {
       if (tempFirstNonEmpty==null) tempFirstNonEmpty=i;       
        //tempItemName=new StringTextComponent(strPref + tempItem.getDisplayName().getUnformattedComponentText());
-      tempItemName=new TextComponent(strPref + tempItem.getHoverName().getString());
+      tempItemName=Component.literal(strPref + tempItem.getHoverName().getString());
        tempItem.setHoverName(prevItemName);
        prevItemName=tempItemName;
       }
      }
     if (tempFirstNonEmpty!=null) targetedPlayer.getInventory().getItem(tempFirstNonEmpty).setHoverName(prevItemName);
    
-   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED)
+      .append(Component.literal(" let " + strMsgFromName + " pick better names for their items.").withStyle(ChatFormatting.GOLD)));
+//   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
    }
    return 0;
   }

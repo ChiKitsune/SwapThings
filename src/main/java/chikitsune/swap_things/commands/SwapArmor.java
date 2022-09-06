@@ -12,7 +12,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -87,26 +88,37 @@ public class SwapArmor {
   return 0;  
  }
  
- public static TextComponent getMessageString(ServerPlayer targetedPlayerOne, ServerPlayer targetedPlayerTwo,String targetedArmorSlotOne, String targetedArmorSlotTwo) {
-  TextComponent txtMsg=null,txtMsg2=null;
+ public static Component getMessageString(ServerPlayer targetedPlayerOne, ServerPlayer targetedPlayerTwo,String targetedArmorSlotOne, String targetedArmorSlotTwo) {
+  MutableComponent txtMsg=null,txtMsg2=null;
     ItemStack targetedArmorOne=targetedPlayerOne.getItemBySlot(EquipmentSlot.byName(targetedArmorSlotOne.toLowerCase()));
   ItemStack targetedArmorTwo=targetedPlayerTwo.getItemBySlot(EquipmentSlot.byName(targetedArmorSlotTwo.toLowerCase()));
   String targetedArmorSlotDescOne=ArchCommand.getArmorSlotDescription(targetedArmorSlotOne);
   String targetedArmorSlotDescTwo=ArchCommand.getArmorSlotDescription(targetedArmorSlotTwo);
   
   if (targetedPlayerOne.getName().getContents() == targetedPlayerTwo.getName().getContents()) {
-   
-   txtMsg=new TextComponent(ChatFormatting.RED + targetedPlayerOne.getName().getString() + ChatFormatting.GOLD + " you may want to rethink trying to swap " + targetedArmorSlotDescOne.toLowerCase() + " with yourself.");
+   txtMsg=Component.literal(targetedPlayerOne.getName().getString()).withStyle(ChatFormatting.RED)
+     .append(Component.literal(" you may want to rethink trying to swap " + targetedArmorSlotDescOne.toLowerCase() + " with yourself.").withStyle(ChatFormatting.GOLD));
+//   txtMsg=new TextComponent(ChatFormatting.RED + targetedPlayerOne.getName().getString() + ChatFormatting.GOLD + " you may want to rethink trying to swap " + targetedArmorSlotDescOne.toLowerCase() + " with yourself.");
   } else {
    if (targetedArmorTwo == ItemStack.EMPTY) {
-  txtMsg=new TextComponent(ChatFormatting.GOLD + "Wow " + ChatFormatting.RED + targetedPlayerTwo.getName().getString() + ChatFormatting.GOLD + " tried trading their nonexistent " + targetedArmorSlotDescTwo.toLowerCase() + " for ");
+    txtMsg=Component.literal("Wow ").withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(targetedPlayerTwo.getName().getString()).withStyle(ChatFormatting.RED))
+      .append(Component.literal(" tried trading their nonexistent " + targetedArmorSlotDescTwo.toLowerCase() + " for ").withStyle(ChatFormatting.GOLD));
+//  txtMsg=new TextComponent(ChatFormatting.GOLD + "Wow " + ChatFormatting.RED + targetedPlayerTwo.getName().getString() + ChatFormatting.GOLD + " tried trading their nonexistent " + targetedArmorSlotDescTwo.toLowerCase() + " for ");
  } else {
-  txtMsg=new TextComponent(ChatFormatting.GOLD + "Wow " + ChatFormatting.RED + targetedPlayerTwo.getName().getString() + ChatFormatting.GOLD + " traded their " + targetedArmorTwo.getHoverName().getString().toLowerCase() + " for ");
+  txtMsg=Component.literal("Wow ").withStyle(ChatFormatting.GOLD)
+    .append(Component.literal(targetedPlayerTwo.getName().getString()).withStyle(ChatFormatting.RED))
+    .append(Component.literal(" traded their " + targetedArmorTwo.getHoverName().getString().toLowerCase() + " for ").withStyle(ChatFormatting.GOLD));
+//  txtMsg=new TextComponent(ChatFormatting.GOLD + "Wow " + ChatFormatting.RED + targetedPlayerTwo.getName().getString() + ChatFormatting.GOLD + " traded their " + targetedArmorTwo.getHoverName().getString().toLowerCase() + " for ");
  }
  if (targetedArmorOne == ItemStack.EMPTY) {
-  txtMsg2=new TextComponent(ChatFormatting.RED + targetedPlayerOne.getName().getString() + ChatFormatting.GOLD + "'s nonexistent " + targetedArmorSlotDescOne.toLowerCase() + ".");
+  txtMsg2=Component.literal(targetedPlayerOne.getName().getString()).withStyle(ChatFormatting.RED)
+    .append(Component.literal("'s nonexistent " + targetedArmorSlotDescOne.toLowerCase() + ".").withStyle(ChatFormatting.GOLD));
+//  txtMsg2=new TextComponent(ChatFormatting.RED + targetedPlayerOne.getName().getString() + ChatFormatting.GOLD + "'s nonexistent " + targetedArmorSlotDescOne.toLowerCase() + ".");
  } else {
-  txtMsg2=new TextComponent(ChatFormatting.RED + targetedPlayerOne.getName().getString() + ChatFormatting.GOLD + "'s " + targetedArmorOne.getHoverName().getString().toLowerCase() + ".");
+  txtMsg2=Component.literal(targetedPlayerOne.getName().getString()).withStyle(ChatFormatting.RED)
+    .append(Component.literal("'s " + targetedArmorOne.getHoverName().getString().toLowerCase() + ".").withStyle(ChatFormatting.GOLD));
+//  txtMsg2=new TextComponent(ChatFormatting.RED + targetedPlayerOne.getName().getString() + ChatFormatting.GOLD + "'s " + targetedArmorOne.getHoverName().getString().toLowerCase() + ".");
  }
   }
   if (txtMsg2!=null) txtMsg.append(txtMsg2);

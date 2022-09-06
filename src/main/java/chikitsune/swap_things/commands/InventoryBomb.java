@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -17,11 +15,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -56,36 +52,20 @@ public class InventoryBomb {
      tempItemStack = list.get(i);
        if (!tempItemStack.isEmpty()) {
 //        targetedPlayer.dropItem(tempItemStack, true, false);
-        ibDropItem(tempItemStack,targetedPlayer);
+        ArchCommand.ibDropItem(tempItemStack,targetedPlayer);
        }
        list.set(i, defItemStack.copy());
     }
  }
-   
-   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " just found out what their inventory would look like if it only had " + ChatFormatting.DARK_GREEN + defItemStack.getHoverName().getString() + ChatFormatting.GOLD + " in it."));
+   ArchCommand.playerMsger(source, targetPlayers, 
+     Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED)
+   .append(Component.literal(" just found out what their inventory would look like if it only had ").withStyle(ChatFormatting.GOLD))
+   .append(Component.literal(defItemStack.getHoverName().getString()).withStyle(ChatFormatting.DARK_GREEN))
+   .append(Component.literal(" in it.").withStyle(ChatFormatting.GOLD)));
+//   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " just found out what their inventory would look like if it only had " + ChatFormatting.DARK_GREEN + defItemStack.getHoverName().getString() + ChatFormatting.GOLD + " in it."));
   }
   
   return 0;
  }
  
- @Nullable
- private static ItemEntity ibDropItem(ItemStack droppedItem, ServerPlayer targetedPlayer) {
-  if (droppedItem.isEmpty()) {
-   return null;
-  } else {
-   double d0 = targetedPlayer.getY() - (double)0.3F + (double)targetedPlayer.getEyeHeight();
-   ItemEntity itementity = new ItemEntity(targetedPlayer.level, targetedPlayer.getX(), d0, targetedPlayer.getZ(), droppedItem);
-   itementity.setPickUpDelay(20);
-   itementity.setThrower(targetedPlayer.getUUID());
-   float f = rand.nextFloat() * 0.5F;
-   float f1 = rand.nextFloat() * ((float)Math.PI * 2F);
-   itementity.setDeltaMovement((double)(-Mth.sin(f1) * f), (double)0.2F, (double)(Mth.cos(f1) * f));
-   
-   if (itementity.captureDrops() != null) itementity.captureDrops().add(itementity);
-   else
-    itementity.level.addFreshEntity(itementity);
-   return itementity;
-  }
- }
-
 }

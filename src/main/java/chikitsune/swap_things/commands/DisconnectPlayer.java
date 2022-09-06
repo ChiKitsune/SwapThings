@@ -11,7 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class DisconnectPlayer {
@@ -29,10 +29,16 @@ public class DisconnectPlayer {
   private static int disconnectPlayerLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
    ArchCommand.ReloadConfig();
    String disMsg=Configs.DP_MSG.get();
+   Component comDisMsg=Component.literal("");
    
    for(ServerPlayer targetedPlayer : targetPlayers) {
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getContents() + ChatFormatting.GOLD + " was surprised by " + fromName + disMsg));;
-    targetedPlayer.connection.disconnect(new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getContents() + ChatFormatting.GOLD + " was surprised by " + fromName + disMsg));
+    comDisMsg=Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED)
+      .append(Component.literal(" was surprised by " + fromName + disMsg).withStyle(ChatFormatting.GOLD));
+    
+    ArchCommand.playerMsger(source, targetPlayers,comDisMsg);
+//    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().m_6111_() + ChatFormatting.GOLD + " was surprised by " + fromName + disMsg));;
+    targetedPlayer.connection.disconnect(comDisMsg);
+//    targetedPlayer.connection.disconnect(new TextComponent(ChatFormatting.RED + targetedPlayer.getName().m_6111_() + ChatFormatting.GOLD + " was surprised by " + fromName + disMsg));
    }
    return 0;
   }

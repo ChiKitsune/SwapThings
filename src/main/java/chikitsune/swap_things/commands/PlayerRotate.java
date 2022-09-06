@@ -12,7 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -45,7 +45,11 @@ public static Random rand= new Random();
     
 //    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent("Pitch org:"+targetedPlayer.getPitchYaw().x+" rnd:"+rndPitch));
 //    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent("Yaw org:"+targetedPlayer.getPitchYaw().y+" rnd:"+rndYaw));
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + fromName + " spun " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " right round."));
+    ArchCommand.playerMsger(source, targetPlayers,
+      Component.literal(fromName + " spun " ).withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED))
+      .append(Component.literal(" right round.").withStyle(ChatFormatting.GOLD)));
+//    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + fromName + " spun " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " right round."));
    }
    return 0;
   }

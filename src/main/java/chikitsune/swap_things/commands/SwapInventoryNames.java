@@ -15,7 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -38,7 +38,7 @@ public static Random rand= new Random();
    ArchCommand.ReloadConfig();
    ItemStack tempItem=ItemStack.EMPTY;
    int tempRandNum=0;
-   TextComponent tempItemName=null,prevItemName=null;
+   Component tempItemName=null,prevItemName=null;
    String strPref="",strMsgFromName="Someone";
    List<ItemStack> tempInventory=null,tempBUInventory;
    ServerPlayer targetedPlayerTwo;
@@ -74,13 +74,16 @@ public static Random rand= new Random();
      if (!tempItem.isEmpty()) {
       if (tempInventory.size()<1) tempInventory=tempBUInventory;
       tempRandNum=rand.nextInt(tempInventory.size());
-      tempItemName=new TextComponent(strPref + tempInventory.get(tempRandNum).getHoverName().getString());
+      tempItemName=Component.literal(strPref + tempInventory.get(tempRandNum).getHoverName().getString());
       tempItem.setHoverName(tempItemName);
       tempInventory.remove(tempRandNum);
      }
     }
     
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED)
+    .append(Component.literal(" let " + strMsgFromName + " pick better names for their items.").withStyle(ChatFormatting.GOLD)));
+//    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + strMsgFromName + " pick better names for their items."));
    }   
    return 0;
   }

@@ -14,11 +14,11 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class RandomSingleArmorSlotArgument implements ArgumentType<String> {
  private static final Collection<String> EXAMPLES = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD","RANDOM");
- private static final DynamicCommandExceptionType NOT_IN_LIST = new DynamicCommandExceptionType((msg) -> { return new TranslatableComponent("arguments.randomsinglearmorslot.notFound", msg); });
+ private static final DynamicCommandExceptionType NOT_IN_LIST = new DynamicCommandExceptionType((msg) -> { return Component.translatable("arguments.randomsinglearmorslot.notFound", msg); });
  
  public static RandomSingleArmorSlotArgument allArmorSlots() { return new RandomSingleArmorSlotArgument(); }
  

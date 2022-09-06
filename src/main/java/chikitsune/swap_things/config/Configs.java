@@ -15,6 +15,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.registries.ForgeRegistries;
 
 //@Mod.EventBusSubscriber
 @Mod.EventBusSubscriber(modid = SwappingThings.MODID, bus = Bus.MOD)
@@ -73,7 +74,9 @@ public class Configs {
  public static final String CAT_IB = "InventoryBomb";
  public static final String CAT_IB_CMT = "InventoryBomb Command Settings";
    public static  ForgeConfigSpec.ConfigValue<String> IB_ITEM;
-   public static final String IB_ITEM_DEF = Items.DEAD_BUSH.getRegistryName().toString();
+   public static final String IB_ITEM_DEF = ForgeRegistries.ITEMS.getKey(Items.DEAD_BUSH).toString();
+   //public static final String IB_ITEM_DEF = Items.DEAD_BUSH.getRegistryName().toString();
+   
    public static final String IB_ITEM_NAM = "inventoryBombItem";
    public static final String IB_ITEM_CMT = "Item that will replace all inventory slots with after items are dropped";
 
@@ -480,10 +483,10 @@ public class Configs {
  
  private static void PopLists() {
   quiHidList_def=Lists.newArrayList();
-  quiHidList_def.add(Items.DEAD_BUSH.getRegistryName().toString()+",quick hide in these bushes!");
-  quiHidList_def.add(Items.WHEAT.getRegistryName().toString()+",quick hide in the wheat field!");
-  quiHidList_def.add(Items.FEATHER.getRegistryName().toString()+",quick act like a chicken!");
-  quiHidList_def.add(Items.PAINTING.getRegistryName().toString()+",quick blend into the wall!");
+  quiHidList_def.add(ForgeRegistries.ITEMS.getKey(Items.DEAD_BUSH).toString()+",quick hide in these bushes!");
+  quiHidList_def.add(ForgeRegistries.ITEMS.getKey(Items.WHEAT).toString()+",quick hide in the wheat field!");
+  quiHidList_def.add(ForgeRegistries.ITEMS.getKey(Items.FEATHER).toString()+",quick act like a chicken!");
+  quiHidList_def.add(ForgeRegistries.ITEMS.getKey(Items.PAINTING).toString()+",quick blend into the wall!");
   QH_LIST_DEF=quiHidList_def;
   
   sumMountINCLUDEClassList_def=Lists.newArrayList();
@@ -495,8 +498,8 @@ public class Configs {
   SM_IN_LIST_DEF = sumMountINCLUDEClassList_def; 
   
   sumMountEXLUDEList_def=Lists.newArrayList();
-  sumMountEXLUDEList_def.add(EntityType.WITHER.getRegistryName().toString());
-  sumMountEXLUDEList_def.add(EntityType.ENDER_DRAGON.getRegistryName().toString());
+  sumMountEXLUDEList_def.add(ForgeRegistries.ENTITY_TYPES.getKey(EntityType.WITHER).toString());
+  sumMountEXLUDEList_def.add(ForgeRegistries.ENTITY_TYPES.getKey(EntityType.ENDER_DRAGON).toString());
   SM_EX_LIST_DEF = sumMountEXLUDEList_def;
   
   sumRiderClassList_def=Lists.newArrayList();
@@ -511,8 +514,8 @@ public class Configs {
   DB_LIST_DEF = deathBoardList_def;
   
   randGiftList_def=Lists.newArrayList();
-  randGiftList_def.add(Items.DIAMOND.getRegistryName().toString()+",1,1");
-  randGiftList_def.add(Items.FEATHER.getRegistryName().toString()+",64,99");
+  randGiftList_def.add(ForgeRegistries.ITEMS.getKey(Items.DIAMOND).toString()+",1,1");
+  randGiftList_def.add(ForgeRegistries.ITEMS.getKey(Items.FEATHER).toString()+",64,99");
   RG_LIST_DEF = randGiftList_def;
   
   randEnchantEXLUDEList_def=Lists.newArrayList();

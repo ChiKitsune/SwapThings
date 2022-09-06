@@ -16,7 +16,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
@@ -103,10 +103,18 @@ private static int randomTeleportDirectionLogic(CommandSourceStack source,Collec
     } while (!attTele && loopCnt<=20);
     
     if (attTele) {
-     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no! " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " was distracted by " + fromName + " and is now lost."));
+     ArchCommand.playerMsger(source, targetPlayers, 
+       Component.literal("Oh no! ").withStyle(ChatFormatting.GOLD)
+       .append(Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED))
+       .append(Component.literal(" was distracted by " + fromName + " and is now lost.").withStyle(ChatFormatting.GOLD)));
+//     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no! " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " was distracted by " + fromName + " and is now lost."));
      } else {
       targetedPlayer.teleportTo(targetedPlayer.getLevel(),(plyX), (plyY), (plyZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
-      ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no " + fromName + " tried to distract " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " but they were distracted instead."));
+      ArchCommand.playerMsger(source, targetPlayers, 
+        Component.literal("Oh no " + fromName + " tried to distract ").withStyle(ChatFormatting.GOLD)
+        .append(Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED))
+        .append(Component.literal(" but they were distracted instead.").withStyle(ChatFormatting.GOLD)));
+//      ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no " + fromName + " tried to distract " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " but they were distracted instead."));
      }
    }  
    

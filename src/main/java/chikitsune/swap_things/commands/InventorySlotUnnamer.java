@@ -12,7 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -78,13 +78,25 @@ public class InventorySlotUnnamer {
    if (!tempStack.isEmpty() && tempStack.hasCustomHoverName()) {
     targetedPlayer.getInventory().getItem(selectedSlotNum).setHoverName(null);
    
-   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + prevItemName + " had too fancy of a name and made it plain."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal("Oh! " + strMsgFromName + " thought ").withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(targetedPlayer.getName().getString() + "'s ").withStyle(ChatFormatting.RED))
+      .append(Component.literal(prevItemName + " had too fancy of a name and made it plain.").withStyle(ChatFormatting.GOLD)));
+//   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + prevItemName + " had too fancy of a name and made it plain."));
    }
    else if (!tempStack.isEmpty() && !tempStack.hasCustomHoverName()) {
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + prevItemName + " had too fancy of a name but it wasn't."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal("Oh! " + strMsgFromName + " thought ").withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(targetedPlayer.getName().getString() + "'s ").withStyle(ChatFormatting.RED))
+      .append(Component.literal(prevItemName + " had too fancy of a name but it wasn't.").withStyle(ChatFormatting.GOLD)));
+//    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + prevItemName + " had too fancy of a name but it wasn't."));
    }
    else {
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh. " + strMsgFromName + " couldn't find an item that had a fancy name in " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s inventory."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal("Oh. " + strMsgFromName + " couldn't find an item that had a fancy name in ").withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(targetedPlayer.getName().getString() + "'s ").withStyle(ChatFormatting.RED))
+      .append(Component.literal("inventory.").withStyle(ChatFormatting.GOLD)));
+//    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh. " + strMsgFromName + " couldn't find an item that had a fancy name in " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s inventory."));
    }
   }
   

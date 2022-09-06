@@ -18,8 +18,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.EntitySummonArgument;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -57,8 +56,8 @@ public class SummonRider {
 //   List<EntityClassification> ttt= new ArrayList<>();
 //   ttt.add(EntityClassification.getClassificationByName("creature"));
    
-   List<EntityType<?>> lstSummEnt = ForgeRegistries.ENTITIES.getValues().stream()
-     .filter((EntityType eT) -> !ArchCommand.GetSM_EXT_LIST().contains(eT.getRegistryName().toString()))
+   List<EntityType<?>> lstSummEnt = ForgeRegistries.ENTITY_TYPES.getValues().stream()
+     .filter((EntityType eT) -> !ArchCommand.GetSM_EXT_LIST().contains(ForgeRegistries.ENTITY_TYPES.getKey(eT).toString()))
      .filter(EntityType::canSummon)
      .filter((EntityType eT) -> ArchCommand.GetSR_INC_LIST().contains(eT.getCategory()))
      .collect(Collectors.toList());
@@ -77,7 +76,7 @@ public class SummonRider {
      if(EntityType.by(compoundnbt).isPresent()) {
       tempEnt=EntityType.by(compoundnbt).get();
      } else {
-      throw new SimpleCommandExceptionType(new TranslatableComponent("commands.summon.failed")).create();
+      throw new SimpleCommandExceptionType(Component.translatable("commands.summon.failed")).create();
      }
     }
      
@@ -99,10 +98,16 @@ public class SummonRider {
      }
       isRidingNow=newMount.startRiding(targetedPlayer,true);
      if (isRidingNow && targetedPlayer.connection != null) {
+//      targetedPlayer.connection.m_141995_(new ClientboundSetPassengersPacket(targetedPlayer));
       targetedPlayer.connection.send(new ClientboundSetPassengersPacket(targetedPlayer));
     }
-     
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + "head feels about a " + ChatFormatting.AQUA + tempEnt.getDescription().getString() + "'s " + ChatFormatting.GOLD + "weight worth heavier. " + fromName + " you wouldn't know why would you?"));
+    
+     ArchCommand.playerMsger(source, targetPlayers, 
+       Component.literal(targetedPlayer.getName().getString() + "'s ").withStyle(ChatFormatting.RED)
+       .append(Component.literal("head feels about a ").withStyle(ChatFormatting.GOLD))
+       .append(Component.literal(tempEnt.getDescription().getString() + "'s ").withStyle(ChatFormatting.AQUA))
+       .append(Component.literal("weight worth heavier. " + fromName + " you wouldn't know why would you?").withStyle(ChatFormatting.GOLD)));
+//    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + "head feels about a " + ChatFormatting.AQUA + tempEnt.getDescription().getString() + "'s " + ChatFormatting.GOLD + "weight worth heavier. " + fromName + " you wouldn't know why would you?"));
    }
    return 0;
   }
