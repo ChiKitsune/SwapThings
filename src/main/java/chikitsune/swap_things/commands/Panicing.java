@@ -27,17 +27,21 @@ public class Panicing {
   private static int panicingLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
    ArchCommand.ReloadConfig();
    
+   // TODO
+   // Pretty sure this was for something to happen based on the block the player was standing on.
+   // Ideally wanted a way in the configs or with a json file to set which blocks or types of blocks (off of block tags) and do what is stated (effect or command)  
+   
    for(ServerPlayer targetedPlayer : targetPlayers) {
     
-//    targetedPlayer.
+    
+    
     
     
     targetedPlayer.updateOptions(null );
     if (targetedPlayer.connection != null) {
-//     targetedPlayer.connection.sendPacket(new SSetPassengersPacket(targetedPlayer));
+
    }
     
-//    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent(TextFormatting.RED + targetedPlayer.getName().getString() + TextFormatting.GOLD + " was separated from their mount " + fromName + "."));
    }
    
    return 0;

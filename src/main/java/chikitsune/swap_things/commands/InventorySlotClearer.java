@@ -12,7 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -65,9 +65,17 @@ public class InventorySlotClearer {
     targetedPlayer.getInventory().setItem(selectedSlotNum, ItemStack.EMPTY.copy());
    
     if (tempStack.isEmpty()) {
-     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + fromName + " tried to clear an inventory slot from " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " but it was already empty."));
+     ArchCommand.playerMsger(source, targetPlayers, 
+       Component.literal("Oh! " + fromName + " tried to clear an inventory slot from ").withStyle(ChatFormatting.GOLD)
+       .append(Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED))
+       .append(Component.literal(" but it was already empty.").withStyle(ChatFormatting.GOLD)));
+//     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + fromName + " tried to clear an inventory slot from " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " but it was already empty."));
     } else {
-     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + fromName + " just took "  + tempStack.getCount() + " of " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + "'s " + tempStack.getHoverName().getString()));
+     ArchCommand.playerMsger(source, targetPlayers, 
+       Component.literal("Oh! " + fromName + " just took "  + tempStack.getCount() + " of ").withStyle(ChatFormatting.GOLD)
+       .append(Component.literal(targetedPlayer.getName().getString() + "'s ").withStyle(ChatFormatting.RED))
+       .append(Component.literal(tempStack.getHoverName().getString() + ".").withStyle(ChatFormatting.GOLD)));
+//     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + fromName + " just took "  + tempStack.getCount() + " of " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + "'s " + tempStack.getHoverName().getString()));
     }
    }
    return 0;

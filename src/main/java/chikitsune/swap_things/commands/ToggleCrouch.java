@@ -11,7 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ToggleCrouch {
@@ -34,7 +34,10 @@ public class ToggleCrouch {
 //   KeyBinding.setKeyBindState(Minecraft.getInstance().gameSettings.keyBindSneak.getKey(),!sneakPressed);
    targetedPlayer.setShiftKeyDown(!targetedPlayer.isCrouching());
    
-   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + fromName + " decide if they should be sneaking or not."));
+   ArchCommand.playerMsger(source, targetPlayers, 
+     Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED)
+   .append(Component.literal(" let " + fromName + " decide if they should be sneaking or not.").withStyle(ChatFormatting.GOLD)));
+//   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + fromName + " decide if they should be sneaking or not."));
    }
    return 0;
   }

@@ -1,4 +1,4 @@
-# SwapThings a 1.16.5 Minecraft Forge Mod
+# SwapThings a Minecraft Forge Mod (Mainly 1.19.2 being updated)
 
 Mod mainly created to work with CCI/TwitchSpawn for some Twitch Integration. 
 Adds commands for viewers to interact and make things more entertaining for the streamer.
@@ -84,6 +84,23 @@ Adds commands for viewers to interact and make things more entertaining for the 
       - Note: If an amount is not given it will try to find a non empty inventory slot and use that
       - Note: If a courtesy of name is not given it will default to "Someone"
 
+#####  ```/swapthings inventoryslotreplacer [player] [item] [slot num] [courtesy of]```
+    drops and then replaces a specific inventory slot based on the decimal place of the amount or random if not given one.
+      - Note: If no item is given it defaults to Air/empty slot
+      - Note: slot num ignores the whole number amount and only looks for decimal places. https://i.imgur.com/5qokaCR.jpg
+            -1 will try to choose a random non empty slot
+             0 is held item
+            01 - 09 is hotbar
+            10 - 18 is top line in inventory
+            19 - 27 is second line in inventory
+            28 - 36 is third line in inventory
+            37 is boots
+            38 is leggings
+            39 is chestplate
+            40 is helmet
+            41 is offhand
+            42 and above is outside of the default player's inventory size and will loop back around to force it within the inventory size
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
 #####  ```/swapthings inventoryslotunnamer [playername] [courtesy of] [amount]```
     Unnames an inventory item back to the default name
@@ -107,6 +124,9 @@ Adds commands for viewers to interact and make things more entertaining for the 
       - Note: Strength is also in the config and default to .7 which will push the player one block in that direction
       - Note: Multiplier config values will times the normal direction chance by the multiplier based on what direction the player is facing. A 0 for either the Chance or Multiplier will never nudge that direction and a 1 is default.
       
+#####  ```/swapthings playerrotate [playername] [courtesy of]```
+    Forces the player to look at a random direction.
+      
 #####  ```/swapthings quickhide [playername] [<item> <message>]```
     Throws the four basic armor slots, offhand, and held item onto the ground. Then replaces all of those slots with the item given or if none given a random one in the below list and displays a message to all players on server.
       - Currently these are the choices it will choose from at random (will change into a config in future)
@@ -116,6 +136,18 @@ Adds commands for viewers to interact and make things more entertaining for the 
          - minecraft:painting, quick blend into the wall!
       - Note: If want do your own item and message playername is required
       
+#####  ```/swapthings randomenchanting [playername] [courtesy of] [effecttype] [enchantment] [enchantment level]```
+    Chooses a random item in inventory and gives, changes, or removes an enchantment at random
+      - Note: effecttype can be a value of ANY, POSSITIVE, NEGATIVE, RANDOM.
+         - ANY: will do from 0 - max normal level of the enchantment
+         - POSSITIVE: will always increase the enchantment's level unless already at max
+         - NEGATIVE: will always decrease level by at least one or if already at level one will remove enchantment.
+         - RANDOM: will determine a random range and choose from that for what it will do.
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      - Note: If an enchantment is not given will choose a random valid enchantment and level
+      - Note: If an enchantment level is not given will choose a random valid one for the given enchantment (0 is possible which will remove the enchantment
+      - Note: When specifying the enchantment level can do higher than usual (i.e. minecraft:efficiency 10 will give Efficiency X)
+
 #####  ```/swapthings randomgift [playername] [courtesy of]```
     Gifts a random item based on the list in the configs
       - Note: Each list item contains three parts.
@@ -126,7 +158,14 @@ Adds commands for viewers to interact and make things more entertaining for the 
 
 #####  ```/swapthings randomteleport [playername] [courtesy of]```
     Teleports the player to a random location based on config min/max values for each axis.
-      - Note: Direction chances are based on the config chance values
+#####  ```/swapthings randomteleport [playername] [courtesy of] [X_Min] [X_Max] [Y_Min] [Y_Max] [Z_Min] [Z_Max]```
+    Teleports the player to a random location based on given numbers instead of the config min/max values for each axis.
+      - Note: Min/Max values should all be positive as it is block distance amounts
+
+#####  ```/swapthings randomteleportdirection [playername] [courtesy of] [distance]```
+    Teleports user in a random direction with the given amount as distance from their original spot.
+      - Note: If no distance is given will use the config value
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
 #####  ```/swapthings replacearmorpiece [playername] [head|chest|legs|feet|mainhand|offhand|random] [item] [courtesy of]```
     Drops and replaces armor in the given slot with the given item
@@ -146,10 +185,17 @@ Adds commands for viewers to interact and make things more entertaining for the 
       - Note: Courtesy of is an optional text string. If nothing is given will just shuffle item names around.
       - Note: If Courtesy of is given it will prefix all shuffled item names with what is given plus 's
 
-#####  ```/swapthings summonmount [playername] [courtesy of]```
+#####  ```/swapthings summonmount [playername] [courtesy of] [mount]```
     Summons a random Entity and makes the player ride it.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      - Note: If a mount is given in the command it will summon that mount instead of a random one.
 
+#####  ```/swapthings summonrider  [playername] [courtesy of] [mount]```
+    Summons a random Entity and makes it ride the player.
+      - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
+      - Note: If a mount is given in the command it will summon that mount instead of a random one.
+      - Note: Some cases may need to use the UnMounter command or a death to remove it.
+      
 #####  ```/swapthings swaparmor <head|chest|legs|feet|mainhand|offhand|all|set|random> [playername] [playername]```
     Based on the option given will swap armor with another player. 
     - ALL will swap all six of the options before it (four basic armor, mainhand, and offhand) at once. 
@@ -165,7 +211,12 @@ Adds commands for viewers to interact and make things more entertaining for the 
     Swaps the location, inventory, and experience of the two players with each other and drops any helmets equipped, and equips the skull of the other player. 
       - Note: Players will also be set to look in the direction the other person was looking
 
-#####  ```/swapthings swaplocations [playername] [playername]```
+#####  ```/swapthings swapinventorynames  [playername] [courtesy of]```
+    Goes through all of the hotbar, equipment, and inventory slots and randomly replaces the name with another player's item name or a random item name. 
+      - Note: Courtesy of is an optional text string. If nothing is given will just shuffle item names around.
+      - Note: If "Courtesy of" is given it will prefix all shuffled item names with what is given plus 's
+
+#####  ```/swapthings swaplocation [playername] [playername]```
     Swaps the location of the two players with each other.
       - Note: Players will also be set to look in the direction the other person was looking
 
@@ -177,5 +228,8 @@ Adds commands for viewers to interact and make things more entertaining for the 
     Toggles if the player is running until command is run again, player presses their sprint key, or stops.
       - Note: Courtesy of is an optional text string if want the message displayed in chat to have a username in it. If none is given will just use "someone" instead.
 
+#####  ```/swapthings unmounter  [playername] [courtesy of]```
+    Unmounts whatever the player is riding on or that is riding on the player
+    
 #####  ```/swapthings unshuffleinventorynames [playername] [courtesy of]```
     Goes through all of the inventory slots and removes all custom names

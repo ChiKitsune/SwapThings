@@ -21,72 +21,59 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class RandomTeleport {
+public class RandomTeleportDirection {
 public static Random rand= new Random();
  
  public static ArgumentBuilder<CommandSourceStack, ?> register() { 
   ArchCommand.ReloadConfig();
-  return Commands.literal("randomteleport").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
-   return randomTeleportLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone", Configs.RT_X_MIN.get(), Configs.RT_X_MAX.get(), Configs.RT_Y_MIN.get(), Configs.RT_Y_MAX.get(), Configs.RT_Z_MIN.get(), Configs.RT_Z_MAX.get());
-   }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
-     return randomTeleportLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone", Configs.RT_X_MIN.get(), Configs.RT_X_MAX.get(), Configs.RT_Y_MIN.get(), Configs.RT_Y_MAX.get(), Configs.RT_Z_MIN.get(), Configs.RT_Z_MAX.get());
-     }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
-      return randomTeleportLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"), Configs.RT_X_MIN.get(), Configs.RT_X_MAX.get(), Configs.RT_Y_MIN.get(), Configs.RT_Y_MAX.get(), Configs.RT_Z_MIN.get(), Configs.RT_Z_MAX.get());
-      }).then(Commands.argument("X_Min", IntegerArgumentType.integer())
-        .then(Commands.argument("X_Max", IntegerArgumentType.integer())
-          .then(Commands.argument("Y_Min", IntegerArgumentType.integer())
-            .then(Commands.argument("Y_Max", IntegerArgumentType.integer())
-              .then(Commands.argument("Z_Min", IntegerArgumentType.integer())
-                .then(Commands.argument("Z_Max", IntegerArgumentType.integer())        
-        .executes((cmd_8arg) -> {
-       return randomTeleportLogic(cmd_8arg.getSource(),EntityArgument.getPlayers(cmd_8arg, "targetedPlayer"),StringArgumentType.getString(cmd_8arg, "fromName"),
-         IntegerArgumentType.getInteger(cmd_8arg, "X_Min"), IntegerArgumentType.getInteger(cmd_8arg, "X_Max"),
-         IntegerArgumentType.getInteger(cmd_8arg, "Y_Min"), IntegerArgumentType.getInteger(cmd_8arg, "Y_Max"),
-         IntegerArgumentType.getInteger(cmd_8arg, "Z_Min"), IntegerArgumentType.getInteger(cmd_8arg, "Z_Max"));
-       })
-     ))))))));
+  return Commands.literal("randomteleportdirection").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
+   return randomTeleportDirectionLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone", Configs.RTD_AMT.get());
+  }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
+   return randomTeleportDirectionLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone", Configs.RTD_AMT.get());
+   }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
+    return randomTeleportDirectionLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"), Configs.RTD_AMT.get());
+   }).then(Commands.argument("distance",IntegerArgumentType.integer()).executes((cmd_3arg) -> {
+    return randomTeleportDirectionLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),StringArgumentType.getString(cmd_3arg, "fromName"), IntegerArgumentType.getInteger(cmd_3arg, "distance"));
+   })
+   )));
  }
   
-//  private static int randomTeleportLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
- private static int randomTeleportLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName,
-       Integer X_Min, Integer X_Max, Integer Y_Min, Integer Y_Max, Integer Z_Min, Integer Z_Max) {
+private static int randomTeleportDirectionLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName, Integer distance) {
    ArchCommand.ReloadConfig();
-   Integer rndXloopCnt=0,rndYloopCnt=0,rndZloopCnt=0;
-   Integer teleX=0,teleY=0,teleZ=0;
+
    Integer plyX,plyY,plyZ;
    Integer loopCnt=0,listLoopCnt=0;
-   boolean attTele=false,tempChk=false;
+   boolean attTele=false;
    List<Integer> yPossibleList;
    BlockPos blockpos;
    BlockState blockstate;
-   
-   if(X_Max<0) X_Max=0;
-   if(X_Min<0) X_Min=0;
-   if(Y_Max<0) Y_Max=0;
-   if(Y_Min<0) Y_Min=0;
-   if(Z_Max<0) Z_Max=0;
-   if(Z_Min<0) Z_Min=0;
+   Integer Y_Min=Configs.RTD_Y_MIN.get();
+   Integer Y_Max=Configs.RTD_Y_MAX.get();
+   double rdmDegree;
+   double rdmAngle, rdmX, rdmY, rdmZ;
+   double teleX=0,teleY=0,teleZ=0;
+   Integer rdmDir;
    
    
    for(ServerPlayer targetedPlayer : targetPlayers) {
     rand= new Random();
+
+    
     attTele=false;
-    teleX=0;
     teleY=0;
-    teleZ=0;
     loopCnt=0;
     plyX= Mth.floor(targetedPlayer.blockPosition().getX());
     plyY= Mth.floor(targetedPlayer.blockPosition().getY());
     plyZ= Mth.floor(targetedPlayer.blockPosition().getZ());
-
     
     do {
-     rndXloopCnt=0;
-     rndYloopCnt=0;
-     rndZloopCnt=0;
-     do { teleX=rand.nextInt((X_Max*2)+1) - X_Max; rndXloopCnt++;} while (!(Math.abs(teleX)>=X_Min && Math.abs(teleX)<=X_Max) && rndXloopCnt<=100);
+     Integer rndYloopCnt=0;
+     rdmAngle = Math.random()*Math.PI*2;
+     teleX = Math.cos(rdmAngle)*distance;
+     teleZ = Math.sin(rdmAngle)*distance;
+//     do { teleY=rand.nextInt((255)+1); } while (!(((teleY+plyY)>=1) && ((plyY+teleY)<=255)));
      do { teleY=rand.nextInt((Y_Max*2)+1) - Y_Max; rndYloopCnt++; } while (!(Math.abs(teleY)>=Y_Min && Math.abs(teleY)<=Y_Max) && rndYloopCnt<=100);
-     do { teleZ=rand.nextInt((Z_Max*2)+1) - Z_Max; rndZloopCnt++; } while (!(Math.abs(teleZ)>=Z_Min && Math.abs(teleZ)<=Z_Max) && rndZloopCnt<=100);     
+     
      
      targetedPlayer.teleportTo(targetedPlayer.getLevel(),(plyX + teleX), (plyY + teleY), (plyZ + teleZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
      attTele=targetedPlayer.randomTeleport((plyX + teleX), (plyY + teleY), (plyZ + teleZ), true);
@@ -98,24 +85,19 @@ public static Random rand= new Random();
       
       yPossibleList=Lists.newArrayList();
       
-      
-      
       for (int i = (plyY-Y_Max); i <= (plyY+Y_Max); i++){
-//       System.out.println("i="+i);
        if ((Math.abs(i)>=Y_Min)) yPossibleList.add(i);
-       }
-//      System.out.println("ul="+yPossibleList.toString());
+      }
+//      for (int i = 0; i <= 255; i++){
+//       if ((i>=1) && (i<=255)) yPossibleList.add(i);
+//       }
       Collections.shuffle(yPossibleList);
-//      System.out.println("ol="+yPossibleList.toString());
       listLoopCnt=0;
       do {
-//       System.out.println("yPossibleList.get(listLoopCnt)="+yPossibleList.get(listLoopCnt));
        attTele=targetedPlayer.randomTeleport((plyX + teleX), yPossibleList.get(listLoopCnt), (plyZ + teleZ), true);
        listLoopCnt++;
       } while (!attTele && listLoopCnt<yPossibleList.size() && listLoopCnt <=300);
      }
-     
-     
      
      loopCnt++;
     } while (!attTele && loopCnt<=20);

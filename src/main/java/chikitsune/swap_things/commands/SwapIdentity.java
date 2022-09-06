@@ -52,8 +52,8 @@ public class SwapIdentity {
    Inventory playerTwoInv=new Inventory(null);
    Integer playerOneCurSlot=targetedPlayerOne.getInventory().selected;
    Integer playerTwoCurSlot=targetedPlayerTwo.getInventory().selected;
-   ItemStack playerOneHead=GetCustomHead(targetedPlayerOne.getName().getContents(), targetedPlayerOne.getName().getContents());
-   ItemStack playerTwoHead=GetCustomHead(targetedPlayerTwo.getName().getContents(), targetedPlayerTwo.getName().getContents());
+   ItemStack playerOneHead=GetCustomHead(targetedPlayerOne.getName().getContents().toString(), targetedPlayerOne.getName().getContents().toString());
+   ItemStack playerTwoHead=GetCustomHead(targetedPlayerTwo.getName().getContents().toString(), targetedPlayerTwo.getName().getContents().toString());
    Float playerOneExp,playerTwoExp, playerOneHealth, playerTwoHealth;
    Integer playerOneExpLvl, playerTwoExpLvl;
    

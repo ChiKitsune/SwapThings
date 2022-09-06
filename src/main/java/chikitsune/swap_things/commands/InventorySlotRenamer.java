@@ -12,7 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -78,14 +78,22 @@ public class InventorySlotRenamer {
    tempStack=targetedPlayer.getInventory().getItem(selectedSlotNum);
    if (!tempStack.isEmpty()) {
     prevItemName=targetedPlayer.getInventory().getItem(selectedSlotNum).getHoverName().getString();
-    targetedPlayer.getInventory().getItem(selectedSlotNum).setHoverName(new TextComponent(strPref + tempStack.getHoverName().getString()));
+    targetedPlayer.getInventory().getItem(selectedSlotNum).setHoverName(Component.literal(strPref + tempStack.getHoverName().getString()));
 //    prevItemName=targetedPlayer.inventory.getStackInSlot(selectedSlotNum).getDisplayName().getUnformattedComponentText();
 //    targetedPlayer.inventory.getStackInSlot(selectedSlotNum).setDisplayName(new StringTextComponent(strPref + tempStack.getDisplayName().getUnformattedComponentText()));
    
-   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + prevItemName + " should be theirs."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal("Oh! " + strMsgFromName + " thought ").withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(targetedPlayer.getName().getString() + "'s ").withStyle(ChatFormatting.RED))
+      .append(Component.literal(prevItemName + "should be theirs.").withStyle(ChatFormatting.GOLD)));
+//   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + prevItemName + " should be theirs."));
    }
    else {
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh. " + strMsgFromName + " couldn't find an item they wanted in " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s inventory that they liked and gave up."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal("Oh! " + strMsgFromName + " couldn't find an item they wanted in ").withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(targetedPlayer.getName().getString() + "'s ").withStyle(ChatFormatting.RED))
+      .append(Component.literal("inventory that they liked and gave up.").withStyle(ChatFormatting.GOLD)));
+//    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh. " + strMsgFromName + " couldn't find an item they wanted in " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s inventory that they liked and gave up."));
    }
   }
   

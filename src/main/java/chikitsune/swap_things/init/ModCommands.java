@@ -11,6 +11,6 @@ public class ModCommands {
  @SubscribeEvent
  public static void registerCommands(final RegisterCommandsEvent event) {
   
-  ArchCommand.register(event.getDispatcher());
+  ArchCommand.register(event.getDispatcher(), event.getBuildContext());
  }
 }

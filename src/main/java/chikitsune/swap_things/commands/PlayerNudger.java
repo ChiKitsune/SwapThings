@@ -12,7 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
@@ -157,7 +157,11 @@ public class PlayerNudger {
      targetedPlayer.moveTo(targetedPlayer.position().x(), targetedPlayer.position().y(), targetedPlayer.position().z(), playYaw, playPitch);
      targetedPlayer.hurtMarked=true;
     }
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no! " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal("Oh no! " ).withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED))
+      .append(Component.literal(" was pushed " + directionStr + " by " + fromName + ".").withStyle(ChatFormatting.GOLD)));
+//    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no! " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " was pushed " + directionStr + " by " + fromName + "."));
    }
    return 0;
   }

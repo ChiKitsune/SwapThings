@@ -13,12 +13,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import chikitsune.swap_things.commands.arguments.RandomSingleArmorSlotArgument;
 import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -28,14 +29,14 @@ public class ReplaceArmorPiece {
  public static Random rand= new Random();
  public static List<String> realArmorList = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD");
  
- public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+ public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext cmdBuildContext) { 
   return Commands.literal("replacearmorpiece").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
    return replaceArmorPieceLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"RANDOM",null,"someone");
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return replaceArmorPieceLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"RANDOM",null,"someone");
    }).then(Commands.argument("armorType", RandomSingleArmorSlotArgument.allArmorSlots()).executes((cmd_2arg) -> {
     return replaceArmorPieceLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),RandomSingleArmorSlotArgument.getSingleRandomArmorSlot(cmd_2arg, "armorType"),null,"someone");
-   }).then(Commands.argument("item", ItemArgument.item()).executes((cmd_3arg) -> {
+   }).then(Commands.argument("item", ItemArgument.item(cmdBuildContext)).executes((cmd_3arg) -> {
     return replaceArmorPieceLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),RandomSingleArmorSlotArgument.getSingleRandomArmorSlot(cmd_3arg, "armorType"),ItemArgument.getItem(cmd_3arg, "item"),"someone");
     }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_4arg) -> {
       return replaceArmorPieceLogic(cmd_4arg.getSource(),EntityArgument.getPlayers(cmd_4arg, "targetedPlayer"),RandomSingleArmorSlotArgument.getSingleRandomArmorSlot(cmd_4arg, "armorType"),ItemArgument.getItem(cmd_4arg, "item"),StringArgumentType.getString(cmd_4arg, "fromName"));
@@ -48,7 +49,7 @@ public class ReplaceArmorPiece {
   Boolean isRandomArmorSlot="RANDOM".equals(armorType.toUpperCase());
   String targetedArmorSlot="";
   ItemStack tempStack=ItemStack.EMPTY,defItemStack=ItemStack.EMPTY;
-  ItemArgument iaStack=new ItemArgument();
+  ItemArgument iaStack;
   
   if (itemInput!=null) {
    try {
@@ -74,8 +75,10 @@ public class ReplaceArmorPiece {
    targetedPlayer.setItemSlot(EquipmentSlot.byName(targetedArmorSlot.toLowerCase()), defItemStack);
    
    
-   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " got a brand new " + ArchCommand.getArmorSlotDescription(targetedArmorSlot) 
-   ));
+   ArchCommand.playerMsger(source, targetPlayers, 
+     Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED)
+     .append(Component.literal(" got a brand new " + ArchCommand.getArmorSlotDescription(targetedArmorSlot) ).withStyle(ChatFormatting.GOLD)));
+//   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " got a brand new " + ArchCommand.getArmorSlotDescription(targetedArmorSlot) ));
   }
   return 0;
  }

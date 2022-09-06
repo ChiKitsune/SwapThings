@@ -3,13 +3,13 @@ package chikitsune.swap_things;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import chikitsune.swap_things.commands.ArchCommand;
 import chikitsune.swap_things.config.Configs;
 import chikitsune.swap_things.proxies.ClientProxy;
 import chikitsune.swap_things.proxies.IProxy;
 import chikitsune.swap_things.proxies.ServerProxy;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -21,7 +21,6 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 
 @Mod(SwappingThings.MODID)
 @Mod.EventBusSubscriber(modid = SwappingThings.MODID, bus = Bus.MOD)
@@ -32,9 +31,6 @@ public class SwappingThings {
  
  public static final String MODID = "swap_things";
  public static final String NAME = "Swapping Things";
- 
-// public static List<List<String>> quiHidList;
-// public static List<String> sumMountList;
  
  public SwappingThings() {
   IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -60,6 +56,9 @@ Configs.init(FMLPaths.CONFIGDIR.get().resolve(MODID + "-common.toml"));
 
 // Register ourselves for server and other game events we are interested in
 MinecraftForge.EVENT_BUS.register(this);
+
+
+ArchCommand.CMD_ARG_REG.register(FMLJavaModLoadingContext.get().getModEventBus());
 
 //Configs.loadConfig(Configs.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-client.toml"));
 //Configs.loadConfig(Configs.STCONFIG, FMLPaths.CONFIGDIR.get().resolve("swap_things-common.toml"));
@@ -95,8 +94,8 @@ private void processIMC(final InterModProcessEvent event) {
 }
 
 // You can use SubscribeEvent and let the Event Bus discover methods to call
-@SubscribeEvent
-public void onServerStarting(FMLServerStartingEvent event) {
+//@SubscribeEvent
+//public void onServerStarting(FMLServerStartingEvent event) {
 // do something when the server starts
 //LOGGER.info("HELLO from server starting");
 //SwappingThings.quiHidList=Lists.newArrayList();
@@ -110,7 +109,7 @@ public void onServerStarting(FMLServerStartingEvent event) {
 //SwappingThings.sumMountList.add("minecraft:ender_dragon");
 
 //SwappingThings.sumMountList=(List<String>) Configs.SUMMONMOUNT_EXCLUDE_LIST.get();
-}
+//}
 
 // You can use EventBusSubscriber to automatically subscribe events on the
 // contained class (this is subscribing to the MOD

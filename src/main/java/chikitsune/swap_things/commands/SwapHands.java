@@ -11,7 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,10 @@ public class SwapHands {
     targetedPlayer.setItemInHand(InteractionHand.MAIN_HAND,targetedPlayer.getItemInHand(InteractionHand.OFF_HAND));
     targetedPlayer.setItemInHand(InteractionHand.OFF_HAND,tempItem);
        
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + fromName + " switch what was in their hands."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED)
+    .append(Component.literal(" let " + fromName + " switch what was in their hands.").withStyle(ChatFormatting.GOLD)));
+//    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " let " + fromName + " switch what was in their hands."));
    }
    return 0;
   }

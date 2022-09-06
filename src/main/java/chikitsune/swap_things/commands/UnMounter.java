@@ -11,7 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -30,6 +30,7 @@ public class UnMounter {
   
   private static int unmounterLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName) {
    ArchCommand.ReloadConfig();
+   Component msg;
    
    for(ServerPlayer targetedPlayer : targetPlayers) {
     
@@ -42,8 +43,9 @@ public class UnMounter {
     if (targetedPlayer.connection != null) {
      targetedPlayer.connection.send(new ClientboundSetPassengersPacket(targetedPlayer));
    }
-    
-    ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " was separated from their mount " + fromName + "."));
+     msg=Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED).append(Component.literal(" was separated from their mount " + fromName + ".").withStyle(ChatFormatting.GOLD));
+    ArchCommand.playerMsger(source, targetPlayers, msg);
+    //ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " was separated from their mount " + fromName + "."));
    }
    
    return 0;

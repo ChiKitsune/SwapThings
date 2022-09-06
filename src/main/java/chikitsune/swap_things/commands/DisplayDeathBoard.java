@@ -21,9 +21,7 @@ import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -45,14 +43,19 @@ public class DisplayDeathBoard {
    PlayerList plyListForStats= source.getServer().getPlayerList();
    Map<String, Integer> playerDeaths = buildDeathBoardPlayerList(source.getServer());
    
-   
+   Component leaderHeader=Component.literal("** DEATH LEADERBOARD **").withStyle(ChatFormatting.GOLD);
    
 //   plyList.sort((ServerPlayerEntity spe1, ServerPlayerEntity spe2) -> spe2.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS))-spe1.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS)));
    
    
    
    String placeStrPre = null,placeStrPost = null;
-   source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(ChatFormatting.GOLD + "** DEATH LEADERBOARD **"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUUID()));
+//   source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(ChatFormatting.GOLD + "** DEATH LEADERBOARD **"),ChatType.SYSTEM,plyList.stream().findFirst().get().m_142081_()));
+   
+//   for(ServerPlayer allTargetedPlayer : source.getServer().getPlayerList().getPlayers()) {
+//    allTargetedPlayer.sendSystemMessage(leaderHeader);
+//    }
+   ArchCommand.sendAllPlayMsg(source,leaderHeader);
    
    if (playerDeaths.entrySet().size()>0) {
    int c=0;
@@ -82,18 +85,28 @@ public class DisplayDeathBoard {
      }
     }
 
-    source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(
-      ChatFormatting.GOLD + placeStrPre + 
-      ChatFormatting.DARK_RED + entry.getValue() +
-      ChatFormatting.GOLD + " deaths: " + 
-      ChatFormatting.RED + entry.getKey() +
-      ChatFormatting.WHITE + placeStrPost
-      ),ChatType.SYSTEM,plyList.stream().findFirst().get().getUUID()));
+//    source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(
+//      ChatFormatting.GOLD + placeStrPre + 
+//      ChatFormatting.DARK_RED + entry.getValue() +
+//      ChatFormatting.GOLD + " deaths: " + 
+//      ChatFormatting.RED + entry.getKey() +
+//      ChatFormatting.WHITE + placeStrPost
+//      ),ChatType.SYSTEM,plyList.stream().findFirst().get().m_142081_()));
+    
+    ArchCommand.sendAllPlayMsg(source,
+      Component.literal(placeStrPre).withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(entry.getValue().toString()).withStyle(ChatFormatting.DARK_RED))
+      .append(Component.literal(" deaths: ").withStyle(ChatFormatting.GOLD))
+      .append(Component.literal(entry.getKey()).withStyle(ChatFormatting.RED))
+      .append(Component.literal(placeStrPost).withStyle(ChatFormatting.WHITE))
+      );
    }
    } else {
-    source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(ChatFormatting.GOLD + "No deaths ... for now!"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUUID()));
+    ArchCommand.sendAllPlayMsg(source, Component.literal("No deaths ... for now!").withStyle(ChatFormatting.GOLD));
+//    source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(ChatFormatting.GOLD + "No deaths ... for now!"),ChatType.SYSTEM,plyList.stream().findFirst().get().m_142081_()));
    }
-   source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(ChatFormatting.GOLD + "*********************************"),ChatType.SYSTEM,plyList.stream().findFirst().get().getUUID()));
+   ArchCommand.sendAllPlayMsg(source, Component.literal("*********************************").withStyle(ChatFormatting.GOLD));
+//   source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(new TextComponent(ChatFormatting.GOLD + "*********************************"),ChatType.SYSTEM,plyList.stream().findFirst().get().m_142081_()));
    return 0;
   }
   
@@ -114,7 +127,7 @@ public class DisplayDeathBoard {
        JsonElement element = parser.parse(new FileReader(playerStatFile));
        JsonObject object = element.getAsJsonObject();
        JsonObject stats = object.getAsJsonObject("stats");
-       JsonObject customStats = stats.getAsJsonObject(Stats.CUSTOM.getRegistryName().toString());
+       JsonObject customStats = stats.getAsJsonObject(Stats.CUSTOM.getRegistry().toString());
        JsonPrimitive deaths = customStats.getAsJsonPrimitive(Stats.DEATHS.toString());
 //        JsonObject statsCustomObj = parser.parse(new FileReader(playerStatFile)).getAsJsonObject().getAsJsonObject("stats").getAsJsonObject(Stats.CUSTOM.getRegistryName().toString());
 //        JsonPrimitive deaths = statsCustomObj.getAsJsonPrimitive(Stats.DEATHS.toString());

@@ -12,7 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -34,7 +34,7 @@ public class UnShuffleInventoryNames {
    ArchCommand.ReloadConfig();
    ItemStack tempItem=ItemStack.EMPTY;
    Integer tempRandNum=0,tempFirstNonEmpty=0;
-   TextComponent tempItemName=null,prevItemName=null;
+   Component tempItemName=null,prevItemName=null;
    String strMsgFromName="Someone";
    if (fromName!=null) {
     strMsgFromName=fromName;
@@ -55,7 +55,11 @@ public class UnShuffleInventoryNames {
      }
     if (tempFirstNonEmpty!=null) targetedPlayer.getInventory().getItem(tempFirstNonEmpty).setHoverName(prevItemName);
    
-   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + strMsgFromName + " decided that " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " had too many items with fancy names and changed them back."));
+    ArchCommand.playerMsger(source, targetPlayers, 
+      Component.literal(strMsgFromName + " decided that ").withStyle(ChatFormatting.GOLD)
+      .append(Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED))
+      .append(Component.literal(" had too many items with fancy names and changed them back.").withStyle(ChatFormatting.GOLD)));
+//   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + strMsgFromName + " decided that " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " had too many items with fancy names and changed them back."));
    }
    return 0;
   }

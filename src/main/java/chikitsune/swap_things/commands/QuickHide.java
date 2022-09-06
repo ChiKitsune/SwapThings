@@ -11,12 +11,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -25,24 +26,24 @@ import net.minecraft.world.item.Items;
 public class QuickHide {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+ public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext cmdBuildContext) { 
   return Commands.literal("quickhide").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
-   return quickhideLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),null,null);
+   return quickhideLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),null,null,cmdBuildContext);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
-     return quickhideLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null,null);
-    }).then(Commands.argument("item", ItemArgument.item()).executes((cmd_2arg) -> {
-      return quickhideLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),ItemArgument.getItem(cmd_2arg, "item"),null);
+     return quickhideLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),null,null,cmdBuildContext);
+    }).then(Commands.argument("item", ItemArgument.item(cmdBuildContext)).executes((cmd_2arg) -> {
+      return quickhideLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),ItemArgument.getItem(cmd_2arg, "item"),null,cmdBuildContext);
      }).then(Commands.argument("message", StringArgumentType.string()).executes((cmd_3arg) -> {
-      return quickhideLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),ItemArgument.getItem(cmd_3arg, "item"),StringArgumentType.getString(cmd_3arg, "message"));
+      return quickhideLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),ItemArgument.getItem(cmd_3arg, "item"),StringArgumentType.getString(cmd_3arg, "message"),cmdBuildContext);
       })
      )));
  }
   
- private static int quickhideLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, ItemInput itemInput, String message) {
+ private static int quickhideLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, ItemInput itemInput, String message,CommandBuildContext cmdBuildContext) {
   ArchCommand.ReloadConfig();
   ItemStack rndStack = ItemStack.EMPTY;
   String curMsg="quick use these to hide!";
-  ItemArgument iaStack=new ItemArgument();
+  ItemArgument iaStack = ItemArgument.item(cmdBuildContext);
   Integer newRanNum;
 
   for(ServerPlayer targetedPlayer : targetPlayers) {  
@@ -76,7 +77,10 @@ public class QuickHide {
   targetedPlayer.setItemSlot(EquipmentSlot.OFFHAND, rndStack.copy());
   targetedPlayer.setItemSlot(EquipmentSlot.MAINHAND, rndStack.copy());
   
-  ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " " + curMsg));
+  ArchCommand.playerMsger(source, targetPlayers, 
+    Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED)
+  .append(Component.literal(" " + curMsg).withStyle(ChatFormatting.GOLD)));
+//  ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " " + curMsg));
   }
   return 0;
  }
