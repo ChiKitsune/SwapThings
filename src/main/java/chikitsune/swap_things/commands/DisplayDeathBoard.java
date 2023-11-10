@@ -1,8 +1,23 @@
 package chikitsune.swap_things.commands;
 
-import chikitsune.swap_things.config.Configs;
-import com.google.gson.*;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.apache.commons.io.FilenameUtils;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -13,12 +28,6 @@ import net.minecraft.server.players.PlayerList;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.common.UsernameCache;
-import org.apache.commons.io.FilenameUtils;
-
-import java.io.File;
-import java.io.FileReader;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class DisplayDeathBoard {
  public static ArgumentBuilder<CommandSourceStack, ?> register() { 

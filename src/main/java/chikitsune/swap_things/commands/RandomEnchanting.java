@@ -1,11 +1,19 @@
 package chikitsune.swap_things.commands;
 
-import chikitsune.swap_things.commands.arguments.RandomEffectTypeArgument;
-import chikitsune.swap_things.config.Configs;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+
+import chikitsune.swap_things.commands.arguments.RandomEffectTypeArgument;
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.*;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -18,9 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class RandomEnchanting {
  public static Random rand= new Random();

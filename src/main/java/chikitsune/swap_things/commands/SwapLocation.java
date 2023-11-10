@@ -1,7 +1,11 @@
 package chikitsune.swap_things.commands;
 
-import chikitsune.swap_things.config.Configs;
+import java.util.Arrays;
+import java.util.Collection;
+
 import com.mojang.brigadier.builder.ArgumentBuilder;
+
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -10,9 +14,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 public class SwapLocation {
  

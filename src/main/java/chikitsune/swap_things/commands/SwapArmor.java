@@ -1,8 +1,13 @@
 package chikitsune.swap_things.commands;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Random;
+
+import com.mojang.brigadier.builder.ArgumentBuilder;
+
 import chikitsune.swap_things.commands.arguments.RandomArmorSlotArgument;
 import chikitsune.swap_things.config.Configs;
-import com.mojang.brigadier.builder.ArgumentBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -12,8 +17,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.*;
 
 public class SwapArmor {
  public static Random rand= new Random();

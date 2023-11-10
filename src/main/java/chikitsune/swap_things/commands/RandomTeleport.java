@@ -1,10 +1,16 @@
 package chikitsune.swap_things.commands;
 
-import chikitsune.swap_things.config.Configs;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -14,8 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.*;
 
 public class RandomTeleport {
 public static Random rand= new Random();

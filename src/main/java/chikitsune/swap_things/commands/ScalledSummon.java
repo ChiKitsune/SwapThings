@@ -1,12 +1,13 @@
 package chikitsune.swap_things.commands;
 
+import java.util.Collection;
+
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-
-import java.util.Collection;
 
 public class ScalledSummon {
  

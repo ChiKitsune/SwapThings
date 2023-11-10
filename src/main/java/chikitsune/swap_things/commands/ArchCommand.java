@@ -1,14 +1,25 @@
 package chikitsune.swap_things.commands;
 
-import chikitsune.swap_things.SwappingThings;
-import chikitsune.swap_things.commands.arguments.*;
-import chikitsune.swap_things.config.Configs;
+import java.util.*;
+
+import javax.annotation.Nullable;
+
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.mojang.brigadier.CommandDispatcher;
+
+import chikitsune.swap_things.SwappingThings;
+import chikitsune.swap_things.commands.arguments.RandomArmorSlotArgument;
+import chikitsune.swap_things.commands.arguments.RandomEffectTypeArgument;
+import chikitsune.swap_things.commands.arguments.RandomSingleArmorSlotArgument;
+import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.*;
-import net.minecraft.commands.synchronization.*;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
@@ -20,9 +31,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.*;
-
-import javax.annotation.Nullable;
-import java.util.*;
 
 public class ArchCommand {
  public static Random rand= new Random();

@@ -1,20 +1,25 @@
 package chikitsune.swap_things.commands;
 
-import chikitsune.swap_things.commands.arguments.RandomEffectTypeArgument;
-import chikitsune.swap_things.config.Configs;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.*;
+
+import chikitsune.swap_things.commands.arguments.RandomEffectTypeArgument;
+import chikitsune.swap_things.config.Configs;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-
-import java.util.*;
 
 public class RandomItem {
 public static Random rand= new Random();
