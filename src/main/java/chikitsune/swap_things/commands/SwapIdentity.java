@@ -1,11 +1,7 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import com.mojang.brigadier.builder.ArgumentBuilder;
-
 import chikitsune.swap_things.config.Configs;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -18,6 +14,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 public class SwapIdentity {
  
@@ -45,8 +44,8 @@ public class SwapIdentity {
    Vec3 playerTwoVec=targetedPlayerTwo.position();
    Float playerTwoYaw=targetedPlayerTwo.getYRot();
    Float playerTwoPitch=targetedPlayerTwo.getXRot();
-   ServerLevel playerOnedimWorld=targetedPlayerOne.getLevel();
-   ServerLevel playerTwodimWorld=targetedPlayerTwo.getLevel();
+   ServerLevel playerOnedimWorld=targetedPlayerOne.serverLevel();
+   ServerLevel playerTwodimWorld=targetedPlayerTwo.serverLevel();
    
    Inventory playerOneInv=new Inventory(null);
    Inventory playerTwoInv=new Inventory(null);

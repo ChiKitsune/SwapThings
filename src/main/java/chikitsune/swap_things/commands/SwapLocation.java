@@ -1,11 +1,7 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import com.mojang.brigadier.builder.ArgumentBuilder;
-
 import chikitsune.swap_things.config.Configs;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -14,6 +10,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 public class SwapLocation {
  
@@ -40,8 +39,8 @@ public class SwapLocation {
    Vec3 playerTwoVec=targetedPlayerTwo.position();
    Float playerTwoYaw=targetedPlayerTwo.getYRot();
    Float playerTwoPitch=targetedPlayerTwo.getXRot();
-   ServerLevel playerOnedimWorld=targetedPlayerOne.getLevel();
-   ServerLevel playerTwodimWorld=targetedPlayerTwo.getLevel();
+   ServerLevel playerOnedimWorld=targetedPlayerOne.serverLevel();
+   ServerLevel playerTwodimWorld=targetedPlayerTwo.serverLevel();
    
    targetedPlayerOne.teleportTo(playerTwodimWorld, Mth.floor(playerTwoVec.x()), Mth.floor(playerTwoVec.y()), Mth.floor(playerTwoVec.z()), playerTwoYaw, playerTwoPitch);
    targetedPlayerTwo.teleportTo(playerOnedimWorld, Mth.floor(playerOneVec.x()), Mth.floor(playerOneVec.y()), Mth.floor(playerOneVec.z()), playerOneYaw, playerOnePitch);

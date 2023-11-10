@@ -1,13 +1,9 @@
 package chikitsune.swap_things.config;
 
-import java.nio.file.Path;
-import java.util.List;
-
+import chikitsune.swap_things.SwappingThings;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.google.common.collect.Lists;
-
-import chikitsune.swap_things.SwappingThings;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Items;
@@ -16,6 +12,9 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.nio.file.Path;
+import java.util.List;
 
 //@Mod.EventBusSubscriber
 @Mod.EventBusSubscriber(modid = SwappingThings.MODID, bus = Bus.MOD)

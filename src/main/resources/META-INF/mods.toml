@@ -1,45 +1,28 @@
-modLoader="javafml"
-#loaderVersion="${forge_version_range}"
-#license="${mod_license}"
-#issueTrackerURL="${mod_issues}"
+modLoader="javafml" #mandatory
 
-loaderVersion="[43,)"
-license="MIT License"
-issueTrackerURL="https://github.com/ChiKitsune/SwapThings/issues"
+loaderVersion="${loader_version_range}" #mandatory
+license="${mod_license}"
+issueTrackerURL="${mod_issues}" #optional
+[[mods]] #mandatory
+modId="${mod_id}" #mandatory
+version="${mod_version}" #mandatory
+displayName="${mod_name}" #mandatory
+#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+displayURL="${curse_site}" #optional
+credits="${mod_credits}" #optional
+authors="${mod_authors}" #optional
+#displayTest="MATCH_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
 
-[[mods]]
-#modId="${mod_id}"
-#version="${mod_version}"
-#displayName="${toml_name}"
-##updateJSONURL=""
-##displayURL="${mod_url}"
-##logoFile="${mod_logo}"
-#credits="${mod_credits}"
-#authors="${mod_authors}"
-#description='''${mod_description}'''
-
- modId="swap_things" #mandatory
- version="${file.jarVersion}" #mandatory
- displayName="Swap Things" #mandatory
- displayURL="https://github.com/ChiKitsune/SwapThings" #optional
- authors="ChiKitsune" #optional
- description='''
- Mod mainly created to work with CCI/TwitchSpawn for some Twitch Integration.
- Adds commands for viewers to interact and make things more entertaining for the streamer.
- '''
-
-
-[[dependencies.swap_things]]
-    modId="forge"
-    mandatory=true
-    #versionRange="${forge_version_range}"
-    versionRange="[43,)"
+description='''${mod_description}'''
+[[dependencies.${mod_id}]] #optional
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="${forge_version_range}" #mandatory
     ordering="NONE"
     side="BOTH"
-[[dependencies.swap_things]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    #versionRange="${mc_versionRange}"
-    versionRange="[1.19.2,1.20)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

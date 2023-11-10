@@ -1,13 +1,8 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
+import chikitsune.swap_things.config.Configs;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-
-import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -15,6 +10,8 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.*;
 
 public class PlayerRotate {
 public static Random rand= new Random();
@@ -40,7 +37,7 @@ public static Random rand= new Random();
     rndPitch=rand.nextInt(180)-90;
 
     if (targetedPlayer.connection != null) {
-    targetedPlayer.connection.send(new ClientboundPlayerPositionPacket(targetedPlayer.getX(),targetedPlayer.getY(),targetedPlayer.getZ(),rndYaw,rndPitch, Collections.emptySet(),0,false));
+    targetedPlayer.connection.send(new ClientboundPlayerPositionPacket(targetedPlayer.getX(),targetedPlayer.getY(),targetedPlayer.getZ(),rndYaw,rndPitch, Collections.emptySet(),0));
     }
     
 //    ArchCommand.playerMsger(source, targetPlayers, new StringTextComponent("Pitch org:"+targetedPlayer.getPitchYaw().x+" rnd:"+rndPitch));

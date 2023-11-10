@@ -1,16 +1,10 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
+import chikitsune.swap_things.config.Configs;
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-
-import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -20,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.*;
 
 public class RandomTeleportDirection {
 public static Random rand= new Random();
@@ -41,8 +37,8 @@ public static Random rand= new Random();
 private static int randomTeleportDirectionLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName, Integer distance) {
    ArchCommand.ReloadConfig();
 
-   Integer plyX,plyY,plyZ;
-   Integer loopCnt=0,listLoopCnt=0;
+   int plyX,plyY,plyZ;
+   int loopCnt=0,listLoopCnt=0;
    boolean attTele=false;
    List<Integer> yPossibleList;
    BlockPos blockpos;
@@ -75,13 +71,13 @@ private static int randomTeleportDirectionLogic(CommandSourceStack source,Collec
      do { teleY=rand.nextInt((Y_Max*2)+1) - Y_Max; rndYloopCnt++; } while (!(Math.abs(teleY)>=Y_Min && Math.abs(teleY)<=Y_Max) && rndYloopCnt<=100);
      
      
-     targetedPlayer.teleportTo(targetedPlayer.getLevel(),(plyX + teleX), (plyY + teleY), (plyZ + teleZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
+     targetedPlayer.teleportTo(targetedPlayer.serverLevel(),(plyX + teleX), (plyY + teleY), (plyZ + teleZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
      attTele=targetedPlayer.randomTeleport((plyX + teleX), (plyY + teleY), (plyZ + teleZ), true);
      
      if (!attTele) {
-      blockpos = new BlockPos((plyX + teleX), (plyY + teleY), (plyZ + teleZ));
+      blockpos = new BlockPos((int) (plyX + teleX), (int) (plyY + teleY), (int) (plyZ + teleZ));
       
-      blockstate=targetedPlayer.level.getBlockState(blockpos);
+      blockstate=targetedPlayer.level().getBlockState(blockpos);
       
       yPossibleList=Lists.newArrayList();
       
@@ -109,7 +105,7 @@ private static int randomTeleportDirectionLogic(CommandSourceStack source,Collec
        .append(Component.literal(" was distracted by " + fromName + " and is now lost.").withStyle(ChatFormatting.GOLD)));
 //     ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh no! " + ChatFormatting.RED + targetedPlayer.getName().getString() + ChatFormatting.GOLD + " was distracted by " + fromName + " and is now lost."));
      } else {
-      targetedPlayer.teleportTo(targetedPlayer.getLevel(),(plyX), (plyY), (plyZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
+      targetedPlayer.teleportTo(targetedPlayer.serverLevel(),(plyX), (plyY), (plyZ), targetedPlayer.getYRot(), targetedPlayer.getXRot());
       ArchCommand.playerMsger(source, targetPlayers, 
         Component.literal("Oh no " + fromName + " tried to distract ").withStyle(ChatFormatting.GOLD)
         .append(Component.literal(targetedPlayer.getName().getString()).withStyle(ChatFormatting.RED))

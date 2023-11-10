@@ -1,12 +1,8 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-
+import chikitsune.swap_things.config.Configs;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-
-import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -15,6 +11,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public class UnMounter {
  public static ArgumentBuilder<CommandSourceStack, ?> register() { 

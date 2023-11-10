@@ -1,23 +1,8 @@
 package chikitsune.swap_things.commands;
 
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import org.apache.commons.io.FilenameUtils;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.mojang.brigadier.builder.ArgumentBuilder;
-
 import chikitsune.swap_things.config.Configs;
+import com.google.gson.*;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -28,6 +13,12 @@ import net.minecraft.server.players.PlayerList;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.common.UsernameCache;
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
+import java.io.FileReader;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DisplayDeathBoard {
  public static ArgumentBuilder<CommandSourceStack, ?> register() { 
@@ -57,7 +48,7 @@ public class DisplayDeathBoard {
 //    }
    ArchCommand.sendAllPlayMsg(source,leaderHeader);
    
-   if (playerDeaths.entrySet().size()>0) {
+   if (!playerDeaths.entrySet().isEmpty()) {
    int c=0;
    for(Map.Entry<String, Integer> entry:playerDeaths.entrySet()) {
     c=c+1;
@@ -71,7 +62,7 @@ public class DisplayDeathBoard {
      }
     
     
-    if (Configs.DB_LIST.get().size()>0) {
+    if (!Configs.DB_LIST.get().isEmpty()) {
      int c_post=c-1;
      if (c_post>Configs.DB_LIST.get().size()-1) c_post=Configs.DB_LIST.get().size()-1;
      

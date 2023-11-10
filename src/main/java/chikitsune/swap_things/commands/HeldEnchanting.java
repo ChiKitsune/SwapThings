@@ -1,21 +1,16 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Random;
-
+import chikitsune.swap_things.config.Configs;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-
-import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import net.minecraft.commands.*;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ItemEnchantmentArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -23,25 +18,27 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.*;
+
 public class HeldEnchanting {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+ public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext cmdBuildContext) {
   return Commands.literal("heldenchanting").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
-   return heldEnchantingLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone",null,null);
+   return heldEnchantingLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone",null,null,cmdBuildContext);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
-     return heldEnchantingLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone",null,null);
+     return heldEnchantingLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone",null,null,cmdBuildContext);
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
-      return heldEnchantingLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"),null,null);
-      }).then(Commands.argument("enchantment",ItemEnchantmentArgument.enchantment()).executes((cmd_3arg) -> {
-       return heldEnchantingLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),StringArgumentType.getString(cmd_3arg, "fromName"),ItemEnchantmentArgument.getEnchantment(cmd_3arg, "enchantment"),null);
+      return heldEnchantingLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"),null,null,cmdBuildContext);
+      }).then(Commands.argument("enchantment", ResourceArgument.resource(cmdBuildContext, Registries.ENCHANTMENT)).executes((cmd_3arg) -> {
+       return heldEnchantingLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),StringArgumentType.getString(cmd_3arg, "fromName"),ResourceArgument.getEnchantment(cmd_3arg, "enchantment"),null,cmdBuildContext);
       }).then(Commands.argument("enchantment_level",IntegerArgumentType.integer()).executes((cmd_4arg) -> {
-       return heldEnchantingLogic(cmd_4arg.getSource(),EntityArgument.getPlayers(cmd_4arg, "targetedPlayer"),StringArgumentType.getString(cmd_4arg, "fromName"),ItemEnchantmentArgument.getEnchantment(cmd_4arg, "enchantment"),IntegerArgumentType.getInteger(cmd_4arg, "enchantment_level"));
+       return heldEnchantingLogic(cmd_4arg.getSource(),EntityArgument.getPlayers(cmd_4arg, "targetedPlayer"),StringArgumentType.getString(cmd_4arg, "fromName"),ResourceArgument.getEnchantment(cmd_4arg, "enchantment"),IntegerArgumentType.getInteger(cmd_4arg, "enchantment_level"),cmdBuildContext);
       })
      ))));
  }
  
- private static int heldEnchantingLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName, Enchantment enchInput, Integer enchLevel) {
+ private static int heldEnchantingLogic(CommandSourceStack source, Collection<ServerPlayer> targetPlayers, String fromName, Holder<Enchantment> enchInput, Integer enchLevel, CommandBuildContext cmdBuildContext) {
   ArchCommand.ReloadConfig();
   ItemStack tempStack=ItemStack.EMPTY;
   Enchantment tempEnch;
@@ -53,7 +50,7 @@ public class HeldEnchanting {
    if (tempStack.isEmpty()) continue;
    
    if (enchInput!=null) {
-    tempEnch=enchInput;
+    tempEnch=enchInput.value();
    } else {
     iCnt=0;
     do {

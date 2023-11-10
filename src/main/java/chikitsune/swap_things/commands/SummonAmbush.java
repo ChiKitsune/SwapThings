@@ -1,12 +1,7 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import chikitsune.swap_things.config.Configs;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.*;
 
 public class SummonAmbush {
  public static Random rand= new Random();

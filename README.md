@@ -1,4 +1,4 @@
-# SwapThings a Minecraft Forge Mod (Mainly 1.19.2 being updated)
+# SwapThings a Minecraft Forge Mod (Mainly 1.20 being updated)
 
 Mod mainly created to work with CCI/TwitchSpawn for some Twitch Integration. 
 Adds commands for viewers to interact and make things more entertaining for the streamer.

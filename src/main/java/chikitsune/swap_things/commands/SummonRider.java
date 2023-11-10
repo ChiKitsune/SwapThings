@@ -1,47 +1,41 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
+import chikitsune.swap_things.config.Configs;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-
-import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import net.minecraft.commands.*;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.EntitySummonArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
+import net.minecraft.commands.synchronization.SuggestionProviders;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SummonRider {
  public static Random rand= new Random();
 
- public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+ public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext cmdBuildContext) {
   return Commands.literal("summonrider").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
    return summonRiderLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone",null);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
      return summonRiderLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone",null);
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
       return summonRiderLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"),null);
-      }).then(Commands.argument("mount", EntitySummonArgument.id()).executes((cmd_3arg) -> {
-       return summonRiderLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),StringArgumentType.getString(cmd_3arg, "fromName"),EntitySummonArgument.getSummonableEntity(cmd_3arg, "mount"));
+      }).then(Commands.argument("mount", ResourceArgument.resource(cmdBuildContext, Registries.ENTITY_TYPE)).suggests(SuggestionProviders.SUMMONABLE_ENTITIES).executes((cmd_3arg) -> {
+       return summonRiderLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),StringArgumentType.getString(cmd_3arg, "fromName"),ResourceArgument.getSummonableEntityType(cmd_3arg, "mount").key().registry());
        })
      )));
  }
@@ -80,7 +74,7 @@ public class SummonRider {
      }
     }
      
-     newMount=tempEnt.spawn(source.getLevel(),new CompoundTag(),null,null,targetedPlayer.blockPosition(),MobSpawnType.COMMAND,true,true);
+     newMount=tempEnt.spawn(source.getLevel(),new CompoundTag(),null,targetedPlayer.blockPosition(),MobSpawnType.COMMAND,true,true);
      if (newMount instanceof TamableAnimal && Configs.SM_CUS_TAME.get()) {
       ((TamableAnimal) newMount).tame(targetedPlayer);
       ((TamableAnimal) newMount).setTame(true);

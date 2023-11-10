@@ -1,24 +1,17 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
-
+import chikitsune.swap_things.commands.arguments.RandomEffectTypeArgument;
+import chikitsune.swap_things.config.Configs;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-
-import chikitsune.swap_things.commands.arguments.RandomEffectTypeArgument;
-import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import net.minecraft.commands.*;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ItemEnchantmentArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -26,31 +19,34 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class RandomEnchanting {
  public static Random rand= new Random();
  
- public static ArgumentBuilder<CommandSourceStack, ?> register() { 
+ public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext cmdBuildContext) {
   return Commands.literal("randomenchanting").requires((cmd_init) -> { return cmd_init.hasPermission(Configs.CMD_PERMISSION_LEVEL.get()); }).executes((cmd_0arg) -> {
-   return randomEnchantingLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone","ANY",null,null);
+   return randomEnchantingLogic(cmd_0arg.getSource(),Collections.singleton(cmd_0arg.getSource().getPlayerOrException()),"someone","ANY",null,null,cmdBuildContext);
    }).then(Commands.argument("targetedPlayer", EntityArgument.players()).executes((cmd_1arg) -> {
-     return randomEnchantingLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone","ANY",null,null);
+     return randomEnchantingLogic(cmd_1arg.getSource(),EntityArgument.getPlayers(cmd_1arg, "targetedPlayer"),"someone","ANY",null,null,cmdBuildContext);
      }).then(Commands.argument("fromName", StringArgumentType.string()).executes((cmd_2arg) -> {
-      return randomEnchantingLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"),"ANY",null,null);
+      return randomEnchantingLogic(cmd_2arg.getSource(),EntityArgument.getPlayers(cmd_2arg, "targetedPlayer"),StringArgumentType.getString(cmd_2arg, "fromName"),"ANY",null,null,cmdBuildContext);
      }).then(Commands.argument("randomEffectType", RandomEffectTypeArgument.randomEffectTypeArgument()).executes((cmd_3arg) -> {
-      return randomEnchantingLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),StringArgumentType.getString(cmd_3arg, "fromName"),RandomEffectTypeArgument.getRandomEffectType(cmd_3arg,"randomEffectType"),null,null); 
-      }).then(Commands.argument("enchantment",ItemEnchantmentArgument.enchantment()).executes((cmd_4arg) -> {
-       return randomEnchantingLogic(cmd_4arg.getSource(),EntityArgument.getPlayers(cmd_4arg, "targetedPlayer"),StringArgumentType.getString(cmd_4arg, "fromName"),RandomEffectTypeArgument.getRandomEffectType(cmd_4arg,"randomEffectType"),ItemEnchantmentArgument.getEnchantment(cmd_4arg, "enchantment"),null);
+      return randomEnchantingLogic(cmd_3arg.getSource(),EntityArgument.getPlayers(cmd_3arg, "targetedPlayer"),StringArgumentType.getString(cmd_3arg, "fromName"),RandomEffectTypeArgument.getRandomEffectType(cmd_3arg,"randomEffectType"),null,null,cmdBuildContext);
+      }).then(Commands.argument("enchantment", ResourceArgument.resource(cmdBuildContext, Registries.ENCHANTMENT)).executes((cmd_4arg) -> {
+       return randomEnchantingLogic(cmd_4arg.getSource(),EntityArgument.getPlayers(cmd_4arg, "targetedPlayer"),StringArgumentType.getString(cmd_4arg, "fromName"),RandomEffectTypeArgument.getRandomEffectType(cmd_4arg,"randomEffectType"),ResourceArgument.getEnchantment(cmd_4arg, "enchantment"),null,cmdBuildContext);
       }).then(Commands.argument("enchantment_level",IntegerArgumentType.integer()).executes((cmd_5arg) -> {
-       return randomEnchantingLogic(cmd_5arg.getSource(),EntityArgument.getPlayers(cmd_5arg, "targetedPlayer"),StringArgumentType.getString(cmd_5arg, "fromName"),RandomEffectTypeArgument.getRandomEffectType(cmd_5arg,"randomEffectType"),ItemEnchantmentArgument.getEnchantment(cmd_5arg, "enchantment"),IntegerArgumentType.getInteger(cmd_5arg, "enchantment_level"));
+       return randomEnchantingLogic(cmd_5arg.getSource(),EntityArgument.getPlayers(cmd_5arg, "targetedPlayer"),StringArgumentType.getString(cmd_5arg, "fromName"),RandomEffectTypeArgument.getRandomEffectType(cmd_5arg,"randomEffectType"),ResourceArgument.getEnchantment(cmd_5arg, "enchantment"),IntegerArgumentType.getInteger(cmd_5arg, "enchantment_level"),cmdBuildContext);
       })
      )))));
  }
  
- private static int randomEnchantingLogic(CommandSourceStack source,Collection<ServerPlayer> targetPlayers, String fromName, String randomEffectType, Enchantment enchInput, Integer enchLevel) {
+ private static int randomEnchantingLogic(CommandSourceStack source, Collection<ServerPlayer> targetPlayers, String fromName, String randomEffectType, Holder<Enchantment> enchInput, Integer enchLevel, CommandBuildContext cmdBuildContext) {
   ArchCommand.ReloadConfig();
   ItemStack tempStack=ItemStack.EMPTY;
   Enchantment tempEnch;
-  Integer iCnt=0,tempEnchLevel=0,tempRandNum=0,tempRandEnchMin=0,tempRandEnchMax=1;
+  int iCnt=0,tempEnchLevel=0,tempRandNum=0,tempRandEnchMin=0,tempRandEnchMax=1;
   Map<Enchantment, Integer> itemEnchants=null;
   Map<Enchantment, Integer> itemEnchantsNew=Maps.<Enchantment, Integer>newLinkedHashMap();
   List<Enchantment> lstPossEnch = ForgeRegistries.ENCHANTMENTS.getValues().stream()
@@ -78,9 +74,9 @@ public class RandomEnchanting {
    itemEnchants=EnchantmentHelper.getEnchantments(tempStack);
    
    boolean allowedEnchant=false;
-   Integer chkCurLevel=0;
+   int chkCurLevel=0;
    if (enchInput!=null) {
-    tempEnch=enchInput;
+    tempEnch=enchInput.value();
    } else {
     iCnt=0;
     boolean getAnotherEnchant=false;
@@ -92,7 +88,7 @@ public class RandomEnchanting {
 
      chkCurLevel=itemEnchants.get(tempEnch)!=null ? itemEnchants.get(tempEnch) : 0;
      boolean isCurMaxLevel=(chkCurLevel==tempEnch.getMaxLevel()) ? true : false;
-          
+     
      if (!Configs.RE_FORCE_ENCHANT.get() && !tempEnch.canEnchant(tempStack)) {
       allowedEnchant=false;
      } else {
@@ -103,7 +99,7 @@ public class RandomEnchanting {
      switch (randomEffectType.toUpperCase()) {
       case "POSITIVE": getAnotherEnchant=isCurMaxLevel || tempEnch.isCurse() ? true : false;
        break;
-      case "NEGATIVE": getAnotherEnchant=chkCurLevel==0 ? true : false;      
+      case "NEGATIVE": getAnotherEnchant=chkCurLevel==0 ? true : false;
        break;
       default:
        break;
@@ -115,20 +111,20 @@ public class RandomEnchanting {
 //     System.out.println("RE_FORCE_ENCHANT: "+Configs.RE_FORCE_ENCHANT.get());
 //     System.out.println("tempEnch.canEnchant(): "+tempEnch.canEnchant(tempStack));
 //     System.out.println("allowedEnchant: "+allowedEnchant);
-//     
+//
 //     System.out.println("isCurMaxLevel: "+isCurMaxLevel);
 //     System.out.println("tempEnch.isCurse(): "+tempEnch.isCurse());
 //     System.out.println("getAnotherEnchant: "+getAnotherEnchant);
-//     
+//
 //     System.out.println("while loop check: "+(!allowedEnchant && getAnotherEnchant && iCnt<200));
 //     System.out.println("while loop check 2/3: "+(!allowedEnchant && getAnotherEnchant));
-//     System.out.println("while loop check 2/3v2: "+(getAnotherEnchant && iCnt<200));     
-     
-     
+//     System.out.println("while loop check 2/3v2: "+(getAnotherEnchant && iCnt<200));
+    
+    
     iCnt++;
     } while ( !(allowedEnchant && !getAnotherEnchant) && iCnt<(lstPossEnch.size()*20));
    }
-//   System.out.println("Chosen tempEnch: "+tempEnch.getRegistryName());
+//   System.out.println("Chosen tempEnch: "+tempEnch.getDescriptionId() +" "+tempEnch.getFullname(1));
    
 
    

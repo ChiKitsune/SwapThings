@@ -1,13 +1,8 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
+import chikitsune.swap_things.config.Configs;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-
-import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -15,6 +10,8 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.*;
 
 public class InventorySlotRenamer {
  public static Random rand= new Random();
@@ -85,7 +82,7 @@ public class InventorySlotRenamer {
     ArchCommand.playerMsger(source, targetPlayers, 
       Component.literal("Oh! " + strMsgFromName + " thought ").withStyle(ChatFormatting.GOLD)
       .append(Component.literal(targetedPlayer.getName().getString() + "'s ").withStyle(ChatFormatting.RED))
-      .append(Component.literal(prevItemName + "should be theirs.").withStyle(ChatFormatting.GOLD)));
+      .append(Component.literal(prevItemName + " should be theirs.").withStyle(ChatFormatting.GOLD)));
 //   ArchCommand.playerMsger(source, targetPlayers, new TextComponent(ChatFormatting.GOLD + "Oh! " + strMsgFromName + " thought " + ChatFormatting.RED + targetedPlayer.getName().getString() + "'s " + ChatFormatting.GOLD + prevItemName + " should be theirs."));
    }
    else {

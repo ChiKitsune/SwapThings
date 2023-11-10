@@ -1,13 +1,8 @@
 package chikitsune.swap_things.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
+import chikitsune.swap_things.config.Configs;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-
-import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -15,6 +10,8 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.*;
 
 public class InventorySlotUnnamer {
  public static Random rand= new Random();
@@ -75,6 +72,7 @@ public class InventorySlotUnnamer {
    }
    
    tempStack=targetedPlayer.getInventory().getItem(selectedSlotNum);
+   prevItemName=targetedPlayer.getInventory().getItem(selectedSlotNum).getHoverName().getString();
    if (!tempStack.isEmpty() && tempStack.hasCustomHoverName()) {
     targetedPlayer.getInventory().getItem(selectedSlotNum).setHoverName(null);
    

@@ -1,31 +1,14 @@
 package chikitsune.swap_things.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
+import chikitsune.swap_things.SwappingThings;
+import chikitsune.swap_things.commands.arguments.*;
+import chikitsune.swap_things.config.Configs;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.mojang.brigadier.CommandDispatcher;
-
-import chikitsune.swap_things.SwappingThings;
-import chikitsune.swap_things.commands.arguments.RandomArmorSlotArgument;
-import chikitsune.swap_things.commands.arguments.RandomEffectTypeArgument;
-import chikitsune.swap_things.commands.arguments.RandomSingleArmorSlotArgument;
-import chikitsune.swap_things.config.Configs;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
-import net.minecraft.core.Registry;
+import net.minecraft.commands.*;
+import net.minecraft.commands.synchronization.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
@@ -36,14 +19,16 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.*;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class ArchCommand {
  public static Random rand= new Random();
  public static List<String> realArmorList = Arrays.asList("MAINHAND", "OFFHAND","FEET","LEGS","CHEST","HEAD");
  
- public static final DeferredRegister<ArgumentTypeInfo<?, ?>> CMD_ARG_REG= DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, SwappingThings.MODID);
+ public static final DeferredRegister<ArgumentTypeInfo<?, ?>> CMD_ARG_REG= DeferredRegister.create(ForgeRegistries.COMMAND_ARGUMENT_TYPES, SwappingThings.MODID);
  public static final RegistryObject<ArgumentTypeInfo<?,?>> R_A_S_ARG= CMD_ARG_REG.register("r_a_s_arg", () -> ArgumentTypeInfos.registerByClass(RandomArmorSlotArgument.class,SingletonArgumentInfo.contextFree(RandomArmorSlotArgument::allArmorSlots)));
  public static final RegistryObject<ArgumentTypeInfo<?,?>> R_E_T_ARG= CMD_ARG_REG.register("r_e_t_arg", () -> ArgumentTypeInfos.registerByClass(RandomEffectTypeArgument.class,SingletonArgumentInfo.contextFree(RandomEffectTypeArgument::randomEffectTypeArgument)));
  public static final RegistryObject<ArgumentTypeInfo<?,?>> R_S_A_S_ARG= CMD_ARG_REG.register("r_s_a_s_arg", () -> ArgumentTypeInfos.registerByClass(RandomSingleArmorSlotArgument.class,SingletonArgumentInfo.contextFree(RandomSingleArmorSlotArgument::allArmorSlots)));
@@ -53,11 +38,11 @@ public class ArchCommand {
     Commands.literal("swapthings")
     .then(DisconnectPlayer.register())
     .then(DisplayDeathBoard.register())
-    .then(HeldEnchanting.register())
+    .then(HeldEnchanting.register(cmdBuildContext))
     .then(InventoryBomb.register())
     .then(InventoryEqualizer.register(cmdBuildContext))
     .then(InventorySlotClearer.register())
-    .then(InventorySlotEnchanting.register())
+    .then(InventorySlotEnchanting.register(cmdBuildContext))
     .then(InventorySlotRenamer.register())
     .then(InventorySlotReplacer.register(cmdBuildContext))
     .then(InventorySlotUnnamer.register())
@@ -65,7 +50,7 @@ public class ArchCommand {
     .then(PlayerNudger.register())
     .then(PlayerRotate.register())
     .then(QuickHide.register(cmdBuildContext))
-    .then(RandomEnchanting.register())
+    .then(RandomEnchanting.register(cmdBuildContext))
     .then(RandomGift.register(cmdBuildContext))
     .then(RandomTeleport.register())
     .then(RandomTeleportDirection.register())
@@ -75,8 +60,8 @@ public class ArchCommand {
     .then(ShuffleInventory.register())
     .then(ShuffleInventoryNames.register())
 //    .then(SummonAmbush.register())
-    .then(SummonMount.register())
-    .then(SummonRider.register())
+    .then(SummonMount.register(cmdBuildContext))
+    .then(SummonRider.register(cmdBuildContext))
     .then(SwapArmor.register())
     .then(SwapHands.register())
     .then(SwapIdentity.register())
@@ -94,8 +79,8 @@ public class ArchCommand {
   ServerPlayer newSecondTarget=curTargetTwo;
   
   List<String> curPlayers=Arrays.asList(server.getPlayerNames());
-  Integer ranNumPlayers=0;
-  Integer iCnt=0;
+  int ranNumPlayers=0;
+  int iCnt=0;
   
   if (server.getPlayerNames().length > 1) {
    do {
@@ -125,10 +110,11 @@ public class ArchCommand {
  public static Component getRainbowizedStr(String strMsg) {
   MutableComponent newStrMsg = Component.literal("");
   Integer colorStrLen=strMsg.length()/7;
-  Integer iCnt=0;
+  int iCnt=0;
   strMsg=ChatFormatting.stripFormatting(strMsg);
   
 //  newStrMsg.append(new TextComponent(ChatFormatting.RED + strMsg.substring(iCnt, iCnt+colorStrLen)));
+  assert strMsg != null;
   newStrMsg.append(Component.literal(strMsg.substring(iCnt, iCnt+colorStrLen)).withStyle(ChatFormatting.RED));
   iCnt=iCnt+colorStrLen;
   newStrMsg.append(Component.literal(strMsg.substring(iCnt, iCnt+colorStrLen)).withStyle(ChatFormatting.GOLD));
@@ -148,29 +134,31 @@ public class ArchCommand {
  
  public static String getRandomArmorSlotTarget(ServerPlayer targetedPlayer,String targetedArmorSlot,Boolean isRandomArmorSlot) {
   ItemStack tempItem=ItemStack.EMPTY;
-  Integer iCnt=0;
-  Integer tempRand=0;
+  int iCnt=0;
+  int tempRand=0;
   String newEquipmentSlotTarget="";
   
-  if (targetedArmorSlot == "RANDOM") {
-   targetedArmorSlot=realArmorList.get(rand.nextInt(realArmorList.size()));
+  if ("RANDOM".equalsIgnoreCase(targetedArmorSlot)) {
+   newEquipmentSlotTarget=realArmorList.get(rand.nextInt(realArmorList.size()));
    isRandomArmorSlot=true;
    }
-  tempItem=targetedPlayer.getItemBySlot(EquipmentSlot.byName(targetedArmorSlot));
+  
+  tempItem=targetedPlayer.getItemBySlot(EquipmentSlot.byName(newEquipmentSlotTarget.toLowerCase()));
   
   if (tempItem == ItemStack.EMPTY && isRandomArmorSlot) {
    do {
     tempRand=rand.nextInt(6);
     switch (tempRand) {
-     case 0: targetedArmorSlot="HEAD"; break;
-     case 1: targetedArmorSlot="CHEST"; break;
-     case 2: targetedArmorSlot="LEGS"; break;
-     case 3: targetedArmorSlot="FEET"; break;
-     case 4: targetedArmorSlot="OFFHAND"; break;
-     case 5: targetedArmorSlot="MAINHAND"; break;
+     case 0: newEquipmentSlotTarget="HEAD"; break;
+     case 1: newEquipmentSlotTarget="CHEST"; break;
+     case 2: newEquipmentSlotTarget="LEGS"; break;
+     case 3: newEquipmentSlotTarget="FEET"; break;
+     case 4: newEquipmentSlotTarget="OFFHAND"; break;
+     case 5: newEquipmentSlotTarget="MAINHAND"; break;
      default: break;
     }
-    tempItem=targetedPlayer.getItemBySlot(EquipmentSlot.byName(targetedArmorSlot));
+    
+    tempItem=targetedPlayer.getItemBySlot(EquipmentSlot.byName(newEquipmentSlotTarget.toLowerCase()));
     iCnt++;
    } while (tempItem == ItemStack.EMPTY && iCnt<=25);
   }
@@ -233,10 +221,8 @@ public class ArchCommand {
   System.out.println("Configs.SM_IN_LIST.get(): "+Configs.SM_IN_LIST.get());
  List<MobCategory> summonMountIncludeList=new ArrayList<>();
  
- if (Configs.SM_IN_LIST.get().stream().map(String::toLowerCase).collect(Collectors.toList()).contains("any")) {
-    for( MobCategory mc : MobCategory.values()) {
-     summonMountIncludeList.add(mc);
-    }
+ if (Configs.SM_IN_LIST.get().stream().map(String::toLowerCase).toList().contains("any")) {
+  summonMountIncludeList.addAll(Arrays.asList(MobCategory.values()));
  } else {  
   Configs.SM_IN_LIST.get().forEach(str -> {
    if (str!=null) {
@@ -252,10 +238,8 @@ public class ArchCommand {
 //  System.out.println("Configs.SR_IN_LIST.get(): "+Configs.SR_IN_LIST.get());
   List<MobCategory> summonRiderIncludeList=new ArrayList<>();
   
-  if (Configs.SR_IN_LIST.get().stream().map(String::toLowerCase).collect(Collectors.toList()).contains("any")) {
-     for( MobCategory ec : MobCategory.values()) {
-      summonRiderIncludeList.add(ec);
-     }
+  if (Configs.SR_IN_LIST.get().stream().map(String::toLowerCase).toList().contains("any")) {
+   summonRiderIncludeList.addAll(Arrays.asList(MobCategory.values()));
    
   } else {  
    Configs.SR_IN_LIST.get().forEach(str -> {
@@ -292,22 +276,20 @@ public class ArchCommand {
  }
  
  @Nullable
- public static ItemEntity ibDropItem(ItemStack droppedItem, ServerPlayer targetedPlayer) {
+ public static void ibDropItem(ItemStack droppedItem, ServerPlayer targetedPlayer) {
   if (droppedItem.isEmpty()) {
-   return null;
   } else {
    double d0 = targetedPlayer.getY() - (double)0.3F + (double)targetedPlayer.getEyeHeight();
-   ItemEntity itementity = new ItemEntity(targetedPlayer.level, targetedPlayer.getX(), d0, targetedPlayer.getZ(), droppedItem);
+   ItemEntity itementity = new ItemEntity(targetedPlayer.level(), targetedPlayer.getX(), d0, targetedPlayer.getZ(), droppedItem);
    itementity.setPickUpDelay(20);
    itementity.setThrower(targetedPlayer.getUUID());
    float f = rand.nextFloat() * 0.5F;
    float f1 = rand.nextFloat() * ((float)Math.PI * 2F);
    itementity.setDeltaMovement((double)(-Mth.sin(f1) * f), (double)0.2F, (double)(Mth.cos(f1) * f));
    
-   if (itementity.captureDrops() != null) itementity.captureDrops().add(itementity);
+   if (itementity.captureDrops() != null) Objects.requireNonNull(itementity.captureDrops()).add(itementity);
    else
-    itementity.level.addFreshEntity(itementity);
-   return itementity;
+    itementity.level().addFreshEntity(itementity);
   }
  }
 }
